@@ -1,0 +1,38 @@
+.btn{
+    background-color: #fff;
+    padding: 4px 12px;
+    border: 1px solid #b4b4b4;
+}
+
+.btn-feedback .fa-solid{
+    color: #5151fd;
+}
+
+.btn-add .fa-solid{
+    color: #5151fd;
+}
+
+.btn-edit .fa-regular{
+    color: #5151fd;
+}
+
+.btn-delete .fa-solid{
+    color: red;
+}
+
+.btn-refresh .fa-solid{
+    color: #5151fd;
+}
+
+.mi{
+    background-image: url(../assets/Resource/Sprites.64af8f61.svg);
+    background-repeat: no-repeat;
+}
+
+.mi-toolbar{
+    background-position: -312px -32px;
+}
+
+.mi-dropdown{
+    background-position: -840px -350px;
+}

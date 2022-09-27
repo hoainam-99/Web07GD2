@@ -1,0 +1,86 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0072BC;
+    height: 60px;
+    color: #fff;
+}
+
+.header-left,
+.header-right{
+    display: flex;
+    align-items: center;
+    height: inherit;
+}
+
+.header-left__toolbar{
+    width: 24px;
+    height: 24px;
+    margin: 0 16px;
+}
+
+.header-left__logo{
+    background-image: url(../../../assets/Resource/logoCukCuk207x45.png);
+    background-repeat: no-repeat;
+    height: 36px;
+    width: 124px;
+    margin-right: 40px;
+}
+
+.header__select{
+    height: 36px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #00578f;
+    margin: 0 4px 0 32px;
+}
+
+.header__select input{
+    background-color: inherit;
+    border: none;
+    height: inherit;
+    padding: 0 8px;
+    outline: none;
+    color: #fff;
+}
+
+.dropdown-icon{
+    width: 36px;
+    height: 36px;
+}
+
+.header-right__icon{
+    font-size: 21px;
+    height: inherit;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-right__icon:hover{
+    background-color: #00578f;
+}
+
+.header-right__user{
+    height: inherit;
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.avatar{
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+}
+
+.username{
+    margin: 0 8px;
+}
+
+
+
