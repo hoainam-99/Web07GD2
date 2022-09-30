@@ -1,0 +1,17 @@
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.deps.json
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.DL.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.DL.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.csproj.AssemblyReference.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.GeneratedMSBuildEditorConfig.editorconfig
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.AssemblyInfoInputs.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.AssemblyInfo.cs
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.csproj.CoreCompileInputs.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.csproj.CopyComplete
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\refint\Misa.CukCukMaterial.CTM.BL.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.BL.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.BL\obj\Debug\net6.0\ref\Misa.CukCukMaterial.CTM.BL.dll

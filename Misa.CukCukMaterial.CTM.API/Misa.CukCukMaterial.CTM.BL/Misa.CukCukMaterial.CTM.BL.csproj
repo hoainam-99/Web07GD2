@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Misa.CukCukMaterial.CTM.Common\Misa.CukCukMaterial.CTM.Common.csproj" />
+    <ProjectReference Include="..\Misa.CukCukMaterial.CTM.DL\Misa.CukCukMaterial.CTM.DL.csproj" />
+  </ItemGroup>
+
 </Project>

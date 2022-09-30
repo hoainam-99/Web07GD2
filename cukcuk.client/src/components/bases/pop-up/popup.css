@@ -1,0 +1,146 @@
+.popup-container{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.316);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-main{
+    background-color: #fff;
+    border: 4px solid #0072bc;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.form{
+    max-height: 100vh;
+}
+
+.form-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0072bc;
+    color: #fff;
+    height: 32px;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+}
+
+.form-header__right{
+    display: flex;
+    align-items: center;
+}
+
+.form-header__right .fa-solid{
+    margin: 0 4px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.form-header__right .fa-solid:hover{
+    transform: scale(1.5);
+}
+
+.form-content{
+    padding: 12px;
+}
+
+.form-row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.form-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 4px;
+    align-items: center;
+}
+
+.form-group input,
+.form-row textarea{
+    /* margin: 0 4px; */
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+}
+
+.form-content label{
+    min-width: 120px;
+}
+
+.form-content label span{
+    color: rgb(255, 0, 0);
+}
+
+.form-menu{
+    width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    margin: 16px 0 8px 0;
+    background-color: rgb(230, 230, 230);
+}
+
+.form-menu__item{
+    background-color: #fff;
+    height: 100%;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 3px solid #0072bc;
+    color: #0072bc;
+}
+
+.form-table{
+    border: 1px solid rgb(235, 235, 235);
+    height: 250px;
+    overflow: auto;
+}
+
+.form-table thead{
+    position: sticky;
+    top: 0;
+}
+
+.form-table thead tr{
+    height: 32px;
+}
+
+.form-table tbody tr{
+    height: 24px;
+}
+
+.form-table th{
+    background-color: rgb(235, 235, 235);
+}
+
+.form-table__toolbar{
+    margin-top: 12px;
+}
+
+.form-table__toolbar .btn,
+.form-footer__right .btn{
+    margin-right: 8px;
+}
+
+.form-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    padding: 12px;
+}

@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Neqrk1gaflw9XwYS7o6F1yQV73h0YARSRxhwqqMl2Znc6lWatbH8VOwvhYDwqb4mMwB1YWmqvG6HAb12mJKoOA==",
+  "dgSpecHash": "ecPRYCUUSsbceQ1i5nXCVE7TwTey7Rd110HE4B8CTTqqhBIuLHquY/RSHc0SW4nHYSNaTfoPM/pv9K7lFj1gTg==",
   "success": true,
   "projectFilePath": "E:\\misa\\Web07GD2\\Misa.CukCukMaterial.CTM.API\\Misa.CukCukMaterial.CTM.BL\\Misa.CukCukMaterial.CTM.BL.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\HOAI NAM\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
+    "C:\\Users\\HOAI NAM\\.nuget\\packages\\mysqlconnector\\2.2.0-beta.1\\mysqlconnector.2.2.0-beta.1.nupkg.sha512"
+  ],
   "logs": []
 }

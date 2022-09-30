@@ -1,27 +1,56 @@
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.hide{
+    display: none;
+}
+
+.w50per{
+    width: 50%;
+}
+
+.w100per{
+    width: 100%;
+}
+
+.mw-200px{
+    min-width: 200px;
+}
+
+.mw-180px{
+    min-width: 180px;
+}
+
+.mw-300px{
+    min-width: 300px;
+}
+
 .btn{
-    background-color: #fff;
+    background-color: inherit;
     padding: 4px 12px;
     border: 1px solid #b4b4b4;
+    cursor: pointer;
 }
 
-.btn-feedback .fa-solid{
+.btn span{
+    margin: 6px;
+}
+
+.btn-feedback .fa-solid,
+.btn-add .fa-solid,
+.btn-replication .fa-regular,
+.btn-edit .fa-regular,
+.btn-refresh .fa-solid,
+.help-btn .fa-regular,
+.save-btn .fa-solid,
+.save-add-btn .fa-solid{
     color: #5151fd;
 }
 
-.btn-add .fa-solid{
-    color: #5151fd;
-}
-
-.btn-edit .fa-regular{
-    color: #5151fd;
-}
-
-.btn-delete .fa-solid{
+.btn-delete .fa-solid,
+.cancel-btn .fa-solid{
     color: red;
-}
-
-.btn-refresh .fa-solid{
-    color: #5151fd;
 }
 
 .mi{
@@ -35,4 +64,8 @@
 
 .mi-dropdown{
     background-position: -840px -350px;
+}
+
+.mi-black-dropdown{
+    background-position: -362px -354px;
 }

@@ -1,0 +1,14 @@
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.deps.json
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\bin\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.csproj.AssemblyReference.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.Resource.ResourceVN.resources
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.csproj.GenerateResource.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.GeneratedMSBuildEditorConfig.editorconfig
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.AssemblyInfoInputs.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.AssemblyInfo.cs
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.csproj.CoreCompileInputs.cache
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\refint\Misa.CukCukMaterial.CTM.Common.dll
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\Misa.CukCukMaterial.CTM.Common.pdb
+E:\misa\Web07GD2\Misa.CukCukMaterial.CTM.API\Misa.CukCukMaterial.CTM.Common\obj\Debug\net6.0\ref\Misa.CukCukMaterial.CTM.Common.dll

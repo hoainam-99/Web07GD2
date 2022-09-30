@@ -1,0 +1,82 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Misa.CukCukMaterial.CTM.BL/1.0.0": {
+        "dependencies": {
+          "Misa.CukCukMaterial.CTM.Common": "1.0.0",
+          "Misa.CukCukMaterial.CTM.DL": "1.0.0"
+        },
+        "runtime": {
+          "Misa.CukCukMaterial.CTM.BL.dll": {}
+        }
+      },
+      "Dapper/2.0.123": {
+        "runtime": {
+          "lib/net5.0/Dapper.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.123.33578"
+          }
+        }
+      },
+      "MySqlConnector/2.2.0-beta.1": {
+        "runtime": {
+          "lib/net6.0/MySqlConnector.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.2.0.0"
+          }
+        }
+      },
+      "Misa.CukCukMaterial.CTM.Common/1.0.0": {
+        "runtime": {
+          "Misa.CukCukMaterial.CTM.Common.dll": {}
+        }
+      },
+      "Misa.CukCukMaterial.CTM.DL/1.0.0": {
+        "dependencies": {
+          "Dapper": "2.0.123",
+          "Misa.CukCukMaterial.CTM.Common": "1.0.0",
+          "MySqlConnector": "2.2.0-beta.1"
+        },
+        "runtime": {
+          "Misa.CukCukMaterial.CTM.DL.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Misa.CukCukMaterial.CTM.BL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Dapper/2.0.123": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RDFF4rBLLmbpi6pwkY7q/M6UXHRJEOerplDGE5jwEkP/JGJnBauAClYavNKJPW1yOTWRPIyfj4is3EaJxQXILQ==",
+      "path": "dapper/2.0.123",
+      "hashPath": "dapper.2.0.123.nupkg.sha512"
+    },
+    "MySqlConnector/2.2.0-beta.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1teGtkzx8g/Zq74TTvD4/CFyCASYM/Up3MnscMvQbrIUILp33uCs61kJ2XeixU1T4OvrWYdugYpEqAY3UOeqvA==",
+      "path": "mysqlconnector/2.2.0-beta.1",
+      "hashPath": "mysqlconnector.2.2.0-beta.1.nupkg.sha512"
+    },
+    "Misa.CukCukMaterial.CTM.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Misa.CukCukMaterial.CTM.DL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
