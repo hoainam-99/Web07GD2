@@ -92,6 +92,10 @@ table{
     height: 37px;
 }
 
+.hn-selected-tr{
+    background-color: #94c7ea;
+}
+
 td{
     padding: 0 8px;
 }

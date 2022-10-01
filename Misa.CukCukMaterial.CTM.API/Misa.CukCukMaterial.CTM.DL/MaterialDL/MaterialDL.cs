@@ -34,5 +34,35 @@ namespace Misa.CukCukMaterial.CTM.DL
                 };
             }
         }
+
+        public string GetNewMaterialCode()
+        {
+            string func = "Select Func_Get_Auto_MaterialCode()";
+
+            using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
+            {
+                var newCode = mySqlConnection.QueryFirstOrDefault<string>(func);
+
+                return newCode;
+            }
+        }
+
+        public override Material GetOneRecordByID(Guid id)
+        {
+            string storedProc = "Proc_material_GetByID";
+
+            var parameters = new DynamicParameters();
+
+            parameters.Add("@$MaterialID", id);
+
+            using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString)){
+                var record = mySqlConnection.QueryMultiple(storedProc, parameters, commandType: System.Data.CommandType.StoredProcedure);
+
+                Material material = record.Read<Material>().Single();
+                material.MaterialUnit = record.Read<MaterialUnit>().ToList();
+
+                return material;
+            }
+        }
     }
 }

@@ -171,6 +171,11 @@ namespace Misa.CukCukMaterial.CTM.BL
             return filterStr;
         }
 
+        public string GetNewMaterialCode()
+        {
+            return _materialDL.GetNewMaterialCode();
+        }
+
         #endregion
     }
 }

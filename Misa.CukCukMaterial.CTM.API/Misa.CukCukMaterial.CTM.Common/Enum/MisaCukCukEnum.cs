@@ -15,7 +15,8 @@ namespace Misa.CukCukMaterial.CTM.Common
     public enum Method
     {
         Add = 1,    // Phương thức thêm mới
-        Edit = 2    // Phương thức sửa
+        Edit = 2,   // Phương thức sửa
+        Delete = 3,   // Phương thức xóa
     }
 
     public enum Calculation

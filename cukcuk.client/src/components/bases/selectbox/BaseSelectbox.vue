@@ -39,6 +39,11 @@ export default {
       selectedValue: null,
     };
   },
+  watch: {
+    selectData(){
+      this.datas = this.selectData;
+    }
+  },
   methods: {
     /**
      * Hàm lấy chiều cao của selectbox
@@ -68,7 +73,9 @@ export default {
           this.datas[index].isChecked = true;
 
           // Gán giá trị data của phần tử được chọn cho biến selectedValue
-          this.selectedValue = this.datas[index].data;
+          if(this.datas[index].data){
+            this.selectedValue = this.datas[index].data;
+          }
 
           // Trả về giá trị cho component cha
           this.$emit("getFilter", this.datas[index].value);

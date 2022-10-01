@@ -12,7 +12,7 @@
     </div>
     <div class="select-page">
       <span>Trang</span>
-      <input type="number" v-model="pagination.pageNum" />
+      <input type="text" pattern="[0-9]" v-model="pagination.pageNum" />
       <span>trên {{ totalPage }}</span>
     </div>
     <div class="next-page">
@@ -29,7 +29,7 @@
       <i class="fa-solid fa-rotate-right"></i>
     </div>
     <div class="page-sizing">
-      <input type="number" disabled :value="pagination.pageSize" />
+      <input type="text" pattern="[0-9]" disabled :value="pagination.pageSize" />
       <div class="page-size-dropdown cursor-pointer" @click="isShowPageSizeList = !isShowPageSizeList">
         <i class="fa-solid fa-caret-down"></i>
       </div>
@@ -200,7 +200,7 @@ export default {
 }
 
 .navigation-left input {
-  width: 50px;
+  width: 28px;
   padding: 2px 4px;
   border: 1px solid #ccc;
   outline: none;

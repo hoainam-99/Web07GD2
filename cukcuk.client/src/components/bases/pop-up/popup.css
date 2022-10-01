@@ -75,6 +75,12 @@
     /* margin: 0 4px; */
     border: 1px solid #ccc;
     padding: 2px 4px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-row textarea:focus{
+    border: 1px solid #0072bc;
 }
 
 .form-content label{

@@ -20,5 +20,12 @@ namespace Misa.CukCukMaterial.CTM.BL
         /// </returns>
         /// Author: LHNAM (30/09/2022)
         public PagingData<Material> FilterRecords(FilterData filterData);
+
+        /// <summary>
+        /// Hàm lấy mã nguyên vật liệu mới
+        /// </summary>
+        /// <returns>Mã nguyên vật liệu mới</returns>
+        /// Author: LHNAM (01/10/2022)
+        public string GetNewMaterialCode();
     }
 }

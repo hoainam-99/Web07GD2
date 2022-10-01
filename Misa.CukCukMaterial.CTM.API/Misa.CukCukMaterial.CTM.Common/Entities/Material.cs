@@ -88,6 +88,11 @@ namespace Misa.CukCukMaterial.CTM.Common
         public Status? Status { get; set; }
 
         /// <summary>
+        /// danh sách đơn vị chuyển đổi của material
+        /// </summary>
+        public List<MaterialUnit>? MaterialUnit { get; set; }
+
+        /// <summary>
         /// Người tạo
         /// </summary>
         public String? CreatedBy { get; set; }

@@ -79,7 +79,7 @@ export default {
      * Author: LHNAM (30/09/2022)
      */
     emitFilter() {
-      let filter;
+      let filter = "";
       if (this.filterSelectedItem && this.filterValue) {
         switch (this.filterSelectedItem) {
           case "+":

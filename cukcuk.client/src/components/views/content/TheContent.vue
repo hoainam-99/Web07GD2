@@ -20,21 +20,21 @@
         </button>
         <button
           class="btn btn-replication cursor-pointer"
-          @click="formDetailOnClick(2)"
+          @click="formDetailOnClick(4)"
         >
           <i class="fa-regular fa-copy"></i>
           <span>Nhân bản</span>
         </button>
         <button
           class="btn btn-edit cursor-pointer"
-          @click="formDetailOnClick(3)"
+          @click="formDetailOnClick(2)"
         >
           <i class="fa-regular fa-pen-to-square"></i>
           <span>Sửa</span>
         </button>
         <button
           class="btn btn-delete cursor-pointer"
-          @click="formDetailOnClick(4)"
+          @click="formDetailOnClick(3)"
         >
           <i class="fa-solid fa-x"></i>
           <span>Xóa</span>
@@ -51,37 +51,55 @@
               <th class="mw-200px">
                 <div class="hn-th">
                   <div class="hn-th__title">Mã nguyên vật liệu</div>
-                  <BaseFilter @getFilter="getMaterialCodeFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getMaterialCodeFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-300px">
                 <div class="hn-th">
                   <div class="hn-th__title">Tên nguyên vật liệu</div>
-                  <BaseFilter @getFilter="getMaterialNameFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getMaterialNameFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-180px">
                 <div class="hn-th">
                   <div class="hn-th__title">Tính chất</div>
-                  <BaseFilter @getFilter="getFeatureFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getFeatureFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-180px">
                 <div class="hn-th">
                   <div class="hn-th__title">ĐVT tính</div>
-                  <BaseFilter @getFilter="getUnitFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getUnitFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-180px">
                 <div class="hn-th">
                   <div class="hn-th__title">Nhóm nguyên vật liệu</div>
-                  <BaseFilter @getFilter="getCategoryFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getCategoryFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-300px">
                 <div class="hn-th">
                   <div class="hn-th__title">Ghi chú</div>
-                  <BaseFilter @getFilter="getDescriptionFilter" :filterType="'string'"/>
+                  <BaseFilter
+                    @getFilter="getDescriptionFilter"
+                    :filterType="'string'"
+                  />
                 </div>
               </th>
               <th class="mw-180px">
@@ -102,6 +120,9 @@
               class="hn-tr"
               v-for="material in materials"
               :key="material.materialID"
+              @click="selectMaterial(material.materialID)"
+              @dblclick="formDetailOnClick(2)"
+              :class="{'hn-selected-tr' : material.materialID == param.id}"
             >
               <td>{{ material.materialCode }}</td>
               <td>{{ material.materialName }}</td>
@@ -111,7 +132,12 @@
               <td>{{ material.description }}</td>
               <td>
                 <div class="useCheck">
-                  <input type="checkbox" name="" id="" />
+                  <input
+                    type="checkbox"
+                    :checked="material.status == 1"
+                    name=""
+                    id=""
+                  />
                 </div>
               </td>
             </tr>
@@ -127,7 +153,7 @@
       </div>
     </div>
   </div>
-  <ThePopup v-if="isShowFormPopup" @closeForm="closeForm" />
+  <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" />
 </template>
 
 <script>
@@ -142,6 +168,10 @@ export default {
   components: { ThePopup, BaseSelectbox, BaseFilter, BasePagination },
   data() {
     return {
+      param: {
+        method: "",
+        id: "",
+      },
       totalCount: 0,
       materials: [],
       materialCodeFilter: "",
@@ -197,8 +227,28 @@ export default {
     },
   },
   methods: {
-    refresh(isRefresh){
-      if(isRefresh){
+    /**
+     * Hàm chọn nguyên vật liệu
+     * @param {Guid} id Id của nguyên vật liệu được chọn
+     * Author: LHNAM (01/10/2022)
+     */
+    selectMaterial(id) {
+      try {
+        if (id) {
+          this.param.id = id;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm refresh bảng
+     * @param {boolean} isRefresh truyền về giá trị refresh
+     * Author: LHNAM (01/10/2022)
+     */
+    refresh(isRefresh) {
+      if (isRefresh) {
         this.getMaterial();
       }
     },
@@ -252,7 +302,7 @@ export default {
     getDescriptionFilter(filterValue) {
       if (filterValue) {
         this.descriptionFilter = filterValue;
-      }else{
+      } else {
         this.descriptionFilter = "";
       }
     },
@@ -265,7 +315,7 @@ export default {
     getCategoryFilter(filterValue) {
       if (filterValue) {
         this.categoryFilter = filterValue;
-      }else{
+      } else {
         this.categoryFilter = "";
       }
     },
@@ -278,7 +328,7 @@ export default {
     getUnitFilter(filterValue) {
       if (filterValue) {
         this.unitFilter = filterValue;
-      }else{
+      } else {
         this.unitFilter = "";
       }
     },
@@ -291,7 +341,7 @@ export default {
     getFeatureFilter(filterValue) {
       if (filterValue) {
         this.featureFilter = filterValue;
-      }else{
+      } else {
         this.featureFilter = "";
       }
     },
@@ -304,7 +354,7 @@ export default {
     getMaterialNameFilter(filterValue) {
       if (filterValue) {
         this.materialNameFilter = filterValue;
-      }else{
+      } else {
         this.materialNameFilter = "";
       }
     },
@@ -317,7 +367,7 @@ export default {
     getMaterialCodeFilter(filterValue) {
       if (filterValue) {
         this.materialCodeFilter = filterValue;
-      }else{
+      } else {
         this.materialCodeFilter = "";
       }
     },
@@ -341,15 +391,19 @@ export default {
       try {
         switch (formMode) {
           case Enum.FormMode.Add:
+            this.param.method = formMode;
+            this.isShowFormPopup = true;
             break;
           case Enum.FormMode.Replication:
-            break;
           case Enum.FormMode.Edit:
+            if (this.param.id) {
+              this.param.method = formMode;
+              this.isShowFormPopup = true;
+            }
             break;
           case Enum.FormMode.Delete:
             break;
         }
-        this.isShowFormPopup = true;
       } catch (error) {
         console.error(error);
       }

@@ -3,8 +3,8 @@ var Enum = Enum || {};
 Enum.FormMode = {
     Add: 1,
     Edit: 2,
-    Replication: 3,
-    Delete: 4
+    Delete: 3,
+    Replication: 4,
 }
 
 export default Enum;
