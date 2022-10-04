@@ -35,7 +35,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public virtual IActionResult GetRecords()
+        public IActionResult GetRecords()
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public virtual IActionResult GetOneRecordByID([FromRoute] Guid id)
+        public IActionResult GetOneRecordByID([FromRoute] Guid id)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, type: typeof(Guid))]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public virtual IActionResult DeleteOneRecord([FromRoute] Guid id)
+        public IActionResult DeleteOneRecord([FromRoute] Guid id)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public virtual IActionResult InsertOneRecord([FromBody] T record)
+        public IActionResult InsertOneRecord([FromBody] T record)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, ex);
             }
         }
 
@@ -166,11 +166,11 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         /// <param name="record">Nội dung của bản ghi</param>
         /// <returns>ID của bản ghi đã sửa</returns>
         /// Author: LHNAM (29/09/2022)
-        [HttpPut("{ID}")]
+        [HttpPut("{id}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public virtual IActionResult UpdateOneRecord([FromRoute] Guid id, [FromBody] T record)
+        public IActionResult UpdateOneRecord([FromRoute] Guid id, [FromBody] T record)
         {
             try
             {

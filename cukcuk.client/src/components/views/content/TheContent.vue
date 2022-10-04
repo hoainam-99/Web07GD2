@@ -154,6 +154,7 @@
     </div>
   </div>
   <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" />
+  <NotificationPopup v-if="isShowNotificationPopup" @returnConfirmPopup="returnConfirmPopup"/>
 </template>
 
 <script>
@@ -164,8 +165,9 @@ import ThePopup from "@/components/bases/pop-up/ThePopup.vue";
 import BaseSelectbox from "@/components/bases/selectbox/BaseSelectbox.vue";
 import BaseFilter from "../../bases/filter/BaseFilter.vue";
 import BasePagination from "@/components/bases/pagination/BasePagination.vue";
+import NotificationPopup from "@/components/bases/pop-up/NotificationPopup.vue";
 export default {
-  components: { ThePopup, BaseSelectbox, BaseFilter, BasePagination },
+  components: { ThePopup, BaseSelectbox, BaseFilter, BasePagination, NotificationPopup },
   data() {
     return {
       param: {
@@ -183,6 +185,7 @@ export default {
       statusFilter: "",
       pagination: {},
       isShowFormPopup: false,
+      isShowNotificationPopup: false,
       followSelectData: [
         {
           data: "Không",
@@ -227,6 +230,28 @@ export default {
     },
   },
   methods: {
+    /**
+     * Hàm call api để xóa một nguyên vật liệu
+     * Author: LHNAM (04/10/2022)
+     */
+    deleteMaterial(){
+      Axios.CallAxios(
+        Axios.Methods.Delete,
+        `${Axios.Url.Material}/${this.param.id}`
+      )
+      .then(res=>{
+        console.log(res);
+        this.isShowNotificationPopup = false;
+        this.refresh(true);
+      })
+      .catch(e=>{
+        console.error(e);
+      })
+      .finally(()=>{
+        this.loading = false;
+      })
+    },
+
     /**
      * Hàm chọn nguyên vật liệu
      * @param {Guid} id Id của nguyên vật liệu được chọn
@@ -371,6 +396,22 @@ export default {
         this.materialCodeFilter = "";
       }
     },
+
+    /**
+     * Hàm lấy giá trị confirm của người dùng
+     * @param {boolean} e giá trị trả về từ emit của notification popup
+     * Author: LHNAM (04/10/2022)
+     */
+     returnConfirmPopup(e){
+      if (e != null && e != undefined && this.isShowNotificationPopup) {
+        if(!e){
+          this.isShowNotificationPopup = e;
+        }else{
+          this.deleteMaterial();
+        }
+      }
+    },
+
     /**
      * Hàm đóng form pop-up
      * @param {Boolean} e giá trị trả về từ emit của form
@@ -381,6 +422,7 @@ export default {
         this.isShowFormPopup = e;
       }
     },
+
     /**
      * Hàm click các phương thức liên quan đến form pop-up
      * @param {enum} formMode Phương thức cần gọi
@@ -402,6 +444,9 @@ export default {
             }
             break;
           case Enum.FormMode.Delete:
+            if(this.param.id){
+              this.isShowNotificationPopup = true;
+            }
             break;
         }
       } catch (error) {

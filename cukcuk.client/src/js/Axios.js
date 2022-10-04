@@ -21,14 +21,15 @@ Axios.Url = {
     Unit: `${Axios.Domain}api/v1/Units`,
 }
 
-Axios.CallAxios = (method, url, resType) => {
+Axios.CallAxios = (method, url, data, resType) => {
     if(!resType){
         resType = 'json';
     }
     return axios({
         method: method,
         url: url,
-        responseType: resType,
+        data: data,
+        responseType: resType
     })
 }
 

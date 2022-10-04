@@ -13,7 +13,7 @@
     <button
       class="button combobox__button add-icon"
       :class="{ red_border: this.isRequire }"
-      @click="btnSelectDataOnClick"
+      @click="btnAddOnClick"
       @keydown="selecItemUpDown"
       tabindex="-1"
     >
@@ -157,7 +157,7 @@ export default {
     inputValue: null,
     isRequire: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     isLoadData: {
       type: Boolean,
@@ -187,6 +187,18 @@ export default {
   },
   methods: {
     /**
+     * Hàm bắt sự kiện click vào nút thêm mới
+     * Author: LHNAM (04/10/2022)
+     */
+    btnAddOnClick(){
+      try {
+        this.$emit("addBtnOnClick", true);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
      * Hàm focus input
      * Author: LHNAM (20/09/2022)
      */
@@ -200,26 +212,12 @@ export default {
      * LHNAM (10/08/2022)
      */
     checkItemSelected() {
-      try {
-        if (this.inputValue) {
-          let selectedIndex = this.dataFilter.findIndex((item) => {
-            return item[this.propValue] == this.inputValue;
-          });
-
-          let selectedItem = this.dataFilter.find((item) => {
-            return item[this.propValue] == this.inputValue;
-          });
-          // console.log(selectedItem);
-          // debugger
-          //   this.renderItem(selectedItem[this.propText], selectedIndex);
-          if (this.propText) {
-            this.textInput = selectedItem[this.propText];
-            this.indexItemSelected = selectedIndex;
-            this.isShowListData = false;
+      if (this.inputValue && this.propValue && this.propText) {
+        this.dataFilter.find((item, index) => {
+          if (item[this.propValue] == this.inputValue) {
+            this.itemOnSelect(item, index);
           }
-        }
-      } catch (error) {
-        console.log(error);
+        });
       }
     },
     /**
@@ -358,6 +356,8 @@ export default {
         .then((res) => {
           this.data = res;
           this.dataFilter = res;
+        })
+        .then(() => {
           this.checkItemSelected();
         })
         .catch((res) => {
@@ -380,6 +380,9 @@ export default {
 </script>
 <style scoped>
 @import "@/css/main.css";
+.red_border{
+  border-color: red!important;
+}
 .combobox {
   width: 100%;
   height: 100%;
@@ -395,11 +398,8 @@ select {
   height: 100%;
   flex: 1;
   padding-right: 56px !important;
-  /* padding-left: 16px; */
-  /* border-radius: 4px; */
   outline: none;
   border: 1px solid #bbbbbb;
-  /* font-family: MISA Fonts; */
   box-sizing: border-box;
 }
 
@@ -410,21 +410,16 @@ select {
 
 .combobox__button {
   position: absolute;
+  height: 0%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgb(90, 90, 90);
   right: 28px;
   top: 0px;
-  /* border: 1px solid #bbbbbb; */
   border: none;
-  border-left: unset;
   height: 100%;
   width: auto;
-  /* background-image: url("/icon/down-32.png"); */
-  /* background-repeat: no-repeat;
-      background-position: center;
-      background-size: 32px; */
   background-color: #fff;
   cursor: pointer;
   min-width: unset !important;
@@ -441,12 +436,6 @@ select {
 .add-icon {
   right: 8px;
 }
-
-/* .combobox__button:hover,
-  .combobox__button:focus {
-    background-color: #bbbbbb;
-    color: #000;
-  } */
 
 .combobox__data {
   display: flex;

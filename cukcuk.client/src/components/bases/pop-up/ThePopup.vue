@@ -18,6 +18,7 @@
                   type="text"
                   class="w100per"
                   v-model="material.materialName"
+                  ref="materialName"
                 />
               </div>
               <div class="form-group">
@@ -27,12 +28,25 @@
                   :propValue="'unitID'"
                   :propText="'unitName'"
                   :inputValue="material.unitID"
+                  :isRequire="isUnitRequired"
+                  @getValue="getUnitID"
+                  @addBtnOnClick="showAddUnitPopup"
                 />
               </div>
               <div class="form-group">
                 <label for="">Hạn sử dụng</label>
-                <input type="text" class="w50per" style="margin-right: 4px" />
-                <BaseSelectbox :selectData="timeSelectData" />
+                <input
+                  type="text"
+                  pattern="[0-9]"
+                  class="w50per"
+                  style="margin-right: 4px"
+                  v-model="material.expiryDate.dateValue"
+                />
+                <BaseSelectbox
+                  :selectData="timeSelectData"
+                  :inputValue="material.expiryDate.dateType"
+                  @getFilter="getExpiryDate"
+                />
               </div>
             </div>
             <div class="form-col w50per" style="margin-left: 40px">
@@ -42,6 +56,7 @@
                   type="text"
                   class="w100per"
                   v-model="material.materialCode"
+                  ref="materialCode"
                 />
               </div>
               <div class="form-group">
@@ -51,6 +66,8 @@
                   :propValue="'stockID'"
                   :propText="'stockName'"
                   :inputValue="material.stockID"
+                  @getValue="getStockID"
+                  @addBtnOnClick="showAddStockPopup"
                 />
               </div>
               <div class="form-group">
@@ -58,7 +75,7 @@
                 <input
                   type="text"
                   class="w100per"
-                  v-model="material.materialName"
+                  v-model="material.inventoryNumber"
                 />
               </div>
             </div>
@@ -86,22 +103,23 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in material.materialUnit" :key="index">
-                  <th>{{ index + 1}}</th>
-                  <td>{{ item.unitName }}</td>
-                  <td>{{ item.conversionRate }}</td>
-                  <td>{{ item.calculation }}</td>
-                  <td>1 {{ item.unitName }} = {{ item.conversionRate }} * {{ material.unitName }}</td>
-                </tr>
+                <TheMaterialUnit
+                  v-for="(item, index) in material.materialUnit"
+                  :key="index"
+                  :materialUnit="item"
+                  :itemIndex="index"
+                  :materialUnitName="material.unitName"
+                  @returnValue="setMaterialUnitValue"
+                />
               </tbody>
             </table>
           </div>
           <div class="form-table__toolbar">
-            <button class="btn btn-add">
+            <button class="btn btn-add" @click="addMaterialUnitOnClick">
               <i class="fa-solid fa-file-circle-plus"></i>
               <span>Thêm dòng</span>
             </button>
-            <button class="btn btn-delete">
+            <button class="btn btn-delete" @click="removeMaterialUnitOnClick">
               <i class="fa-solid fa-x"></i>
               <span>Xóa dòng</span>
             </button>
@@ -115,11 +133,11 @@
             </button>
           </div>
           <div class="form-footer__right">
-            <button class="btn save-btn">
+            <button class="btn save-btn" @click="saveDataOnClick(1)">
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất</span>
             </button>
-            <button class="btn save-add-btn">
+            <button class="btn save-add-btn" @click="saveDataOnClick(2)">
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất & Thêm</span>
             </button>
@@ -139,14 +157,27 @@ import Axios from "@/js/Axios.js";
 import BaseSelectbox from "../selectbox/BaseSelectbox.vue";
 import BaseCombobox from "../combobox/BaseCombobox.vue";
 import Enum from "@/js/Enum";
+import CommonFn from "@/js/Common";
+import Resource from "@/js/Resource";
+import TheMaterialUnit from "../materialUnit/TheMaterialUnit.vue";
 
 export default {
-  components: { BaseSelectbox, BaseCombobox },
+  components: { BaseSelectbox, BaseCombobox, TheMaterialUnit },
   props: ["param"],
+  watch: {},
   data() {
     return {
+      // Biến validate trường unit
+      isUnitRequired: false,
+
       // thông tin bản ghi nguyên vật liệu
-      material: {},
+      material: {
+        expiryDate: {
+          dateType: Resource.DateType.Date,
+          dateValue: 0,
+        },
+        materialUnit: [],
+      },
 
       // ID của nguyên vật liệu được chọn
       materialID: "",
@@ -159,13 +190,241 @@ export default {
 
       // Mảng chứa danh sách thời hạn sử dụng
       timeSelectData: [
-        { data: "Ngày", value: "Date", isChecked: true },
-        { data: "Tháng", value: "Month", isChecked: false },
-        { data: "Năm", value: "Year", isChecked: false },
+        { data: "Ngày", value: Resource.DateType.Date, isChecked: false },
+        { data: "Tháng", value: Resource.DateType.Month, isChecked: false },
+        { data: "Năm", value: Resource.DateType.Year, isChecked: false },
       ],
+
+      // Object đơn vị chuyển đổi
+      materialUnit: {
+        unitID: "",
+        conversionRate: "",
+        calculation: Enum.Calculation.Multiplication,
+        method: Enum.FormMode.Add,
+      },
     };
   },
   methods: {
+    showAddUnitPopup(){},
+    showAddStockPopup(){},
+    
+    /**
+     * Hàm lấy dữ liệu trả về từ combobox chọn đơn vị
+     * @param {Guid} value ID của đơn vị
+     * @param {String} text Tên đơn vị
+     */
+    getUnitID(value, text) {
+      this.material.unitID = value;
+      this.material.unitName = text;
+    },
+
+    /**
+     * Hàm lấy dữ liệu trả về từ combobox chọn kho
+     * @param {Guid} value ID của kho
+     * @param {String} text Tên kho
+     */
+    getStockID(value, text) {
+      if (this.material.stockID) {
+        this.material.stockID = value;
+      }
+
+      if (this.material.stockName) {
+        this.material.stockName = text;
+      }
+    },
+
+    /**
+     * Hàm lấy giá trị trả về của selectbox chọn hạn sử dụng
+     * @param {Enum} value giá trị trả về
+     * Author: LHNAM (03/10/2022)
+     */
+    getExpiryDate(value) {
+      if (this.material.expiryDate.DateType) {
+        this.material.expiryDate.DateType = value;
+      }
+    },
+    /**
+     * Hàm trả về giá trị của materialUnit
+     * @param {materialUnit} value giá trị trả về của materialUnit
+     * @param {int} index vị trí của materialUnit trong mảng
+     * Author: LHNAM (03/10/2022)
+     */
+    setMaterialUnitValue(value, index) {
+      if (value && index) {
+        if (this.material.materialUnit) {
+          this.material.materialUnit[index - 1] = value;
+        }
+      }
+    },
+    /**
+     * Hàm gọi api để lưu dữ liệu
+     * Author: LHNAM (03/10/2022)
+     */
+    saveMaterial(data) {
+      if (this.param) {
+        switch (this.param.method) {
+          case Enum.FormMode.Add:
+          case Enum.FormMode.Replication:
+            Axios.CallAxios(Axios.Methods.Post, Axios.Url.Material, data)
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((e) => {
+                console.error(e);
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+            break;
+          case Enum.FormMode.Edit:
+            Axios.CallAxios(
+              Axios.Methods.Put,
+              `${Axios.Url.Material}/${this.param.id}`,
+              data
+            )
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((e) => {
+                console.error(e);
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+            break;
+        }
+      }
+    },
+
+    /**
+     * Hàm validate dữ liệu
+     * Author: LHNAM (03/10/2022)
+     */
+    validate() {
+      let isValid = true;
+      if (!this.material.materialCode) {
+        if (this.$refs["materialCode"]) {
+          this.$refs["materialCode"].classList.add("red-border");
+          this.$refs["materialCode"].setAttribute(
+            "title",
+            Resource.ValidateMes.requireError
+          );
+          isValid = false;
+        } else {
+          this.$refs["materialCode"].classList.remove("red_border");
+          this.$refs["materialCode"].removeAttribute("title");
+        }
+      }
+
+      if (!this.material.materialName) {
+        if (this.$refs["materialName"]) {
+          this.$refs["materialName"].classList.add("red-border");
+          this.$refs["materialName"].setAttribute(
+            "title",
+            Resource.ValidateMes.requireError
+          );
+          isValid = false;
+        } else {
+          this.$refs["materialName"].classList.remove("red_border");
+          this.$refs["materialName"].removeAttribute("title");
+        }
+      }
+
+      if (!this.material.unitID) {
+        this.isUnitRequired = true;
+        isValid = false;
+      } else {
+        this.isUnitRequired = false;
+      }
+      return isValid;
+    },
+
+    /**
+     * Hàm event bấm nút cất, cất và thêm để lưu data
+     * Author: LHNAM (03/10/2022)
+     */
+    saveDataOnClick(saveMode) {
+      try {
+        let isValid = true,
+          data = {};
+        debugger;
+        if (this.validate && typeof this.validate == "function") {
+          isValid = this.validate();
+        }
+
+        if (isValid) {
+          data = Object.assign({}, this.material);
+          data.expiryDate = CommonFn.formatOutputExpiryDate(data.expiryDate);
+          delete data.materialID;
+
+          this.saveMaterial(data);
+
+          switch (saveMode) {
+            case Enum.SaveMode.Save:
+              if (
+                this.closeFormOnClick &&
+                typeof this.closeFormOnClick == "function"
+              ) {
+                this.closeFormOnClick();
+              }
+              break;
+            case Enum.SaveMode.SaveAdd:
+              this.material = {
+                expiryDate: {
+                  dateType: Resource.DateType.Date,
+                  dateValue: 0,
+                },
+                materialUnit: [],
+              };
+              this.getNewMaterialCode();
+              if (this.$refs["materialName"]) {
+                this.$refs["materialName"].focus();
+              }
+              break;
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm xóa dòng mới nhất trong mảng materialUnit
+     * Author: LHNAM (03/10/2022)
+     */
+    removeMaterialUnitOnClick() {
+      try {
+        if (this.material.materialUnit) {
+          let length = this.material.materialUnit.length;
+
+          if (
+            this.material.materialUnit[length - 1].method == Enum.FormMode.Edit
+          ) {
+            this.material.materialUnit[length - 1].method =
+              Enum.FormMode.Delete;
+          } else {
+            this.material.materialUnit.pop();
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm thêm dòng mới vào mảng materialUnit
+     * Author: LHNAM (02/10/2022)
+     */
+    addMaterialUnitOnClick() {
+      try {
+        if (this.material.materialUnit) {
+          this.material.materialUnit.push(this.materialUnit);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     /**
      * Hàm lấy mã nguyên vật liệu mới
      * Author: LHNAM (01/10/2022)
@@ -192,8 +451,10 @@ export default {
         `${Axios.Url.Material}/${this.param.id}`
       )
         .then((res) => {
+          res.data.expiryDate = CommonFn.formatInputExpiryDate(
+            res.data.expiryDate
+          );
           this.material = res.data;
-          console.log(res.data);
         })
         .catch((error) => {
           console.error(error);
@@ -219,7 +480,7 @@ export default {
      * Hàm triển khai pop-up sau khi được mở
      * Author: LHNAM (01/10/2022)
      */
-    async setupPopup() {
+    setupPopup() {
       try {
         if (this.param) {
           switch (this.param.method) {
@@ -230,8 +491,8 @@ export default {
               this.getMaterialDetail();
               break;
             case Enum.FormMode.Replication:
-              await this.getMaterialDetail();
-              await this.getNewMaterialCode();
+              this.getMaterialDetail();
+              this.getNewMaterialCode();
               break;
           }
         }
@@ -241,7 +502,13 @@ export default {
     },
   },
   created() {
+    // khởi tạo pop-up
     this.setupPopup();
+  },
+  mounted() {
+    if (this.$refs["materialName"]) {
+      this.$refs["materialName"].focus();
+    }
   },
 };
 </script>

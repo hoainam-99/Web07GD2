@@ -1,6 +1,6 @@
 <template>
   <div class="selectbox" ref="selectbox">
-    <input type="text" class="sb-input" :value="selectedValue" />
+    <input type="text" class="sb-input" :value="selectedValue" disabled/>
     <div
       class="sb-dropicon"
       :class="{ sb_dropicon_v2: isAddBtnExists }"
@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  props: ["isAddBtnExists", "selectData"],
+  props: ["isAddBtnExists", "selectData", "inputValue"],
   data() {
     return {
       datas: this.selectData,
@@ -42,9 +42,31 @@ export default {
   watch: {
     selectData(){
       this.datas = this.selectData;
-    }
+    },
   },
   methods: {
+    /**
+     * Hàm set giá trị cho datas
+     * Author: LHNAM (02/10/2022)
+     */
+    setValue(){
+      if(this.inputValue){
+        this.datas.forEach(item=>{
+          item.isChecked = false;
+        });
+
+        this.datas.find(item=>{
+          if(item.value == this.inputValue){
+            item.isChecked = true;
+          }
+        });
+
+        if(this.checkData && typeof this.checkData == 'function'){
+          this.checkData();
+        }
+      }
+    },
+
     /**
      * Hàm lấy chiều cao của selectbox
      * Author: LHNAM (28/09/2022)
@@ -103,6 +125,8 @@ export default {
     },
   },
   created() {
+    // set data đầu vào
+    this.setValue();
     // check data đầu vào
     this.checkData();
   },

@@ -22,9 +22,9 @@ namespace Misa.CukCukMaterial.CTM.Common
         public Guid UnitID { get; set; }
 
         /// <summary>
-        /// Tên đơn vị
+        /// Mã đơn vị cũ
         /// </summary>
-        public String UnitName { get; set; }
+        public Guid OldUnitID { get; set; }
 
         /// <summary>
         /// Phép tính
@@ -55,6 +55,8 @@ namespace Misa.CukCukMaterial.CTM.Common
         /// Ngày sửa
         /// </summary>
         public DateTime? ModifiedDate { get; set; }
+
+        public Method Method { get; set; } = Method.Edit;
 
     }
 }
