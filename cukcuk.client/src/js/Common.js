@@ -62,4 +62,26 @@ CommonFn.formatOutputExpiryDate = (expDate) => {
     }
 }
 
+CommonFn.getError = (e)=>{
+    let errors = [],
+        resError = e.data.userMsg.error;
+    if(e){
+        switch (e.status) {
+            case 400:
+                resError.forEach(item => {
+                    errors.push(Resource.ErrorMes[item]);
+                });
+                break;
+            case 404:
+                errors.push(Resource.ErrorMes.notFound_Error);
+                break;
+            case 500: 
+                errors.push(Resource.ErrorMes.generate_Error)
+                break;
+        }
+
+        return errors;
+    }
+}
+
 export default CommonFn;

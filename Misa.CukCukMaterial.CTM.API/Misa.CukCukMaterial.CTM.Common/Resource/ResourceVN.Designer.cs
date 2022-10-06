@@ -133,7 +133,7 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e002.
+        ///   Looks up a localized string similar to e005.
         /// </summary>
         public static string StockCode_Duplicate {
             get {
@@ -142,7 +142,7 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e003.
+        ///   Looks up a localized string similar to e006.
         /// </summary>
         public static string StockCode_NotEmpty {
             get {
@@ -151,7 +151,7 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e004.
+        ///   Looks up a localized string similar to e007.
         /// </summary>
         public static string StockName_NotEmpty {
             get {
@@ -160,7 +160,7 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e005.
+        ///   Looks up a localized string similar to e010.
         /// </summary>
         public static string UnitID_NotEmpty {
             get {
@@ -169,7 +169,16 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e002.
+        ///   Looks up a localized string similar to e008.
+        /// </summary>
+        public static string UnitName_Duplicate {
+            get {
+                return ResourceManager.GetString("UnitName_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e009.
         /// </summary>
         public static string UnitName_NotEmpty {
             get {

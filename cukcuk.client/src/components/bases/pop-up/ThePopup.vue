@@ -98,9 +98,9 @@
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th style="width: 200px;">Đơn vị chuyển đổi</th>
-                  <th style="width: 200px;">Tỷ lệ chuyển đổi</th>
-                  <th style="width: 80px;">Phép tính</th>
+                  <th style="width: 200px">Đơn vị chuyển đổi</th>
+                  <th style="width: 200px">Tỷ lệ chuyển đổi</th>
+                  <th style="width: 80px">Phép tính</th>
                   <th>Mô tả</th>
                 </tr>
               </thead>
@@ -149,7 +149,7 @@
             </button>
           </div>
         </div>
-        <BaseLoading v-show="isShowLoading"/>
+        <BaseLoading v-show="isShowLoading" />
       </div>
     </div>
   </div>
@@ -162,6 +162,7 @@
   <NotificationPopup
     v-if="isShowNotificationPopup"
     :param="notificationPopupParam"
+    :errorMsg="errorMsg"
     @returnConfirmPopup="returnConfirmPopup"
     @closeNoticePopup="closeNoticePopup"
   />
@@ -187,8 +188,8 @@ export default {
     TheMaterialUnit,
     TheAddPopup,
     NotificationPopup,
-    BaseLoading
-},
+    BaseLoading,
+  },
   props: ["param"],
   emits: ["closeForm"],
   watch: {
@@ -201,6 +202,9 @@ export default {
   },
   data() {
     return {
+      // Mảng chứa lỗi
+      errorMsg: [],
+
       // Biến hiển thị loading
       isShowLoading: true,
 
@@ -448,7 +452,9 @@ export default {
                 this.saveModeActive(saveMode);
               })
               .catch((e) => {
-                console.error(e);
+                this.errorMsg = CommonFn.getError(e.response);
+                this.notificationPopupParam = "error";
+                this.isShowNotificationPopup = true;
               })
               .finally(() => {
                 this.loading = false;
@@ -461,16 +467,21 @@ export default {
               data
             )
               .then(() => {
-                this.toast.success("Sửa thông tin nguyên vật liệu thành công.", {
-                  timeout: 2000,
-                  hideProgressBar: false,
-                });
+                this.toast.success(
+                  "Sửa thông tin nguyên vật liệu thành công.",
+                  {
+                    timeout: 2000,
+                    hideProgressBar: false,
+                  }
+                );
               })
               .then(() => {
                 this.saveModeActive(saveMode);
               })
               .catch((e) => {
-                console.error(e);
+                this.errorMsg = CommonFn.getError(e.response);
+                this.notificationPopupParam = "error";
+                this.isShowNotificationPopup = true;
               })
               .finally(() => {
                 this.loading = false;
@@ -486,13 +497,15 @@ export default {
      */
     validate() {
       let isValid = true;
+      this.errorMsg = [];
       if (!this.material.materialCode) {
         if (this.$refs["materialCode"]) {
           this.$refs["materialCode"].classList.add("red-border");
           this.$refs["materialCode"].setAttribute(
             "title",
-            Resource.ValidateMes.requireError
+            Resource.ErrorMes.requireError
           );
+          this.errorMsg.push(Resource.ErrorMes.e003)
           isValid = false;
         } else {
           this.$refs["materialCode"].classList.remove("red_border");
@@ -505,8 +518,9 @@ export default {
           this.$refs["materialName"].classList.add("red-border");
           this.$refs["materialName"].setAttribute(
             "title",
-            Resource.ValidateMes.requireError
+            Resource.ErrorMes.requireError
           );
+          this.errorMsg.push(Resource.ErrorMes.e004);
           isValid = false;
         } else {
           this.$refs["materialName"].classList.remove("red_border");
@@ -516,6 +530,7 @@ export default {
 
       if (!this.material.unitID) {
         this.isUnitRequired = true;
+        this.errorMsg.push(Resource.ErrorMes.e010);
         isValid = false;
       } else {
         this.isUnitRequired = false;
@@ -563,10 +578,15 @@ export default {
 
         if (isValid) {
           data = Object.assign({}, this.material);
-          data.expiryDate = CommonFn.formatOutputExpiryDate(this.material.expiryDate);
+          data.expiryDate = CommonFn.formatOutputExpiryDate(
+            this.material.expiryDate
+          );
           delete data.materialID;
 
           this.saveMaterial(data, saveMode);
+        } else {
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         }
       } catch (error) {
         console.error(error);
@@ -620,8 +640,10 @@ export default {
           this.material.materialCode = res.data;
           this.isShowLoading = false;
         })
-        .catch((error) => {
-          console.error(error);
+        .catch((e) => {
+          this.errorMsg = CommonFn.getError(e.response);
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         })
         .finally(() => {
           this.loading = false;
@@ -646,8 +668,10 @@ export default {
         .then(() => {
           this.isChange = false;
         })
-        .catch((error) => {
-          console.error(error);
+        .catch((e) => {
+          this.errorMsg = CommonFn.getError(e.response);
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         })
         .finally(() => {
           this.loading = false;

@@ -10,8 +10,16 @@
           </div>
         </div>
         <div class="form-content">
-          <div class="form-confirm">
+          <div class="form-confirm" v-if="this.param != 'error'">
             {{ formMode[this.param].content }}
+          </div>
+          <div class="form-confirm" v-if="this.param == 'error'">
+            <div
+              v-for="(item, index) in formMode['error'].content"
+              :key="index"
+            >
+              {{ item }}
+            </div>
           </div>
         </div>
         <div class="form-footer" v-if="param == 'deleteConfirm'">
@@ -63,7 +71,8 @@
 export default {
   props: {
     param: String,
-    deleteItem: {},
+    deleteItem: Object,
+    errorMsg: Array,
   },
   data() {
     return {
@@ -78,7 +87,7 @@ export default {
         },
         error: {
           header: "Lỗi!",
-          content: "Đã xảy ra lỗi! Vui lòng liên hệ MISA để được hỗ trợ.",
+          content: [],
         },
       },
     };
@@ -100,9 +109,13 @@ export default {
      * Hàm xét thông báo confirm xóa
      * Author: LHNAM (05/10/2022)
      */
-    setDeleteItem() {
+    setData() {
       if (this.deleteItem) {
         this.formMode.deleteConfirm.content = `Bạn có chắc chắn muốn xóa nguyên vật liệu { ${this.deleteItem.materialCode} - ${this.deleteItem.materialName} } này không?`;
+      }
+
+      if (this.errorMsg) {
+        this.formMode.error.content = this.errorMsg;
       }
     },
 
@@ -120,7 +133,7 @@ export default {
     },
   },
   created() {
-    this.setDeleteItem();
+    this.setData();
   },
 };
 </script>

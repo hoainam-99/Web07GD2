@@ -57,18 +57,36 @@
         </div>
       </div>
     </div>
+    <NotificationPopup
+      v-if="isShowNotificationPopup"
+      :param="notificationPopupParam"
+      :errorMsg="errorMsg"
+      @closeNoticePopup="closeNoticePopup"
+    />
   </div>
 </template>
 
 <script>
 import Resource from "@/js/Resource";
 import Axios from "@/js/Axios";
+import NotificationPopup from "./NotificationPopup.vue";
+import CommonFn from "@/js/Common";
 export default {
   props: {
     param: String,
   },
   data() {
     return {
+      // Mảng chứa lỗi
+      errorMsg: [],
+
+      // Biến đầu vào của popup thông báo
+      notificationPopupParam: "",
+
+      // Biến hiển thị pop-up
+      isShowNotificationPopup: false,
+
+      // Biến định dạng thêm mới
       formatForm: {
         Stock: {
           header: "Thêm kho ngầm định",
@@ -80,18 +98,28 @@ export default {
           nameLabel: "Tên đơn vị",
         },
       },
+
+      // Data lấy từ input
       data: { code: "", name: "" },
     };
   },
   methods: {
     /**
+     * Hàm trả về đóng bảng thông báo
+     * Author: LHNAM (05/10/2022)
+     */
+    closeNoticePopup(e) {
+      if (this.isShowNotificationPopup) {
+        this.isShowNotificationPopup = e;
+      }
+    },
+    /**
      * Hàm trả về emit để reset lại form
      * Author: LHNAM (05/10/2022)
      */
-    refreshData(){
-      this.$emit('refreshData', this.param);
+    refreshData() {
+      this.$emit("refreshData", this.param);
     },
-
     /**
      * Hàm đẩy data lên api
      * Author: LHNAM (05/10/2022)
@@ -104,51 +132,55 @@ export default {
           this.closeFormOnClick();
         })
         .catch((e) => {
-          console.error(e);
+          this.errorMsg = CommonFn.getError(e.response);
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         })
         .finally(() => {
           this.loading = false;
         });
     },
-
     /**
      * Hàm validate các trường trước khi đẩy lên api
      * Author: LHNAM (05/10/2022)
      */
     validate() {
       let isValid = true;
-
+      this.errorMsg = [];
       if (this.param == "Stock" && !this.data.code) {
         if (this.$refs["code"]) {
           this.$refs["code"].classList.add("red-border");
           this.$refs["code"].setAttribute(
             "title",
-            Resource.ValidateMes.requireError
+            Resource.ErrorMes.requireError
           );
+          this.errorMsg.push(Resource.ErrorMes.e006);
           isValid = false;
         } else {
           this.$refs["code"].classList.remove("red_border");
           this.$refs["code"].removeAttribute("title");
         }
       }
-
       if (!this.data.name) {
         if (this.$refs["name"]) {
           this.$refs["name"].classList.add("red-border");
           this.$refs["name"].setAttribute(
             "title",
-            Resource.ValidateMes.requireError
+            Resource.ErrorMes.requireError
           );
+          if(this.param == "Stock"){
+            this.errorMsg.push(Resource.ErrorMes.e007);
+          }else{
+            this.errorMsg.push(Resource.ErrorMes.e009);
+          }
           isValid = false;
         } else {
           this.$refs["name"].classList.remove("red_border");
           this.$refs["name"].removeAttribute("title");
         }
       }
-
       return isValid;
     },
-
     /**
      * Hàm event click lưu thông tin
      * Author: LHNAM (05/10/2022)
@@ -156,29 +188,29 @@ export default {
     saveDataOnClick() {
       try {
         let isValid = this.validate(),
-            postData;
-
+          postData;
         switch (this.param) {
           case "Unit":
             postData = {
-              unitName: this.data.name
-            }
+              unitName: this.data.name,
+            };
             break;
           case "Stock":
             postData = {
               stockCode: this.data.code,
-              stockName: this.data.name
-            }
+              stockName: this.data.name,
+            };
         }
-            
         if (isValid) {
           this.saveData(postData);
+        }else{
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         }
       } catch (error) {
         console.error(error);
       }
     },
-
     /**
      * Hàm event click đóng form
      * Author: LHNAM (05/10/2022)
@@ -197,9 +229,9 @@ export default {
     } else if (this.$refs["name"]) {
       this.$refs["name"].focus();
     }
-
     // console.log(Object.keys(this.$refs));
   },
+  components: { NotificationPopup },
 };
 </script>
 

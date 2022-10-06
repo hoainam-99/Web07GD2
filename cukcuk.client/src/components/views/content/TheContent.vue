@@ -148,7 +148,7 @@
           </tbody>
         </table>
       </div>
-      <BaseLoading :top="28" v-show="isShowLoading"/>
+      <BaseLoading :top="28" v-show="isShowLoading" />
       <div class="content-navigation">
         <BasePagination
           :totalCount="totalCount"
@@ -170,6 +170,7 @@
 
 <script>
 import Enum from "@/js/Enum.js";
+import CommonFn from "@/js/Common";
 import Axios from "@/js/Axios";
 import debounce from "lodash.debounce";
 import { useToast } from "vue-toastification";
@@ -186,8 +187,8 @@ export default {
     BaseFilter,
     BasePagination,
     NotificationPopup,
-    BaseLoading
-},
+    BaseLoading,
+  },
   data() {
     return {
       isShowLoading: true,
@@ -259,8 +260,8 @@ export default {
      * @param {Boolean} e giá trị trả về
      * Author: LHNAM (05/10/2022)
      */
-    closeNoticePopup(e){
-      if(this.isShowNotificationPopup){
+    closeNoticePopup(e) {
+      if (this.isShowNotificationPopup) {
         this.isShowNotificationPopup = e;
       }
     },
@@ -282,8 +283,10 @@ export default {
           this.isShowNotificationPopup = false;
           this.refresh(true);
         })
-        .catch(() => {
+        .catch(e => {
+          this.errorMsg = CommonFn.getError(e.response);
           this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         })
         .finally(() => {
           this.loading = false;
@@ -344,7 +347,8 @@ export default {
           this.totalCount = res.data.totalCount;
           this.isShowLoading = false;
         })
-        .catch(() => {
+        .catch((e) => {
+          this.errorMsg = CommonFn.getError(e.response);
           this.notificationPopupParam = "error";
           this.isShowNotificationPopup = true;
         })
@@ -447,7 +451,7 @@ export default {
      * Author: LHNAM (04/10/2022)
      */
     returnConfirmPopup(e) {
-      if (e){
+      if (e) {
         this.deleteMaterial();
       }
     },
