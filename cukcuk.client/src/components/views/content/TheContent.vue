@@ -14,6 +14,7 @@
         <button
           class="btn btn-add cursor-pointer"
           @click="formDetailOnClick(1)"
+          :disabled="isShowLoading"
         >
           <i class="fa-solid fa-file-circle-plus"></i>
           <span>Thêm</span>
@@ -21,6 +22,7 @@
         <button
           class="btn btn-replication cursor-pointer"
           @click="formDetailOnClick(4)"
+          :disabled="isShowLoading"
         >
           <i class="fa-regular fa-copy"></i>
           <span>Nhân bản</span>
@@ -28,6 +30,7 @@
         <button
           class="btn btn-edit cursor-pointer"
           @click="formDetailOnClick(2)"
+          :disabled="isShowLoading"
         >
           <i class="fa-regular fa-pen-to-square"></i>
           <span>Sửa</span>
@@ -35,6 +38,7 @@
         <button
           class="btn btn-delete cursor-pointer"
           @click="formDetailOnClick(3)"
+          :disabled="isShowLoading"
         >
           <i class="fa-solid fa-x"></i>
           <span>Xóa</span>
@@ -122,7 +126,7 @@
               :key="material.materialID"
               @click="selectMaterial(material.materialID)"
               @dblclick="formDetailOnClick(2)"
-              :class="{'hn-selected-tr' : material.materialID == param.id}"
+              :class="{ 'hn-selected-tr': material.materialID == param.id }"
             >
               <td>{{ material.materialCode }}</td>
               <td>{{ material.materialName }}</td>
@@ -144,6 +148,7 @@
           </tbody>
         </table>
       </div>
+      <BaseLoading :top="28" v-show="isShowLoading"/>
       <div class="content-navigation">
         <BasePagination
           :totalCount="totalCount"
@@ -154,22 +159,41 @@
     </div>
   </div>
   <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" />
-  <NotificationPopup v-if="isShowNotificationPopup" @returnConfirmPopup="returnConfirmPopup"/>
+  <NotificationPopup
+    v-if="isShowNotificationPopup"
+    :param="notificationPopupParam"
+    :deleteItem="selectedMaterial"
+    @returnConfirmPopup="returnConfirmPopup"
+    @closeNoticePopup="closeNoticePopup"
+  />
 </template>
 
 <script>
 import Enum from "@/js/Enum.js";
 import Axios from "@/js/Axios";
 import debounce from "lodash.debounce";
+import { useToast } from "vue-toastification";
 import ThePopup from "@/components/bases/pop-up/ThePopup.vue";
 import BaseSelectbox from "@/components/bases/selectbox/BaseSelectbox.vue";
 import BaseFilter from "../../bases/filter/BaseFilter.vue";
 import BasePagination from "@/components/bases/pagination/BasePagination.vue";
 import NotificationPopup from "@/components/bases/pop-up/NotificationPopup.vue";
+import BaseLoading from "@/components/bases/BaseLoading.vue";
 export default {
-  components: { ThePopup, BaseSelectbox, BaseFilter, BasePagination, NotificationPopup },
+  components: {
+    ThePopup,
+    BaseSelectbox,
+    BaseFilter,
+    BasePagination,
+    NotificationPopup,
+    BaseLoading
+},
   data() {
     return {
+      isShowLoading: true,
+      toast: useToast(),
+      notificationPopupParam: "",
+      selectedMaterial: {},
       param: {
         method: "",
         id: "",
@@ -231,25 +255,39 @@ export default {
   },
   methods: {
     /**
+     * Hàm đóng bảng thông báo
+     * @param {Boolean} e giá trị trả về
+     * Author: LHNAM (05/10/2022)
+     */
+    closeNoticePopup(e){
+      if(this.isShowNotificationPopup){
+        this.isShowNotificationPopup = e;
+      }
+    },
+
+    /**
      * Hàm call api để xóa một nguyên vật liệu
      * Author: LHNAM (04/10/2022)
      */
-    deleteMaterial(){
+    deleteMaterial() {
       Axios.CallAxios(
         Axios.Methods.Delete,
         `${Axios.Url.Material}/${this.param.id}`
       )
-      .then(res=>{
-        console.log(res);
-        this.isShowNotificationPopup = false;
-        this.refresh(true);
-      })
-      .catch(e=>{
-        console.error(e);
-      })
-      .finally(()=>{
-        this.loading = false;
-      })
+        .then(() => {
+          this.toast.success("Xóa bản ghi thành công.", {
+            timeout: 2000,
+            hideProgressBar: false,
+          });
+          this.isShowNotificationPopup = false;
+          this.refresh(true);
+        })
+        .catch(() => {
+          this.notificationPopupParam = "error";
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
 
     /**
@@ -261,6 +299,10 @@ export default {
       try {
         if (id) {
           this.param.id = id;
+
+          this.selectedMaterial = this.materials.find((item) => {
+            return (item.id = id);
+          });
         }
       } catch (error) {
         console.error(error);
@@ -300,9 +342,11 @@ export default {
         .then((res) => {
           this.materials = res.data.data;
           this.totalCount = res.data.totalCount;
+          this.isShowLoading = false;
         })
-        .catch((e) => {
-          console.error(e);
+        .catch(() => {
+          this.notificationPopupParam = "error";
+          this.isShowNotificationPopup = true;
         })
         .finally(() => {
           this.loading = false;
@@ -402,13 +446,9 @@ export default {
      * @param {boolean} e giá trị trả về từ emit của notification popup
      * Author: LHNAM (04/10/2022)
      */
-     returnConfirmPopup(e){
-      if (e != null && e != undefined && this.isShowNotificationPopup) {
-        if(!e){
-          this.isShowNotificationPopup = e;
-        }else{
-          this.deleteMaterial();
-        }
+    returnConfirmPopup(e) {
+      if (e){
+        this.deleteMaterial();
       }
     },
 
@@ -444,7 +484,8 @@ export default {
             }
             break;
           case Enum.FormMode.Delete:
-            if(this.param.id){
+            if (this.param.id) {
+              this.notificationPopupParam = "deleteConfirm";
               this.isShowNotificationPopup = true;
             }
             break;

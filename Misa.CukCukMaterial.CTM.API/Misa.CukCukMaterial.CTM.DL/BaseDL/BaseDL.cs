@@ -19,7 +19,39 @@ namespace Misa.CukCukMaterial.CTM.DL
         #region Method
         public bool CheckDuplicateCode(Method method, Guid id, string code)
         {
-            throw new NotImplementedException();
+            // Chuẩn bị stored Proc 
+            string className = typeof(T).Name;
+            string storedProc = $"Proc_{className}_CheckDuplicateCode";
+
+            // Chuẩn bị tham số
+            var parameters = new DynamicParameters();
+
+            parameters.Add("@$Code", code);
+
+            using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
+            {
+                var result = mySqlConnection.QueryFirstOrDefault<Guid>(storedProc, parameters, commandType: System.Data.CommandType.StoredProcedure);
+
+                bool isDuplicate = false;
+                switch (method)
+                {
+                    case Method.Add:
+                        if (result != Guid.Empty)
+                        {
+                            isDuplicate = true;
+                        }
+                        break;
+                    case Method.Edit:
+                        if (result != id)
+                        {
+                            isDuplicate = true;
+                        }
+                        break;
+                }
+
+                return isDuplicate;
+
+            }
         }
 
         public int DeleteOneRecord(Guid id)

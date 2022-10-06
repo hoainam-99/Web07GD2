@@ -15,6 +15,7 @@ namespace Misa.CukCukMaterial.CTM.DL
 {
     public class MaterialDL : BaseDL<Material>, IMaterialDL
     {
+        #region method
         public PagingData<Material> FilterRecord(string? filterCondition, int pageNum, int pageSize)
         {
             string storedProc = "Proc_material_GetPaging";
@@ -215,5 +216,7 @@ namespace Misa.CukCukMaterial.CTM.DL
                 return result;
             }
         }
+
+        #endregion
     }
 }

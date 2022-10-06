@@ -6,7 +6,7 @@
           <div class="form-header__left">Thêm nguyên vật liệu</div>
           <div class="form-header__right">
             <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-            <i class="fa-solid fa-circle-xmark" @click="closeFormOnClick"></i>
+            <i class="fa-solid fa-circle-xmark" @click="xBtnOnClick"></i>
           </div>
         </div>
         <div class="form-content">
@@ -29,6 +29,7 @@
                   :propText="'unitName'"
                   :inputValue="material.unitID"
                   :isRequire="isUnitRequired"
+                  :isRefresh="isRefreshUnit"
                   @getValue="getUnitID"
                   @addBtnOnClick="showAddUnitPopup"
                 />
@@ -66,6 +67,7 @@
                   :propValue="'stockID'"
                   :propText="'stockName'"
                   :inputValue="material.stockID"
+                  :isRefresh="isRefreshStock"
                   @getValue="getStockID"
                   @addBtnOnClick="showAddStockPopup"
                 />
@@ -96,9 +98,9 @@
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th>Đơn vị chuyển đổi</th>
-                  <th>Tỷ lệ chuyển đổi</th>
-                  <th>Phép tính</th>
+                  <th style="width: 200px;">Đơn vị chuyển đổi</th>
+                  <th style="width: 200px;">Tỷ lệ chuyển đổi</th>
+                  <th style="width: 80px;">Phép tính</th>
                   <th>Mô tả</th>
                 </tr>
               </thead>
@@ -147,33 +149,92 @@
             </button>
           </div>
         </div>
+        <BaseLoading v-show="isShowLoading"/>
       </div>
     </div>
   </div>
+  <TheAddPopup
+    v-if="isShowAddPopup"
+    :param="addPopupParam"
+    @closeAddForm="closeAddForm"
+    @refreshData="refreshCombobox"
+  />
+  <NotificationPopup
+    v-if="isShowNotificationPopup"
+    :param="notificationPopupParam"
+    @returnConfirmPopup="returnConfirmPopup"
+    @closeNoticePopup="closeNoticePopup"
+  />
 </template>
 
 <script>
 import Axios from "@/js/Axios.js";
+import { useToast } from "vue-toastification";
 import BaseSelectbox from "../selectbox/BaseSelectbox.vue";
 import BaseCombobox from "../combobox/BaseCombobox.vue";
 import Enum from "@/js/Enum";
 import CommonFn from "@/js/Common";
 import Resource from "@/js/Resource";
 import TheMaterialUnit from "../materialUnit/TheMaterialUnit.vue";
+import TheAddPopup from "./TheAddPopup.vue";
+import NotificationPopup from "./NotificationPopup.vue";
+import BaseLoading from "../BaseLoading.vue";
 
 export default {
-  components: { BaseSelectbox, BaseCombobox, TheMaterialUnit },
+  components: {
+    BaseSelectbox,
+    BaseCombobox,
+    TheMaterialUnit,
+    TheAddPopup,
+    NotificationPopup,
+    BaseLoading
+},
   props: ["param"],
-  watch: {},
+  emits: ["closeForm"],
+  watch: {
+    material: {
+      handler() {
+        this.isChange = true;
+      },
+      deep: true,
+    },
+  },
   data() {
     return {
+      // Biến hiển thị loading
+      isShowLoading: true,
+
+      // Biến chứa toast message
+      toast: useToast(),
+
+      // Biến biểu thỉ dữ liệu đã bị thay đổi
+      isChange: true,
+
+      // Biến đầu vào của pop-up thông báo
+      notificationPopupParam: "",
+
+      // Biến hiển thị pop-up thông báo
+      isShowNotificationPopup: false,
+
+      // Biến refresh combobox kho
+      isRefreshStock: false,
+
+      // Biến refresh combobox đơn vị tính
+      isRefreshUnit: false,
+
+      // Đầu vào của form thêm
+      addPopupParam: "",
+
+      // Biến hiển thị form thêm đơn vị và kho
+      isShowAddPopup: false,
+
       // Biến validate trường unit
       isUnitRequired: false,
 
       // thông tin bản ghi nguyên vật liệu
       material: {
         expiryDate: {
-          dateType: Resource.DateType.Date,
+          dateType: Resource.DateType.Day,
           dateValue: 0,
         },
         materialUnit: [],
@@ -190,7 +251,7 @@ export default {
 
       // Mảng chứa danh sách thời hạn sử dụng
       timeSelectData: [
-        { data: "Ngày", value: Resource.DateType.Date, isChecked: false },
+        { data: "Ngày", value: Resource.DateType.Day, isChecked: false },
         { data: "Tháng", value: Resource.DateType.Month, isChecked: false },
         { data: "Năm", value: Resource.DateType.Year, isChecked: false },
       ],
@@ -205,9 +266,120 @@ export default {
     };
   },
   methods: {
-    showAddUnitPopup(){},
-    showAddStockPopup(){},
-    
+    /**
+     * Hàm gọi đến khi click nút x trên form
+     * Author: LHNAM (05/10/2022)
+     */
+    xBtnOnClick() {
+      try {
+        if (this.isChange && !this.isShowNotificationPopup) {
+          this.notificationPopupParam = "saveConfirm";
+          this.isShowNotificationPopup = true;
+        } else {
+          this.closeFormOnClick();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm trả về đóng bảng thông báo
+     * Author: LHNAM (05/10/2022)
+     */
+    closeNoticePopup(e) {
+      if (this.isShowNotificationPopup) {
+        this.isShowNotificationPopup = e;
+      }
+    },
+
+    /**
+     * Hàm trả về confirm của người dùng
+     * @param {Boolean} e kết quả trả về
+     * Author: LHNAM (05/10/2022)
+     */
+    returnConfirmPopup(e) {
+      if (e) {
+        this.saveDataOnClick(Enum.SaveMode.Save);
+      } else {
+        this.closeFormOnClick();
+      }
+    },
+    /**
+     * Hàm refresh combobox unit
+     * Author: LHNAM (05/10/2022)
+     */
+    refreshUnit() {
+      if (!this.isRefreshUnit) {
+        this.isRefreshUnit = true;
+      }
+    },
+
+    /**
+     * Hàm refresh combobox stock
+     * Author: LHNAM (05/10/2022)
+     */
+    refreshStock() {
+      if (!this.isRefreshStock) {
+        this.isRefreshStock = true;
+      }
+    },
+
+    /**
+     * Hàm nhận emit refresh từ component TheAddPopup
+     * @param {String} param biến chứa tên combobox cần refresh
+     * Author: LHNAM (05/10/2022)
+     */
+    refreshCombobox(param) {
+      if (
+        this[`refresh${param}`] &&
+        typeof this[`refresh${param}`] == "function"
+      ) {
+        this[`refresh${param}`]();
+      }
+    },
+
+    /**
+     * Hàm đóng form thêm đơn vị tính và kho
+     * @param {Boolean} e Giá trị trả về từ emit
+     * Author: LHNAM (05/10/2022)
+     */
+    closeAddForm(e) {
+      if (this.isShowAddPopup) {
+        this.isShowAddPopup = e;
+      }
+    },
+
+    /**
+     * Hàm mở form thêm đơn vị tính
+     * Author: LHNAM (05/10/2022)
+     */
+    showAddUnitPopup(e) {
+      if (!this.isShowAddPopup && e) {
+        this.addPopupParam = "Unit";
+        this.isShowAddPopup = e;
+      }
+
+      if (this.isRefreshUnit) {
+        this.isRefreshUnit = false;
+      }
+    },
+
+    /**
+     * Hàm mở form thêm kho ngầm định
+     * Author: LHNAM (05/10/2022)
+     */
+    showAddStockPopup(e) {
+      if (!this.isShowAddPopup && e) {
+        this.addPopupParam = "Stock";
+        this.isShowAddPopup = e;
+      }
+
+      if (this.isRefreshStock) {
+        this.isRefreshStock = false;
+      }
+    },
+
     /**
      * Hàm lấy dữ liệu trả về từ combobox chọn đơn vị
      * @param {Guid} value ID của đơn vị
@@ -239,8 +411,8 @@ export default {
      * Author: LHNAM (03/10/2022)
      */
     getExpiryDate(value) {
-      if (this.material.expiryDate.DateType) {
-        this.material.expiryDate.DateType = value;
+      if (this.material.expiryDate.dateType) {
+        this.material.expiryDate.dateType = value;
       }
     },
     /**
@@ -260,14 +432,20 @@ export default {
      * Hàm gọi api để lưu dữ liệu
      * Author: LHNAM (03/10/2022)
      */
-    saveMaterial(data) {
+    saveMaterial(data, saveMode) {
       if (this.param) {
         switch (this.param.method) {
           case Enum.FormMode.Add:
           case Enum.FormMode.Replication:
             Axios.CallAxios(Axios.Methods.Post, Axios.Url.Material, data)
-              .then((res) => {
-                console.log(res);
+              .then(() => {
+                this.toast.success("Thêm mới nguyên vật liệu thành công.", {
+                  timeout: 2000,
+                  hideProgressBar: false,
+                });
+              })
+              .then(() => {
+                this.saveModeActive(saveMode);
               })
               .catch((e) => {
                 console.error(e);
@@ -282,8 +460,14 @@ export default {
               `${Axios.Url.Material}/${this.param.id}`,
               data
             )
-              .then((res) => {
-                console.log(res);
+              .then(() => {
+                this.toast.success("Sửa thông tin nguyên vật liệu thành công.", {
+                  timeout: 2000,
+                  hideProgressBar: false,
+                });
+              })
+              .then(() => {
+                this.saveModeActive(saveMode);
               })
               .catch((e) => {
                 console.error(e);
@@ -339,6 +523,32 @@ export default {
       return isValid;
     },
 
+    saveModeActive(saveMode) {
+      switch (saveMode) {
+        case Enum.SaveMode.Save:
+          if (
+            this.closeFormOnClick &&
+            typeof this.closeFormOnClick == "function"
+          ) {
+            this.closeFormOnClick();
+          }
+          break;
+        case Enum.SaveMode.SaveAdd:
+          this.material = {
+            expiryDate: {
+              dateType: Resource.DateType.Date,
+              dateValue: 0,
+            },
+            materialUnit: [],
+          };
+          this.getNewMaterialCode();
+          if (this.$refs["materialName"]) {
+            this.$refs["materialName"].focus();
+          }
+          break;
+      }
+    },
+
     /**
      * Hàm event bấm nút cất, cất và thêm để lưu data
      * Author: LHNAM (03/10/2022)
@@ -347,41 +557,16 @@ export default {
       try {
         let isValid = true,
           data = {};
-        debugger;
         if (this.validate && typeof this.validate == "function") {
           isValid = this.validate();
         }
 
         if (isValid) {
           data = Object.assign({}, this.material);
-          data.expiryDate = CommonFn.formatOutputExpiryDate(data.expiryDate);
+          data.expiryDate = CommonFn.formatOutputExpiryDate(this.material.expiryDate);
           delete data.materialID;
 
-          this.saveMaterial(data);
-
-          switch (saveMode) {
-            case Enum.SaveMode.Save:
-              if (
-                this.closeFormOnClick &&
-                typeof this.closeFormOnClick == "function"
-              ) {
-                this.closeFormOnClick();
-              }
-              break;
-            case Enum.SaveMode.SaveAdd:
-              this.material = {
-                expiryDate: {
-                  dateType: Resource.DateType.Date,
-                  dateValue: 0,
-                },
-                materialUnit: [],
-              };
-              this.getNewMaterialCode();
-              if (this.$refs["materialName"]) {
-                this.$refs["materialName"].focus();
-              }
-              break;
-          }
+          this.saveMaterial(data, saveMode);
         }
       } catch (error) {
         console.error(error);
@@ -433,6 +618,7 @@ export default {
       Axios.CallAxios(Axios.Methods.Get, Axios.Url.NewMaterialCode)
         .then((res) => {
           this.material.materialCode = res.data;
+          this.isShowLoading = false;
         })
         .catch((error) => {
           console.error(error);
@@ -455,6 +641,10 @@ export default {
             res.data.expiryDate
           );
           this.material = res.data;
+          this.isShowLoading = false;
+        })
+        .then(() => {
+          this.isChange = false;
         })
         .catch((error) => {
           console.error(error);
@@ -485,12 +675,15 @@ export default {
         if (this.param) {
           switch (this.param.method) {
             case Enum.FormMode.Add:
+              // Lấy mã nguyên vật liệu mới
               this.getNewMaterialCode();
               break;
             case Enum.FormMode.Edit:
+              // Lấy dữ liệu của bản ghi được chọn
               this.getMaterialDetail();
               break;
             case Enum.FormMode.Replication:
+              // Lấy dữ liệu bản ghi được chọn và mã mới
               this.getMaterialDetail();
               this.getNewMaterialCode();
               break;

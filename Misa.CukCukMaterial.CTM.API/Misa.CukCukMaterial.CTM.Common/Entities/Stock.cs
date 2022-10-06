@@ -12,7 +12,7 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// Class Stock định dạng dữ liệu lấy ra từ bảng unit
     /// </summary>
     /// Author: LHNAM (29/09/2022)
-    [Table("unit")]
+    [Table("stock")]
     public class Stock
     {
         /// <summary>

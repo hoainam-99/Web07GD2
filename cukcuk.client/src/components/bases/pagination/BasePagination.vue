@@ -49,6 +49,7 @@
 <script>
 export default {
   props: ["totalCount"],
+  emits: ["refresh", "changePagination"],
   data() {
     return {
         // Biến phân trang
@@ -91,7 +92,7 @@ export default {
   methods: {
     refresh(){
       try {
-        this.$emit("refresh", true);
+        this.$emit('refresh', true);
       } catch (error) {
         console.error(error);
       }
@@ -119,7 +120,7 @@ export default {
      */
     changePage(){
         if(this.pagination){
-            this.$emit("changePagination", this.pagination);
+            this.$emit('changePagination', this.pagination);
             this.setNavigation();
         }
     },
@@ -200,7 +201,7 @@ export default {
 }
 
 .navigation-left input {
-  width: 28px;
+  width: 38px;
   padding: 2px 4px;
   border: 1px solid #ccc;
   outline: none;

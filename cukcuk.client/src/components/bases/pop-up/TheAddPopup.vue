@@ -1,21 +1,22 @@
 <template>
-  <div class="popup-container">
+  <div class="popup-container add-popup">
     <div class="popup-main">
       <div class="form">
         <div class="form-header">
-          <div class="form-header__left">{{ formatForm[this.param].header }}</div>
+          <div class="form-header__left">
+            {{ formatForm[this.param].header }}
+          </div>
           <div class="form-header__right">
             <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-            <i
-              class="fa-solid fa-circle-xmark"
-              @click="returnConfirmPopupOnClick(false)"
-            ></i>
+            <i class="fa-solid fa-circle-xmark" @click="closeFormOnClick"></i>
           </div>
         </div>
         <div class="form-content">
           <div class="form-col w100per">
-            <div class="form-group">
-              <label for="">{{ formatForm[this.param].codeLabel }} <span>(*)</span></label>
+            <div class="form-group" v-if="formatForm[this.param].codeLabel">
+              <label for=""
+                >{{ formatForm[this.param].codeLabel }} <span>(*)</span></label
+              >
               <input
                 type="text"
                 class="w100per"
@@ -23,8 +24,10 @@
                 ref="code"
               />
             </div>
-            <div class="form-group">
-              <label for="">{{ formatForm[this.param].nameLabel }} <span>(*)</span></label>
+            <div class="form-group" v-if="formatForm[this.param].nameLabel">
+              <label for=""
+                >{{ formatForm[this.param].nameLabel }} <span>(*)</span></label
+              >
               <input
                 type="text"
                 class="w100per"
@@ -35,18 +38,22 @@
           </div>
         </div>
         <div class="form-footer">
-          <button
-            class="btn cancel-btn"
-            @click="closeForm"
-          >
-            Hủy bỏ
-          </button>
-          <button
-            class="btn submit-btn"
-            @click="addBtnOnClick"
-          >
-            Đồng ý
-          </button>
+          <div class="form-footer__left">
+            <button class="btn help-btn">
+              <i class="fa-regular fa-circle-question"></i>
+              <span>Giúp</span>
+            </button>
+          </div>
+          <div class="form-footer__right">
+            <button class="btn save-btn" @click="saveDataOnClick">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Cất</span>
+            </button>
+            <button class="btn cancel-btn" @click="closeFormOnClick">
+              <i class="fa-solid fa-ban"></i>
+              <span>Hủy bỏ</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -54,6 +61,8 @@
 </template>
 
 <script>
+import Resource from "@/js/Resource";
+import Axios from "@/js/Axios";
 export default {
   props: {
     param: String,
@@ -68,7 +77,6 @@ export default {
         },
         Unit: {
           header: "Thêm đơn vị tính",
-          codeLabel: "Mã đơn vị",
           nameLabel: "Tên đơn vị",
         },
       },
@@ -77,19 +85,131 @@ export default {
   },
   methods: {
     /**
-     * Hàm trả về giá trị confirm của người dùng cho component cha
-     * @param {boolean} e giá trị người dùng confirm
-     * Author: LHNAM (04/10/2022)
+     * Hàm trả về emit để reset lại form
+     * Author: LHNAM (05/10/2022)
      */
-    returnConfirmPopupOnClick(e) {
+    refreshData(){
+      this.$emit('refreshData', this.param);
+    },
+
+    /**
+     * Hàm đẩy data lên api
+     * Author: LHNAM (05/10/2022)
+     */
+    saveData(postData) {
+      Axios.CallAxios(Axios.Methods.Post, Axios.Url[this.param], postData)
+        .then((res) => {
+          console.log(res);
+          this.refreshData();
+          this.closeFormOnClick();
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
+    /**
+     * Hàm validate các trường trước khi đẩy lên api
+     * Author: LHNAM (05/10/2022)
+     */
+    validate() {
+      let isValid = true;
+
+      if (this.param == "Stock" && !this.data.code) {
+        if (this.$refs["code"]) {
+          this.$refs["code"].classList.add("red-border");
+          this.$refs["code"].setAttribute(
+            "title",
+            Resource.ValidateMes.requireError
+          );
+          isValid = false;
+        } else {
+          this.$refs["code"].classList.remove("red_border");
+          this.$refs["code"].removeAttribute("title");
+        }
+      }
+
+      if (!this.data.name) {
+        if (this.$refs["name"]) {
+          this.$refs["name"].classList.add("red-border");
+          this.$refs["name"].setAttribute(
+            "title",
+            Resource.ValidateMes.requireError
+          );
+          isValid = false;
+        } else {
+          this.$refs["name"].classList.remove("red_border");
+          this.$refs["name"].removeAttribute("title");
+        }
+      }
+
+      return isValid;
+    },
+
+    /**
+     * Hàm event click lưu thông tin
+     * Author: LHNAM (05/10/2022)
+     */
+    saveDataOnClick() {
       try {
-        this.$emit("returnConfirmPopup", e);
+        let isValid = this.validate(),
+            postData;
+
+        switch (this.param) {
+          case "Unit":
+            postData = {
+              unitName: this.data.name
+            }
+            break;
+          case "Stock":
+            postData = {
+              stockCode: this.data.code,
+              stockName: this.data.name
+            }
+        }
+            
+        if (isValid) {
+          this.saveData(postData);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm event click đóng form
+     * Author: LHNAM (05/10/2022)
+     */
+    closeFormOnClick() {
+      try {
+        this.$emit("closeAddForm", false);
       } catch (error) {
         console.error(error);
       }
     },
   },
+  mounted() {
+    if (this.$refs["code"]) {
+      this.$refs["code"].focus();
+    } else if (this.$refs["name"]) {
+      this.$refs["name"].focus();
+    }
+
+    // console.log(Object.keys(this.$refs));
+  },
 };
 </script>
 
-<style></style>
+<style scoped>
+@import url(./popup.css);
+.add-popup {
+  z-index: 15;
+}
+
+.popup-main {
+  min-width: 400px;
+}
+</style>

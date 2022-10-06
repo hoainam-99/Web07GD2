@@ -1,5 +1,5 @@
 <template>
-  <div class="hn-filter">
+  <div class="hn-filter" @keydown.prevent.enter="emitFilter">
     <div
       class="hn-filter__btn"
       @click="isShowFilterSelect = !isShowFilterSelect"
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import debounce from "lodash.debounce";
+// import debounce from "lodash.debounce";
 export default {
   props: ["filterType"],
   data() {
@@ -50,11 +50,8 @@ export default {
     };
   },
   watch: {
-    filterValue() {
-      this.debouncedEmitFilter();
-    },
     filterSelectedItem() {
-      this.debouncedEmitFilter();
+      this.emitFilter();
     },
   },
   methods: {
@@ -104,9 +101,9 @@ export default {
   },
   created() {
     // tạo độ trễ khi trả về giá trị
-    this.debouncedEmitFilter = debounce(() => {
-      this.emitFilter();
-    }, 500);
+    // this.debouncedEmitFilter = debounce(() => {
+    //   this.emitFilter();
+    // }, 500);
     this.emitFilter();
 
     // Gán giá trị cho list filter

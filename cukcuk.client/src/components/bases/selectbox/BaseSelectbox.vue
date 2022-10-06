@@ -43,6 +43,9 @@ export default {
     selectData(){
       this.datas = this.selectData;
     },
+    inputValue(){
+      this.setValue();
+    }
   },
   methods: {
     /**
@@ -52,12 +55,10 @@ export default {
     setValue(){
       if(this.inputValue){
         this.datas.forEach(item=>{
-          item.isChecked = false;
-        });
-
-        this.datas.find(item=>{
           if(item.value == this.inputValue){
             item.isChecked = true;
+          }else{
+            item.isChecked = false;
           }
         });
 
@@ -119,16 +120,16 @@ export default {
           return item.isChecked == true;
         });
 
-        this.selectedValue = selectedItem.data;
-        this.$emit("getFilter", selectedItem.value);
+        if(selectedItem){
+          this.selectedValue = selectedItem.data;
+          this.$emit("getFilter", selectedItem.value);
+        }
       }
     },
   },
   created() {
     // set data đầu vào
     this.setValue();
-    // check data đầu vào
-    this.checkData();
   },
   mounted() {
     // lấy chiều cao của selectbox

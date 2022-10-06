@@ -4,37 +4,32 @@ var CommonFn = CommonFn || {};
 
 CommonFn.formatInputExpiryDate = (date) => {
     let returnValue = {
-        dateType: Resource.DateType.Date,
+        dateType: Resource.DateType.Day,
         dateValue: 0
     }
     if (date) {
         let expDate = new Date(date),
-            today = new Date();
-        if (expDate.getFullYear() != today.getFullYear()) {
+            today = new Date(),
+            diff = new Date(expDate.getTime() - today.getTime()),
+            diffYear = diff.getFullYear() - 1970,
+            diffMonth = diff.getMonth(),
+            diffDay = diff.getDate();
+        
+        if(diffYear != 0){
             returnValue = {
                 dateType: Resource.DateType.Year,
-                dateValue: expDate.getFullYear() - today.getFullYear()
+                dateValue: diffYear
             }
-
-            return returnValue;
-        }
-
-        if (expDate.getMonth() != today.getMonth()) {
+        }else if(diffMonth != 0){
             returnValue = {
                 dateType: Resource.DateType.Month,
-                dateValue: expDate.getMonth() - today.getMonth()
+                dateValue: diffMonth
             }
-
-            return returnValue;
-        }
-
-        if (expDate.getDate() != today.getDate()) {
+        }else{
             returnValue = {
-                dateType: Resource.DateType.Date,
-                dateValue: expDate.getDate() - today.getDate()
+                dateType: Resource.DateType.Day,
+                dateValue: diffDay
             }
-
-            return returnValue;
         }
     }
 
@@ -45,8 +40,9 @@ CommonFn.formatOutputExpiryDate = (expDate) => {
     if (expDate) {
         let newExpDate = new Date(),
             day, month, year;
+        expDate.dateValue = parseInt(expDate.dateValue);
         switch (expDate.dateType) {
-            case Resource.DateType.Date:
+            case Resource.DateType.Day:
                 newExpDate.setDate(newExpDate.getDate() + expDate.dateValue);
                 break;
             case Resource.DateType.Month:

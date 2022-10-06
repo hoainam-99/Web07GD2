@@ -114,11 +114,13 @@
     border: 1px solid rgb(235, 235, 235);
     height: 250px;
     overflow: auto;
+    position: relative;
 }
 
 .form-table thead{
     position: sticky;
     top: 0;
+    z-index: 5;
 }
 
 .form-table thead tr{

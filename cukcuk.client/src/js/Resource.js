@@ -1,7 +1,7 @@
 var Resource = Resource || {};
 
 Resource.DateType = {
-    Date: "Date",
+    Day: "Day",
     Month: "Month",
     Year: "Year"
 }

@@ -73,7 +73,9 @@ export default {
      */
     returnValue(){
       if(this.item){
-        console.log(this.itemIndex);
+        if(this.item.conversionRate){
+          this.item.conversionRate = parseFloat(this.item.conversionRate);
+        }
         this.$emit("returnValue", this.item, this.itemIndex + 1);
       }
     },
@@ -102,4 +104,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+  td{
+    padding: 0;
+  }
+td input{
+  border: none!important;
+  outline: none;
+}
+</style>

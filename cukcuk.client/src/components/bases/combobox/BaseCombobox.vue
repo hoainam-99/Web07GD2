@@ -163,8 +163,17 @@ export default {
       type: Boolean,
       default: true,
     },
+    isRefresh: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
+    isRefresh(newValue) {
+      if (newValue) {
+        this.getApi();
+      } 
+    },
     inputValue: function (newValue) {
       try {
         if (newValue == null || newValue == "") {
@@ -190,7 +199,7 @@ export default {
      * Hàm bắt sự kiện click vào nút thêm mới
      * Author: LHNAM (04/10/2022)
      */
-    btnAddOnClick(){
+    btnAddOnClick() {
       try {
         this.$emit("addBtnOnClick", true);
       } catch (error) {
@@ -346,24 +355,32 @@ export default {
         console.log(error);
       }
     },
+
+    /**
+     * Hàm lấy dữ liệu từ api 
+     * Author: LHNAM (05/10/2022)
+     */
+    getApi() {
+      if (this.url) {
+        fetch(this.url)
+          .then((res) => res.json())
+          .then((res) => {
+            this.data = res;
+            this.dataFilter = res;
+          })
+          .then(() => {
+            this.checkItemSelected();
+          })
+          .catch((res) => {
+            console.log(res);
+          });
+      }
+    },
   },
 
   created() {
     // Thực hiện lấy dữ liệu từ api:
-    if (this.url) {
-      fetch(this.url)
-        .then((res) => res.json())
-        .then((res) => {
-          this.data = res;
-          this.dataFilter = res;
-        })
-        .then(() => {
-          this.checkItemSelected();
-        })
-        .catch((res) => {
-          console.log(res);
-        });
-    }
+    this.getApi();
   },
   data() {
     return {
@@ -380,8 +397,8 @@ export default {
 </script>
 <style scoped>
 @import "@/css/main.css";
-.red_border{
-  border-color: red!important;
+.red_border {
+  border-color: red !important;
 }
 .combobox {
   width: 100%;

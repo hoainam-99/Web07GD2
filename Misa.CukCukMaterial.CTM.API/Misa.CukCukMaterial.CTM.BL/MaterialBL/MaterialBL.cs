@@ -112,6 +112,10 @@ namespace Misa.CukCukMaterial.CTM.BL
         protected override void Validate(Method method, Material record)
         {
             // mã nguyên vật liệu không được phép trùng
+            if (_materialDL.CheckDuplicateCode(method, record.MaterialID, record.MaterialCode))
+            {
+                Errors.Add(Common.Resource.ResourceVN.MaterialCode_Duplicate);
+            }
 
             // trường materialCode không được bỏ trống
             if (String.IsNullOrEmpty(record.MaterialCode))

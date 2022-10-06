@@ -133,11 +133,47 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e002.
+        /// </summary>
+        public static string StockCode_Duplicate {
+            get {
+                return ResourceManager.GetString("StockCode_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e003.
+        /// </summary>
+        public static string StockCode_NotEmpty {
+            get {
+                return ResourceManager.GetString("StockCode_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e004.
+        /// </summary>
+        public static string StockName_NotEmpty {
+            get {
+                return ResourceManager.GetString("StockName_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to e005.
         /// </summary>
         public static string UnitID_NotEmpty {
             get {
                 return ResourceManager.GetString("UnitID_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e002.
+        /// </summary>
+        public static string UnitName_NotEmpty {
+            get {
+                return ResourceManager.GetString("UnitName_NotEmpty", resourceCulture);
             }
         }
     }

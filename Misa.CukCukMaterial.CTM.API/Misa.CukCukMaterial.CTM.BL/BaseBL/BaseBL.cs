@@ -45,6 +45,9 @@ namespace Misa.CukCukMaterial.CTM.BL
 
         public virtual Guid InsertOneRecord(T record)
         {
+            // Validate dữ liệu
+            Validate(Method.Add, record);
+
             return _baseDL.InsertOneRecord(record);
         }
 
@@ -57,6 +60,9 @@ namespace Misa.CukCukMaterial.CTM.BL
             {
                 primaryKeyProp.SetValue(record, id);
             }
+
+            // Validate dữ liệu
+            Validate(Method.Edit, record);
 
             return _baseDL.UpdateOneRecord(id, record);
         }

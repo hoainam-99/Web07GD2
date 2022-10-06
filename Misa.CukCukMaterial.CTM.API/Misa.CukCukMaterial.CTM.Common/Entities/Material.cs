@@ -50,22 +50,22 @@ namespace Misa.CukCukMaterial.CTM.Common
         /// <summary>
         /// ID nhóm nguyên vật liệu
         /// </summary>
-        public Guid CategoryID { get; set; }
+        public Guid? CategoryID { get; set; }
 
         /// <summary>
         /// Tên nhóm nguyên vật liệu
         /// </summary>
-        public String CategoryName { get; set; }
+        public String? CategoryName { get; set; }
 
         /// <summary>
         /// ID kho
         /// </summary>
-        public Guid StockID { get; set; }
+        public Guid? StockID { get; set; }
 
         /// <summary>
         /// Tên kho
         /// </summary>
-        public String StockName { get; set; }
+        public String? StockName { get; set; }
 
         /// <summary>
         /// Tính chất

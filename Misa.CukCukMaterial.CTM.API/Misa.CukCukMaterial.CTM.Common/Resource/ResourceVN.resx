@@ -149,8 +149,24 @@
     <value>+</value>
     <comment>Bắt đầu bằng</comment>
   </data>
+  <data name="StockCode_Duplicate" xml:space="preserve">
+    <value>e002</value>
+    <comment>Mã kho đã tồn tại trong hệ thống.</comment>
+  </data>
+  <data name="StockCode_NotEmpty" xml:space="preserve">
+    <value>e003</value>
+    <comment>Mã kho không được để trống.</comment>
+  </data>
+  <data name="StockName_NotEmpty" xml:space="preserve">
+    <value>e004</value>
+    <comment>Tên kho không được bỏ trống.</comment>
+  </data>
   <data name="UnitID_NotEmpty" xml:space="preserve">
     <value>e005</value>
     <comment>Mã đơn vị trong bảng Material không được để trống</comment>
+  </data>
+  <data name="UnitName_NotEmpty" xml:space="preserve">
+    <value>e002</value>
+    <comment>Tên đơn vị tính không được bỏ trống.</comment>
   </data>
 </root>

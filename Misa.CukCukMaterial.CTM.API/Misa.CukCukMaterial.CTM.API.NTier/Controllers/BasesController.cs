@@ -155,7 +155,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, ex.Message);
             }
         }
 
