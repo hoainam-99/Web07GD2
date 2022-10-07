@@ -121,6 +121,10 @@
     <value>*</value>
     <comment>Chứa</comment>
   </data>
+  <data name="ConversionUnit_And_Unit_NotSame" xml:space="preserve">
+    <value>e011</value>
+    <comment>Đơn vị chuyển đổi không được giống với đơn vị tính.</comment>
+  </data>
   <data name="EndWith" xml:space="preserve">
     <value>-</value>
     <comment>Kết thúc bằng</comment>
@@ -128,6 +132,10 @@
   <data name="Equal" xml:space="preserve">
     <value>=</value>
     <comment>Bằng</comment>
+  </data>
+  <data name="Func_GetAuto_MaterialCode" xml:space="preserve">
+    <value>Select Func_Get_Auto_MaterialCode()</value>
+    <comment>function để lấy mã nguyên vật liệu</comment>
   </data>
   <data name="MaterialCode_Duplicate" xml:space="preserve">
     <value>e002</value>
@@ -144,6 +152,46 @@
   <data name="NotContain" xml:space="preserve">
     <value>!</value>
     <comment>Không chứa</comment>
+  </data>
+  <data name="Procedure_CheckDuplicateCode" xml:space="preserve">
+    <value>Proc_{0}_CheckDuplicateCode</value>
+    <comment>Template string của procedure kiểm tra trùng mã</comment>
+  </data>
+  <data name="Procedure_DeleteOne" xml:space="preserve">
+    <value>Proc_{0}_DeleteOne</value>
+    <comment>Template string của procedure xóa 1 bản ghi</comment>
+  </data>
+  <data name="Procedure_GetAll" xml:space="preserve">
+    <value>Proc_{0}_GetAll</value>
+    <comment>Template string của procedure lấy tất cả các bản ghi</comment>
+  </data>
+  <data name="Procedure_GetByID" xml:space="preserve">
+    <value>Proc_{0}_GetByID</value>
+    <comment>Template string của procedure lấy thông tin 1 bản ghi bằng id</comment>
+  </data>
+  <data name="Procedure_InsertOne" xml:space="preserve">
+    <value>Proc_{0}_InsertOne</value>
+    <comment>Template string của procedure thêm mới 1 bản ghi</comment>
+  </data>
+  <data name="Procedure_UpdateOne" xml:space="preserve">
+    <value>Proc_{0}_UpdateOne</value>
+    <comment>Template string của procedure sửa 1 bản ghi</comment>
+  </data>
+  <data name="Proc_material_GetByID" xml:space="preserve">
+    <value>Proc_material_GetByID</value>
+    <comment>procedure để lấy bản ghi theo ID</comment>
+  </data>
+  <data name="Proc_material_GetPaging" xml:space="preserve">
+    <value>Proc_material_GetPaging</value>
+    <comment>procedure để lấy bản ghi theo phân trang</comment>
+  </data>
+  <data name="Proc_material_InsertOne" xml:space="preserve">
+    <value>Proc_material_InsertOne</value>
+    <comment>tên proc thêm mới 1 bản ghi</comment>
+  </data>
+  <data name="Proc_material_UpdateOne" xml:space="preserve">
+    <value>Proc_material_UpdateOne</value>
+    <comment>tên proc sửa 1 bản ghi</comment>
   </data>
   <data name="StartWith" xml:space="preserve">
     <value>+</value>

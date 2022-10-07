@@ -1,3 +1,7 @@
+.number-input{
+    text-align: right;
+}
+
 .red-border{
     border-color: red!important;
 }

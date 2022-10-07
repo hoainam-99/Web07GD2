@@ -1,5 +1,10 @@
 <template>
-  <div class="content">
+  <div
+    class="content"
+    @keydown.prevent.down="selectedIndexPlus"
+    @keydown.prevent.up="selectedIndexMinus"
+    >
+    <!-- @keydown.prevent.enter="formDetailOnClick(2)" -->
     <div class="content-header">
       <div class="content-header__left">Nguyên vật liệu</div>
       <div class="content-header__right">
@@ -43,7 +48,7 @@
           <i class="fa-solid fa-x"></i>
           <span>Xóa</span>
         </button>
-        <button class="btn btn-refresh cursor-pointer">
+        <button class="btn btn-refresh cursor-pointer" @click="refreshFilter">
           <i class="fa-solid fa-arrows-rotate"></i>
           <span>Nạp</span>
         </button>
@@ -58,6 +63,7 @@
                   <BaseFilter
                     @getFilter="getMaterialCodeFilter"
                     :filterType="'string'"
+                    ref="materialCodeFilter"
                   />
                 </div>
               </th>
@@ -67,6 +73,7 @@
                   <BaseFilter
                     @getFilter="getMaterialNameFilter"
                     :filterType="'string'"
+                    ref="materialNameFilter"
                   />
                 </div>
               </th>
@@ -76,6 +83,7 @@
                   <BaseFilter
                     @getFilter="getFeatureFilter"
                     :filterType="'string'"
+                    ref="featureFilter"
                   />
                 </div>
               </th>
@@ -85,6 +93,7 @@
                   <BaseFilter
                     @getFilter="getUnitFilter"
                     :filterType="'string'"
+                    ref="unitFilter"
                   />
                 </div>
               </th>
@@ -94,6 +103,7 @@
                   <BaseFilter
                     @getFilter="getCategoryFilter"
                     :filterType="'string'"
+                    ref="categoryFilter"
                   />
                 </div>
               </th>
@@ -103,6 +113,7 @@
                   <BaseFilter
                     @getFilter="getDescriptionFilter"
                     :filterType="'string'"
+                    ref="descriptionFilter"
                   />
                 </div>
               </th>
@@ -122,11 +133,11 @@
           <tbody class="hn-tbody">
             <tr
               class="hn-tr"
-              v-for="material in materials"
+              v-for="(material, index) in materials"
               :key="material.materialID"
-              @click="selectMaterial(material.materialID)"
+              @click="selectMaterial(index)"
               @dblclick="formDetailOnClick(2)"
-              :class="{ 'hn-selected-tr': material.materialID == param.id }"
+              :class="{ 'hn-selected-tr': selectedItemIndex == index }"
             >
               <td>{{ material.materialCode }}</td>
               <td>{{ material.materialName }}</td>
@@ -158,7 +169,7 @@
       </div>
     </div>
   </div>
-  <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" />
+  <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" @returnResult="refresh" />
   <NotificationPopup
     v-if="isShowNotificationPopup"
     :param="notificationPopupParam"
@@ -191,6 +202,7 @@ export default {
   },
   data() {
     return {
+      selectedItemIndex: 0,
       isShowLoading: true,
       toast: useToast(),
       notificationPopupParam: "",
@@ -226,6 +238,17 @@ export default {
     };
   },
   watch: {
+    selectedItemIndex(newValue) {
+      if(newValue < 0){
+        this.selectedItemIndex = 0;
+      }
+
+      if(newValue > this.materials.length - 1){
+        this.selectedItemIndex = this.materials.length - 1;
+      }
+
+      this.setMaterialIDForParam();
+    },
     pagination: {
       handler() {
         this.debouncedGetData();
@@ -256,6 +279,47 @@ export default {
   },
   methods: {
     /**
+     * Hàm gọi đến khi bấm nút nạp
+     * Author: LHNAM (07/10/2022)
+     */
+    refreshFilter(){
+      try {
+        if(this.$refs){
+          Object.keys(this.$refs).forEach(item=>{
+            if(this.$refs[item].refreshValue){
+              this.$refs[item].refreshValue();
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm thay đổi bản ghi được chọn khi bấm nút lên
+     * Author: LHNAM (07/10/2022)
+     */
+    selectedIndexMinus(){
+      try {
+        this.selectedItemIndex--;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm thay đổi bản ghi được chọn khi bấm nút xuống
+     * Author: LHNAM (07/10/2022)
+     */
+    selectedIndexPlus(){
+      try {
+        this.selectedItemIndex++;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    /**
      * Hàm đóng bảng thông báo
      * @param {Boolean} e giá trị trả về
      * Author: LHNAM (05/10/2022)
@@ -283,7 +347,7 @@ export default {
           this.isShowNotificationPopup = false;
           this.refresh(true);
         })
-        .catch(e => {
+        .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);
           this.notificationPopupParam = "error";
           this.isShowNotificationPopup = true;
@@ -294,18 +358,33 @@ export default {
     },
 
     /**
+     * Hàm set giá trị cho biến param
+     * Author: LHNAM (07/10/2022)
+     */
+    setMaterialIDForParam() {
+      if (this.materials[this.selectedItemIndex]) {
+        this.param.id = this.materials[this.selectedItemIndex].materialID;
+
+        this.selectedMaterial = this.materials[this.selectedItemIndex];
+      }
+    },
+
+    /**
      * Hàm chọn nguyên vật liệu
      * @param {Guid} id Id của nguyên vật liệu được chọn
      * Author: LHNAM (01/10/2022)
      */
-    selectMaterial(id) {
+    selectMaterial(index) {
       try {
-        if (id) {
-          this.param.id = id;
+        if (
+          this.selectedItemIndex != null ||
+          this.selectedItemIndex != undefined
+        ) {
+          if (index != null || index != undefined) {
+            this.selectedItemIndex = index;
+          }
 
-          this.selectedMaterial = this.materials.find((item) => {
-            return (item.id = id);
-          });
+          this.setMaterialIDForParam();
         }
       } catch (error) {
         console.error(error);
@@ -346,6 +425,9 @@ export default {
           this.materials = res.data.data;
           this.totalCount = res.data.totalCount;
           this.isShowLoading = false;
+        })
+        .then(() => {
+          this.setMaterialIDForParam();
         })
         .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);

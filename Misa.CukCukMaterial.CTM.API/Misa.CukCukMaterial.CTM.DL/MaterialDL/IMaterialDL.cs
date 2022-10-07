@@ -29,5 +29,14 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// <returns>Mã nguyên vật liệu mới</returns>
         /// Author: LHNAM (01/10/2022)
         public string GetNewMaterialCode();
+
+        /// <summary>
+        /// Hàm kiểm tra trùng đơn vị chuyển đổi
+        /// </summary>
+        /// <param name="method">kiểu query thực hiện</param>
+        /// <param name="materialID">ID nguyên vật liệu cần kiểm tra</param>
+        /// <param name="unitID">ID đơn vị chuyển đổi cần kiểm tra</param>
+        /// <returns>Giá trị true/false dùng để validate</returns>
+        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID);
     }
 }

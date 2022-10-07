@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Misa.CukCukMaterial.CTM.Common
 {
     [Table("materialunit")]
-    public class MaterialUnit
+    public class MaterialUnit : BaseEntity
     {
         /// <summary>
         /// Mã nguyên vật liệu
@@ -37,25 +37,8 @@ namespace Misa.CukCukMaterial.CTM.Common
         public Double ConversionRate { get; set; }
 
         /// <summary>
-        /// Người tạo
+        /// Phương thức của bản ghi
         /// </summary>
-        public String? CreatedBy { get; set; }
-
-        /// <summary>
-        /// Ngày tạo
-        /// </summary>
-        public DateTime? CreatedDate { get; set; }
-
-        /// <summary>
-        /// Người sửa
-        /// </summary>
-        public String? ModifiedBy { get; set; }
-
-        /// <summary>
-        /// Ngày sửa
-        /// </summary>
-        public DateTime? ModifiedDate { get; set; }
-
         public Method Method { get; set; } = Method.Edit;
 
     }

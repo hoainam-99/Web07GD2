@@ -70,6 +70,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e011.
+        /// </summary>
+        public static string ConversionUnit_And_Unit_NotSame {
+            get {
+                return ResourceManager.GetString("ConversionUnit_And_Unit_NotSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to -.
         /// </summary>
         public static string EndWith {
@@ -84,6 +93,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         public static string Equal {
             get {
                 return ResourceManager.GetString("Equal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Func_Get_Auto_MaterialCode().
+        /// </summary>
+        public static string Func_GetAuto_MaterialCode {
+            get {
+                return ResourceManager.GetString("Func_GetAuto_MaterialCode", resourceCulture);
             }
         }
         
@@ -120,6 +138,96 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         public static string NotContain {
             get {
                 return ResourceManager.GetString("NotContain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_material_GetByID.
+        /// </summary>
+        public static string Proc_material_GetByID {
+            get {
+                return ResourceManager.GetString("Proc_material_GetByID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_material_GetPaging.
+        /// </summary>
+        public static string Proc_material_GetPaging {
+            get {
+                return ResourceManager.GetString("Proc_material_GetPaging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_material_InsertOne.
+        /// </summary>
+        public static string Proc_material_InsertOne {
+            get {
+                return ResourceManager.GetString("Proc_material_InsertOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_material_UpdateOne.
+        /// </summary>
+        public static string Proc_material_UpdateOne {
+            get {
+                return ResourceManager.GetString("Proc_material_UpdateOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_CheckDuplicateCode.
+        /// </summary>
+        public static string Procedure_CheckDuplicateCode {
+            get {
+                return ResourceManager.GetString("Procedure_CheckDuplicateCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_DeleteOne.
+        /// </summary>
+        public static string Procedure_DeleteOne {
+            get {
+                return ResourceManager.GetString("Procedure_DeleteOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_GetAll.
+        /// </summary>
+        public static string Procedure_GetAll {
+            get {
+                return ResourceManager.GetString("Procedure_GetAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_GetByID.
+        /// </summary>
+        public static string Procedure_GetByID {
+            get {
+                return ResourceManager.GetString("Procedure_GetByID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_InsertOne.
+        /// </summary>
+        public static string Procedure_InsertOne {
+            get {
+                return ResourceManager.GetString("Procedure_InsertOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_UpdateOne.
+        /// </summary>
+        public static string Procedure_UpdateOne {
+            get {
+                return ResourceManager.GetString("Procedure_UpdateOne", resourceCulture);
             }
         }
         

@@ -49,6 +49,14 @@ export default {
   },
   methods: {
     /**
+     * Hàm reset lại giá trị filter
+     * Author: LHNAM (07/10/2022)
+     */
+    refreshValue(){
+      this.selectItem(0);
+    },
+
+    /**
      * Hàm set giá trị cho datas
      * Author: LHNAM (02/10/2022)
      */

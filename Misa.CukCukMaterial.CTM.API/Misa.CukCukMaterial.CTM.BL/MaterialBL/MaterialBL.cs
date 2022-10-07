@@ -27,6 +27,17 @@ namespace Misa.CukCukMaterial.CTM.BL
         #endregion
 
         #region Method
+
+        /// <summary>
+        /// Hàm xử lý logic lọc và phân trang
+        /// </summary>
+        /// <param name="filterData">đối tượng lọc và phân trang</param>
+        /// <returns>
+        ///     Một đối tượng gồm: 
+        ///         + Danh sách nhân viên thỏa mãn điều kiện phân trang và tìm kiếm
+        ///         + Tổng số bản ghi thỏa mãn điều kiện tìm kiếm
+        /// </returns>
+        /// Author: LHNAM (30/09/2022)
         public PagingData<Material> FilterRecords(FilterData filterData)
         {
             int pageNum = filterData.PageNum;
@@ -38,7 +49,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.MaterialCode != null)
             {
-                string filterStr = checkFilterString(filterData.MaterialCode);
+                string filterStr = CheckFilterString(filterData.MaterialCode);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"MaterialCode {filterStr}");
@@ -47,7 +58,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.MaterialName != null)
             {
-                string filterStr = checkFilterString(filterData.MaterialName);
+                string filterStr = CheckFilterString(filterData.MaterialName);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"MaterialName {filterStr}");
@@ -56,7 +67,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.Feature != null)
             {
-                string filterStr = checkFilterString(filterData.Feature);
+                string filterStr = CheckFilterString(filterData.Feature);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"Feature {filterStr}");
@@ -65,7 +76,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.Unit != null)
             {
-                string filterStr = checkFilterString(filterData.Unit);
+                string filterStr = CheckFilterString(filterData.Unit);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"UnitName {filterStr}");
@@ -74,7 +85,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.Category != null)
             {
-                string filterStr = checkFilterString(filterData.Category);
+                string filterStr = CheckFilterString(filterData.Category);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"CategoryName {filterStr}");
@@ -83,7 +94,7 @@ namespace Misa.CukCukMaterial.CTM.BL
 
             if (filterData.Description != null)
             {
-                string filterStr = checkFilterString(filterData.Description);
+                string filterStr = CheckFilterString(filterData.Description);
                 if (!String.IsNullOrEmpty(filterStr))
                 {
                     condition.Add($"Description {filterStr}");
@@ -109,8 +120,26 @@ namespace Misa.CukCukMaterial.CTM.BL
             return _materialDL.FilterRecord(filterCondition, pageNum, pageSize);
         }
 
+        /// <summary>
+        /// Hàm validate dữ liệu
+        /// </summary>
+        /// <param name="method">Phương thức được gọi đến</param>
+        /// <param name="record">Bản ghi cần validate</param>
+        /// Author: LHNAM (29/09/2022)
         protected override void Validate(Method method, Material record)
         {
+            // Mã đơn vị chuyển đổi không được trùng với đơn vị tính
+            if(record.MaterialUnit != null && record.MaterialUnit.Count() > 0)
+            {
+                foreach(var item in record.MaterialUnit)
+                {
+                    if(item.UnitID == record.UnitID)
+                    {
+                        Errors.Add(Common.Resource.ResourceVN.ConversionUnit_And_Unit_NotSame);
+                    }
+                }
+            } 
+
             // mã nguyên vật liệu không được phép trùng
             if (_materialDL.CheckDuplicateCode(method, record.MaterialID, record.MaterialCode))
             {
@@ -141,7 +170,12 @@ namespace Misa.CukCukMaterial.CTM.BL
             }
         }
 
-        public string checkFilterString(string filterString)
+        /// <summary>
+        /// Hàm xử lý lọc
+        /// </summary>
+        /// <param name="filterString">Chuỗi cần lọc</param>
+        /// <returns>Chuỗi để lọc sau khi xử lý</returns>
+        public string CheckFilterString(string filterString)
         {
             string filterStr = "";
             if (!String.IsNullOrEmpty(filterString))
@@ -175,6 +209,11 @@ namespace Misa.CukCukMaterial.CTM.BL
             return filterStr;
         }
 
+        /// <summary>
+        /// Hàm lấy mã nguyên vật liệu mới
+        /// </summary>
+        /// <returns>Mã nguyên vật liệu mới</returns>
+        /// Author: LHNAM (01/10/2022)
         public string GetNewMaterialCode()
         {
             return _materialDL.GetNewMaterialCode();

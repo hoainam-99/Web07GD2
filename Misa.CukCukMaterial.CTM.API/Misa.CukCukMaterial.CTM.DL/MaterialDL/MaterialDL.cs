@@ -16,9 +16,34 @@ namespace Misa.CukCukMaterial.CTM.DL
     public class MaterialDL : BaseDL<Material>, IMaterialDL
     {
         #region method
+
+        /// <summary>
+        /// Hàm kiểm tra trùng đơn vị chuyển đổi
+        /// </summary>
+        /// <param name="method">kiểu query thực hiện</param>
+        /// <param name="materialID">ID nguyên vật liệu cần kiểm tra</param>
+        /// <param name="unitID">ID đơn vị chuyển đổi cần kiểm tra</param>
+        /// <returns>Giá trị true/false dùng để validate</returns>
+        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Hàm xử lý logic lọc và phân trang
+        /// </summary>
+        /// <param name="filterCondition">điều kiện lọc</param>
+        /// <param name="pageNum">số trang</param>
+        /// <param name="pageSize">số bản ghi trên 1 trang</param>
+        /// <returns>
+        ///     Một đối tượng gồm: 
+        ///         + Danh sách nhân viên thỏa mãn điều kiện phân trang và tìm kiếm
+        ///         + Tổng số bản ghi thỏa mãn điều kiện tìm kiếm
+        /// </returns>
+        /// Author: LHNAM (30/09/2022)
         public PagingData<Material> FilterRecord(string? filterCondition, int pageNum, int pageSize)
         {
-            string storedProc = "Proc_material_GetPaging";
+            string storedProc = Common.Resource.ResourceVN.Proc_material_GetPaging;
 
             var parameters = new DynamicParameters();
 
@@ -40,9 +65,14 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Hàm lấy mã nguyên vật liệu mới
+        /// </summary>
+        /// <returns>Mã nguyên vật liệu mới</returns>
+        /// Author: LHNAM (01/10/2022)
         public string GetNewMaterialCode()
         {
-            string func = "Select Func_Get_Auto_MaterialCode()";
+            string func = Common.Resource.ResourceVN.Func_GetAuto_MaterialCode;
 
             using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
             {
@@ -52,9 +82,15 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Lấy dữ liệu của 1 bản ghi bằng ID
+        /// </summary>
+        /// <param name="id">ID của đối tượng cần lấy dữ liệu</param>
+        /// <returns>Dữ liệu của đối tượng cần lấy</returns>
+        /// Author: LHNAM (03/10/2022)
         public override Material GetOneRecordByID(Guid id)
         {
-            string storedProc = "Proc_material_GetByID";
+            string storedProc = Common.Resource.ResourceVN.Proc_material_GetByID;
 
             var parameters = new DynamicParameters();
 
@@ -76,9 +112,16 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Sửa 1 bản ghi
+        /// </summary>
+        /// <param name="id">ID của bản ghi cần sửa</param>
+        /// <param name="record">Thông tin của bản ghi cần sửa</param>
+        /// <returns>ID của bản ghi được sửa thành công</returns>
+        /// Author: LHNAM (03/10/2022)
         public override Guid InsertOneRecord(Material record)
         {
-            string materialInsertProc = "Proc_material_InsertOne";
+            string materialInsertProc = Common.Resource.ResourceVN.Proc_material_InsertOne;
             string materialUnitInsertProc = "Proc_materialunit_InsertOne";
 
             var materialParameters = new DynamicParameters();
@@ -145,7 +188,7 @@ namespace Misa.CukCukMaterial.CTM.DL
 
         public override Guid UpdateOneRecord(Guid id, Material record)
         {
-            string materialProc = "Proc_material_UpdateOne";
+            string materialProc = Common.Resource.ResourceVN.Proc_material_UpdateOne;
             string materialUnitInsertProc = "Proc_materialunit_InsertOne";
             string materialUnitUpdateProc = "Proc_materialunit_UpdateOne";
             string materialUnitDeleteProc = "Proc_materialunit_DeleteOne";

@@ -13,7 +13,7 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// </summary>
     /// Author: LHNAM (29/09/2022)
     [Table("unit")]
-    public class Unit
+    public class Unit : BaseEntity
     {
         /// <summary>
         /// ID đơn vị
@@ -25,25 +25,5 @@ namespace Misa.CukCukMaterial.CTM.Common
         /// Tên đơn vị
         /// </summary>
         public String UnitName { get; set; }
-
-        /// <summary>
-        /// Người tạo
-        /// </summary>
-        public String? CreatedBy { get; set; }
-
-        /// <summary>
-        /// Ngày tạo
-        /// </summary>
-        public DateTime? CreatedDate { get; set; }
-
-        /// <summary>
-        /// Người sửa
-        /// </summary>
-        public String? ModifiedBy { get; set; }
-
-        /// <summary>
-        /// Ngày sửa
-        /// </summary>
-        public DateTime? ModifiedDate { get; set; }
     }
 }

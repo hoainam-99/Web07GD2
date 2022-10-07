@@ -55,6 +55,10 @@ export default {
     },
   },
   methods: {
+    refreshValue(){
+      this.filterValue = "";
+      this.emitFilter();
+    },
     /**
      * Hàm thay đổi phép filter khi click chọn
      * @param {int} index index của phần tử được chọn

@@ -13,7 +13,7 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// </summary>
     /// Author: LHNAM (29/09/2022)
     [Table("stock")]
-    public class Stock
+    public class Stock : BaseEntity
     {
         /// <summary>
         /// ID kho
@@ -30,25 +30,5 @@ namespace Misa.CukCukMaterial.CTM.Common
         /// Tên kho
         /// </summary>
         public String StockName { get; set; }
-
-        /// <summary>
-        /// Người tạo
-        /// </summary>
-        public String? CreatedBy { get; set; }
-
-        /// <summary>
-        /// Ngày tạo
-        /// </summary>
-        public DateTime? CreatedDate { get; set; }
-
-        /// <summary>
-        /// Người sửa
-        /// </summary>
-        public String? ModifiedBy { get; set; }
-
-        /// <summary>
-        /// Ngày sửa
-        /// </summary>
-        public DateTime? ModifiedDate { get; set; }
     }
 }

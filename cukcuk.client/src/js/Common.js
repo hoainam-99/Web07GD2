@@ -64,10 +64,11 @@ CommonFn.formatOutputExpiryDate = (expDate) => {
 
 CommonFn.getError = (e)=>{
     let errors = [],
-        resError = e.data.userMsg.error;
+        resError;
     if(e){
         switch (e.status) {
             case 400:
+                resError = e.data.userMsg.error;
                 resError.forEach(item => {
                     errors.push(Resource.ErrorMes[item]);
                 });
@@ -81,6 +82,12 @@ CommonFn.getError = (e)=>{
         }
 
         return errors;
+    }
+}
+
+CommonFn.formatNumber = num=>{
+    if(num){
+        return parseFloat(num);
     }
 }
 

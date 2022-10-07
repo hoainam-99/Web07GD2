@@ -11,7 +11,7 @@
       />
     </td>
     <td>
-      <input type="text" v-model="item.conversionRate" />
+      <input type="text" class="number-input input" v-model="item.conversionRate" />
     </td>
     <td>
       <BaseSelectbox
@@ -105,6 +105,10 @@ export default {
 </script>
 
 <style scoped>
+  .input{
+    width: 100%;
+    padding: 2px 6px;
+  }
   td{
     padding: 0;
   }

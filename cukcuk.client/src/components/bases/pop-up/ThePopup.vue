@@ -76,8 +76,9 @@
                 <label for="">SL tối thiểu</label>
                 <input
                   type="text"
-                  class="w100per"
+                  class="w100per number-input"
                   v-model="material.inventoryNumber"
+                  ref="inventoryNumber"
                 />
               </div>
             </div>
@@ -97,7 +98,7 @@
             <table border="1">
               <thead>
                 <tr>
-                  <th>STT</th>
+                  <th style="width: 30px">STT</th>
                   <th style="width: 200px">Đơn vị chuyển đổi</th>
                   <th style="width: 200px">Tỷ lệ chuyển đổi</th>
                   <th style="width: 80px">Phép tính</th>
@@ -443,13 +444,14 @@ export default {
           case Enum.FormMode.Replication:
             Axios.CallAxios(Axios.Methods.Post, Axios.Url.Material, data)
               .then(() => {
-                this.toast.success("Thêm mới nguyên vật liệu thành công.", {
+                this.toast.success(Resource.Notice.CreateSuccess, {
                   timeout: 2000,
                   hideProgressBar: false,
                 });
               })
               .then(() => {
                 this.saveModeActive(saveMode);
+                
               })
               .catch((e) => {
                 this.errorMsg = CommonFn.getError(e.response);
@@ -468,7 +470,7 @@ export default {
             )
               .then(() => {
                 this.toast.success(
-                  "Sửa thông tin nguyên vật liệu thành công.",
+                  Resource.Notice.UpdateSuccess,
                   {
                     timeout: 2000,
                     hideProgressBar: false,
@@ -528,6 +530,28 @@ export default {
         }
       }
 
+      if(this.material.inventoryNumber){
+        let number; 
+        if(CommonFn.formatNumber(this.material.inventoryNumber)){
+          number = CommonFn.formatNumber(this.material.inventoryNumber);
+        }
+
+        if(!number || number < 0){
+          if(this.$refs["inventoryNumber"]){
+            this.$refs["inventoryNumber"].classList.add("red-border");
+            this.$refs["inventoryNumber"].setAttribute(
+              "title",
+              Resource.ErrorMes.numberFormat_Error
+            );
+          }
+          this.errorMsg.push(Resource.ErrorMes.e012);
+          isValid = false;
+        }else{
+          this.$refs["inventoryNumber"].classList.remove("red_border");
+          this.$refs["inventoryNumber"].removeAttribute("title");
+        }
+      }
+
       if (!this.material.unitID) {
         this.isUnitRequired = true;
         this.errorMsg.push(Resource.ErrorMes.e010);
@@ -539,6 +563,7 @@ export default {
     },
 
     saveModeActive(saveMode) {
+      this.$emit('returnResult', true);
       switch (saveMode) {
         case Enum.SaveMode.Save:
           if (

@@ -17,11 +17,18 @@ namespace Misa.CukCukMaterial.CTM.DL
     public class BaseDL<T> : IBaseDL<T>
     {
         #region Method
+
+        /// <summary>
+        /// Kiểm tra trùng mã 
+        /// </summary>
+        /// <param name="code">Code cần kiểm tra</param>
+        /// <returns>Giá trị true, false</returns>
+        /// Author: LHNAM (29/09/2022)
         public bool CheckDuplicateCode(Method method, Guid id, string code)
         {
             // Chuẩn bị stored Proc 
             string className = typeof(T).Name;
-            string storedProc = $"Proc_{className}_CheckDuplicateCode";
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_CheckDuplicateCode, className);
 
             // Chuẩn bị tham số
             var parameters = new DynamicParameters();
@@ -54,11 +61,17 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Xóa 1 bản ghi
+        /// </summary>
+        /// <param name="id">ID của đối tượng cần xóa</param>
+        /// <returns>Số bản ghi bị xóa</returns>
+        /// Author: LHNAM (29/09/2022)
         public int DeleteOneRecord(Guid id)
         {
             // Chuẩn bị Stored Procdure
             string className = typeof(T).Name;
-            string storedProc = $"Proc_{className}_DeleteOne";
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_DeleteOne, className);
 
             // Chuẩn bị tham số
             var parameters = new DynamicParameters();
@@ -74,11 +87,17 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Lấy dữ liệu của 1 bản ghi bằng ID
+        /// </summary>
+        /// <param name="id">ID của đối tượng cần lấy dữ liệu</param>
+        /// <returns>Dữ liệu của đối tượng cần lấy</returns>
+        /// Author: LHNAM (29/09/2022)
         public virtual T GetOneRecordByID(Guid id)
         {
             // Chuẩn bị stored Proc
             string className = typeof(T).Name;
-            string storedProc = $"Proc_{className}_GetByID";
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_GetByID, className);
 
             // Chuẩn bị tham số
             var parameters = new DynamicParameters();
@@ -94,11 +113,16 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Lấy tất cả các bản ghi
+        /// </summary>
+        /// <returns>Các bản ghi của 1 bảng</returns>
+        /// Author: LHNAM (29/09/2022)
         public IEnumerable<T> GetRecords()
         {
             // Chuẩn bị câu lệnh SELECT 
             string className = typeof(T).Name;
-            string storedProc = $"Proc_{className}_GetAll";
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_GetAll, className);
 
             using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
             {
@@ -109,11 +133,17 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Thêm 1 bản ghi 
+        /// </summary>
+        /// <param name="record">Thông tin của bản ghi cần thêm</param>
+        /// <returns>ID của bản ghi được thêm thành công</returns>
+        /// Author: LHNAM (29/09/2022)
         public virtual Guid InsertOneRecord(T record)
         {
             // Chuẩn bị stored Proc
-            string className = EntityUntilities.GetTableName<T>();
-            string storedProc = $"Proc_{className}_InsertOne";
+            string className = EntityUtilities.GetTableName<T>();
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_InsertOne, className);
 
             // Chuẩn bị tham số
             var parameters = new DynamicParameters();
@@ -146,11 +176,18 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Sửa 1 bản ghi
+        /// </summary>
+        /// <param name="id">ID của bản ghi cần sửa</param>
+        /// <param name="record">Thông tin của bản ghi cần sửa</param>
+        /// <returns>ID của bản ghi được sửa thành công</returns>
+        /// Author: LHNAM (29/09/2022)
         public virtual Guid UpdateOneRecord(Guid id, T record)
         {
             // Chuẩn bị stored Proc
-            string className = EntityUntilities.GetTableName<T>();
-            string storedProc = $"Proc_{className}_UpdateOne";
+            string className = EntityUtilities.GetTableName<T>();
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_UpdateOne, className);
 
             // Chuẩn bị tham số
             var parameters = new DynamicParameters();
@@ -178,6 +215,7 @@ namespace Misa.CukCukMaterial.CTM.DL
                 return result;
             }
         }
+
         #endregion
     }
 }
