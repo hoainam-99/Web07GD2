@@ -133,10 +133,6 @@
     <value>=</value>
     <comment>Bằng</comment>
   </data>
-  <data name="Func_GetAuto_MaterialCode" xml:space="preserve">
-    <value>Select Func_Get_Auto_MaterialCode()</value>
-    <comment>function để lấy mã nguyên vật liệu</comment>
-  </data>
   <data name="MaterialCode_Duplicate" xml:space="preserve">
     <value>e002</value>
     <comment>Mã nguyên vật liệu đã tồn tại trong hệ thống</comment>
@@ -176,6 +172,10 @@
   <data name="Procedure_UpdateOne" xml:space="preserve">
     <value>Proc_{0}_UpdateOne</value>
     <comment>Template string của procedure sửa 1 bản ghi</comment>
+  </data>
+  <data name="Proc_GetAuto_MaterialCode" xml:space="preserve">
+    <value>Proc_material_GetNewCode</value>
+    <comment>Proc để lấy mã nguyên vật liệu</comment>
   </data>
   <data name="Proc_material_GetByID" xml:space="preserve">
     <value>Proc_material_GetByID</value>

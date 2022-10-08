@@ -18,6 +18,7 @@
                   type="text"
                   class="w100per"
                   v-model="material.materialName"
+                  @change="getMaterialCode"
                   ref="materialName"
                 />
               </div>
@@ -174,6 +175,7 @@ import Axios from "@/js/Axios.js";
 import { useToast } from "vue-toastification";
 import BaseSelectbox from "../selectbox/BaseSelectbox.vue";
 import BaseCombobox from "../combobox/BaseCombobox.vue";
+import debounce from "lodash.debounce";
 import Enum from "@/js/Enum";
 import CommonFn from "@/js/Common";
 import Resource from "@/js/Resource";
@@ -192,7 +194,7 @@ export default {
     BaseLoading,
   },
   props: ["param"],
-  emits: ["closeForm"],
+  emits: ["closeForm", "returnResult"],
   watch: {
     material: {
       handler() {
@@ -207,7 +209,7 @@ export default {
       errorMsg: [],
 
       // Biến hiển thị loading
-      isShowLoading: true,
+      isShowLoading: false,
 
       // Biến chứa toast message
       toast: useToast(),
@@ -238,6 +240,7 @@ export default {
 
       // thông tin bản ghi nguyên vật liệu
       material: {
+        materialName: "",
         expiryDate: {
           dateType: Resource.DateType.Day,
           dateValue: 0,
@@ -271,6 +274,15 @@ export default {
     };
   },
   methods: {
+    getMaterialCode(){
+      try {
+        if(this.param.method != Enum.FormMode.Edit){
+          this.debouncedGetCode();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
     /**
      * Hàm gọi đến khi click nút x trên form
      * Author: LHNAM (05/10/2022)
@@ -451,7 +463,6 @@ export default {
               })
               .then(() => {
                 this.saveModeActive(saveMode);
-                
               })
               .catch((e) => {
                 this.errorMsg = CommonFn.getError(e.response);
@@ -469,13 +480,10 @@ export default {
               data
             )
               .then(() => {
-                this.toast.success(
-                  Resource.Notice.UpdateSuccess,
-                  {
-                    timeout: 2000,
-                    hideProgressBar: false,
-                  }
-                );
+                this.toast.success(Resource.Notice.UpdateSuccess, {
+                  timeout: 2000,
+                  hideProgressBar: false,
+                });
               })
               .then(() => {
                 this.saveModeActive(saveMode);
@@ -507,7 +515,7 @@ export default {
             "title",
             Resource.ErrorMes.requireError
           );
-          this.errorMsg.push(Resource.ErrorMes.e003)
+          this.errorMsg.push(Resource.ErrorMes.e003);
           isValid = false;
         } else {
           this.$refs["materialCode"].classList.remove("red_border");
@@ -530,14 +538,14 @@ export default {
         }
       }
 
-      if(this.material.inventoryNumber){
-        let number; 
-        if(CommonFn.formatNumber(this.material.inventoryNumber)){
+      if (this.material.inventoryNumber) {
+        let number;
+        if (CommonFn.formatNumber(this.material.inventoryNumber)) {
           number = CommonFn.formatNumber(this.material.inventoryNumber);
         }
 
-        if(!number || number < 0){
-          if(this.$refs["inventoryNumber"]){
+        if (!number || number < 0) {
+          if (this.$refs["inventoryNumber"]) {
             this.$refs["inventoryNumber"].classList.add("red-border");
             this.$refs["inventoryNumber"].setAttribute(
               "title",
@@ -546,7 +554,7 @@ export default {
           }
           this.errorMsg.push(Resource.ErrorMes.e012);
           isValid = false;
-        }else{
+        } else {
           this.$refs["inventoryNumber"].classList.remove("red_border");
           this.$refs["inventoryNumber"].removeAttribute("title");
         }
@@ -563,7 +571,7 @@ export default {
     },
 
     saveModeActive(saveMode) {
-      this.$emit('returnResult', true);
+      this.$emit("returnResult", true);
       switch (saveMode) {
         case Enum.SaveMode.Save:
           if (
@@ -659,8 +667,11 @@ export default {
      * Hàm lấy mã nguyên vật liệu mới
      * Author: LHNAM (01/10/2022)
      */
-    getNewMaterialCode() {
-      Axios.CallAxios(Axios.Methods.Get, Axios.Url.NewMaterialCode)
+    getNewMaterialCode(code) {
+      Axios.CallAxios(
+        Axios.Methods.Get,
+        `${Axios.Url.NewMaterialCode}/?code=${code}`
+      )
         .then((res) => {
           this.material.materialCode = res.data;
           this.isShowLoading = false;
@@ -719,22 +730,23 @@ export default {
      * Hàm triển khai pop-up sau khi được mở
      * Author: LHNAM (01/10/2022)
      */
-    setupPopup() {
+    async setupPopup() {
       try {
         if (this.param) {
           switch (this.param.method) {
-            case Enum.FormMode.Add:
-              // Lấy mã nguyên vật liệu mới
-              this.getNewMaterialCode();
-              break;
+            // case Enum.FormMode.Add:
+            //   // Lấy mã nguyên vật liệu mới
+
+            //   break;
             case Enum.FormMode.Edit:
               // Lấy dữ liệu của bản ghi được chọn
+              this.isShowLoading = true;
               this.getMaterialDetail();
               break;
             case Enum.FormMode.Replication:
               // Lấy dữ liệu bản ghi được chọn và mã mới
-              this.getMaterialDetail();
-              this.getNewMaterialCode();
+              await this.getMaterialDetail();
+              this.getMaterialCode();
               break;
           }
         }
@@ -746,6 +758,11 @@ export default {
   created() {
     // khởi tạo pop-up
     this.setupPopup();
+
+    this.debouncedGetCode = debounce(() => {
+      let code = CommonFn.formatCode(this.material.materialName);
+      this.getNewMaterialCode(code);
+    }, 1500);
   },
   mounted() {
     if (this.$refs["materialName"]) {

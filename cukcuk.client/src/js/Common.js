@@ -91,4 +91,18 @@ CommonFn.formatNumber = num=>{
     }
 }
 
+CommonFn.formatCode = (name)=>{
+    let code;
+    if(name){
+        code = name.split(" ").filter(item=>{
+            return item != "";
+        }).map(item=>{
+            return item[0].toUpperCase();
+        }).join("");
+
+        return code;
+    }
+
+}
+
 export default CommonFn;

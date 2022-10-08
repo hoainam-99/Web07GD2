@@ -26,6 +26,6 @@ namespace Misa.CukCukMaterial.CTM.BL
         /// </summary>
         /// <returns>Mã nguyên vật liệu mới</returns>
         /// Author: LHNAM (01/10/2022)
-        public string GetNewMaterialCode();
+        public string GetNewMaterialCode(string code);
     }
 }

@@ -81,11 +81,11 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetNewMaterialCode()
+        public IActionResult GetNewMaterialCode([FromQuery] string code)
         {
             try
             {
-                string newCode = _materialBL.GetNewMaterialCode();
+                string newCode = _materialBL.GetNewMaterialCode(code);
 
                 if (!String.IsNullOrEmpty(newCode))
                 {

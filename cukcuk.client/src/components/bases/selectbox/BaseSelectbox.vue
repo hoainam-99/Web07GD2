@@ -53,7 +53,7 @@ export default {
      * Author: LHNAM (07/10/2022)
      */
     refreshValue(){
-      this.selectItem(0);
+      this.setValue();
     },
 
     /**

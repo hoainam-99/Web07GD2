@@ -97,15 +97,6 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Func_Get_Auto_MaterialCode().
-        /// </summary>
-        public static string Func_GetAuto_MaterialCode {
-            get {
-                return ResourceManager.GetString("Func_GetAuto_MaterialCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to e002.
         /// </summary>
         public static string MaterialCode_Duplicate {
@@ -138,6 +129,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         public static string NotContain {
             get {
                 return ResourceManager.GetString("NotContain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_material_GetNewCode.
+        /// </summary>
+        public static string Proc_GetAuto_MaterialCode {
+            get {
+                return ResourceManager.GetString("Proc_GetAuto_MaterialCode", resourceCulture);
             }
         }
         

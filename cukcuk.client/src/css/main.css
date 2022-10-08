@@ -30,8 +30,8 @@
     min-width: 180px;
 }
 
-.mw-300px{
-    min-width: 300px;
+.w-300px{
+    width: 300px;
 }
 
 .btn{

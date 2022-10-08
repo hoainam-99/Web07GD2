@@ -107,7 +107,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-300px">
+              <th class="w-300px">
                 <div class="hn-th">
                   <div class="hn-th__title">Ghi chú</div>
                   <BaseFilter
@@ -123,7 +123,9 @@
                   <div class="hn-th__filter">
                     <BaseSelectbox
                       :selectData="followSelectData"
+                      :inputValue="2"
                       @getFilter="getStatusFilter"
+                      ref="followFilter"
                     />
                   </div>
                 </div>
@@ -227,7 +229,7 @@ export default {
         {
           data: "Không",
           value: 2,
-          isChecked: true,
+          isChecked: false,
         },
         {
           data: "Có",

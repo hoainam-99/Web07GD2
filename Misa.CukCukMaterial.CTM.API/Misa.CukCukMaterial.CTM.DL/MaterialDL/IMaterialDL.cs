@@ -28,7 +28,7 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// </summary>
         /// <returns>Mã nguyên vật liệu mới</returns>
         /// Author: LHNAM (01/10/2022)
-        public string GetNewMaterialCode();
+        public string GetNewMaterialCode(string code);
 
         /// <summary>
         /// Hàm kiểm tra trùng đơn vị chuyển đổi

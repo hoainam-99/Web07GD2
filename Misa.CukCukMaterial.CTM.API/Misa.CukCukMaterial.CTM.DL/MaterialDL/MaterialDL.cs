@@ -70,15 +70,25 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// </summary>
         /// <returns>Mã nguyên vật liệu mới</returns>
         /// Author: LHNAM (01/10/2022)
-        public string GetNewMaterialCode()
+        public string GetNewMaterialCode(string code)
         {
-            string func = Common.Resource.ResourceVN.Func_GetAuto_MaterialCode;
+            string storedProd = Common.Resource.ResourceVN.Proc_GetAuto_MaterialCode;
+
+            var paramaters = new DynamicParameters();
+            paramaters.Add("@$Code", code);
 
             using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
             {
-                var newCode = mySqlConnection.QueryFirstOrDefault<string>(func);
+                var newCode = mySqlConnection.QueryFirstOrDefault<string>(storedProd, paramaters, commandType: System.Data.CommandType.StoredProcedure);
 
-                return newCode;
+                if(newCode != null)
+                {
+                    return String.Concat(code, newCode);
+                }
+                else
+                {
+                    return String.Concat(code, "1");
+                }
             }
         }
 
