@@ -33,7 +33,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: TahomaRegular;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 #app {

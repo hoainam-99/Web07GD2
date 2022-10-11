@@ -33,7 +33,7 @@
       <div class="page-size-dropdown cursor-pointer" @click="isShowPageSizeList = !isShowPageSizeList">
         <i class="fa-solid fa-caret-down"></i>
       </div>
-      <div class="pageSizeList" v-show="isShowPageSizeList">
+      <div class="pageSizeList" v-show="isShowPageSizeList" v-clickoutside="hidePageSizeList">
         <div class="pageSizeItem" v-for="item in pageSizeList" :key="item" @click="changePageSize(item)">{{item}}</div>
       </div>
     </div>
@@ -90,6 +90,18 @@ export default {
     },
   },
   methods: {
+    /**
+     * Hàm ẩn bảng chọn item
+     * Author: LHNAM (10/10/2022)
+     */
+    hidePageSizeList(){
+      this.isShowPageSizeList = false;
+    },
+
+    /**
+     * Hàm refresh lại phân trang
+     * Author: LHNAM (30/09/2022)
+     */
     refresh(){
       try {
         this.$emit('refresh', true);

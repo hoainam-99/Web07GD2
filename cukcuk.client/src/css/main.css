@@ -30,8 +30,8 @@
     min-width: 180px;
 }
 
-.w-300px{
-    width: 300px;
+.mw-300px{
+   min-width: 300px;
 }
 
 .btn{
@@ -39,6 +39,11 @@
     padding: 4px 12px;
     border: 1px solid #b4b4b4;
     cursor: pointer;
+}
+
+.btn:hover{
+    background-color: #fff;
+    border: 1px solid #0072bc;
 }
 
 .btn span{

@@ -8,6 +8,7 @@
         :propText="'unitName'"
         :inputValue="item.unitID"
         @getValue="getUnitID"
+        ref="unitCombobox"
       />
     </td>
     <td>
@@ -67,6 +68,16 @@ export default {
     };
   },
   methods: {
+    /**
+     * Hàm focus conversion unit
+     * Author: LHNAM (10/10/2022)
+     */
+    conversionUnitFocus(){
+      if(this.$refs.unitCombobox && this.$refs.unitCombobox.comboboxFocus){
+        this.$refs.unitCombobox.comboboxFocus();
+      }
+    },
+    
     /**
      * Hàm trả giá trị của item về cho component cha
      * Author: LHNAM (03/10/2022)

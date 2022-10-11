@@ -7,9 +7,10 @@ Resource.DateType = {
 }
 
 Resource.Notice = {
-    CreateSuccess: "Thêm mới nguyên vật liệu thành công.",  
-    UpdateSuccess: "Sửa thông tin nguyên vật liệu thành công.",
-
+    CreateMaterialSuccess: "Thêm mới nguyên vật liệu thành công.",  
+    UpdateMaterialSuccess: "Sửa thông tin nguyên vật liệu thành công.",
+    CreateUnitSuccess: "Thêm mới đơn vị tính thành công.",
+    CreateStockSuccess: "Thêm mới kho thành công."
 }
 
 Resource.ErrorMes = {
@@ -17,6 +18,7 @@ Resource.ErrorMes = {
     notFound_Error: "Bản ghi đã bị xóa hoặc không tồn tại trong hệ thống.",
     generate_Error: "Đã có lỗi xảy ra. Vui lòng liên hệ Misa để được hỗ trợ.",
     numberFormat_Error: "Số không đúng định dạng.",
+    conversionUnit_Unit_Diffrence: "Đơn vị chuyển đổi phải khác đơn vị tính.", 
     e002: "Mã nguyên vật liệu đã tồn tại trong hệ thống.",
     e003: "Mã nguyên vật liệu không được bỏ trống.",
     e004: "Tên nguyên vật liệu không được bỏ trống.",

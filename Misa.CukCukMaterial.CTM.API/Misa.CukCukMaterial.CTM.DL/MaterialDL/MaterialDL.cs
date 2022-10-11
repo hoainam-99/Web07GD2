@@ -83,7 +83,7 @@ namespace Misa.CukCukMaterial.CTM.DL
 
                 if(newCode != null)
                 {
-                    return String.Concat(code, newCode);
+                    return String.Concat(code, int.Parse(newCode) + 1);
                 }
                 else
                 {

@@ -1,26 +1,27 @@
 <template>
   <div class="selectbox" ref="selectbox">
-    <input type="text" class="sb-input" :value="selectedValue" disabled/>
+    <input type="text" class="sb-input" :value="selectedValue" @keydown="selecItemUpDown" />
     <div
       class="sb-dropicon"
-      :class="{ sb_dropicon_v2: isAddBtnExists }"
       @click="this.isShowSelectbox = !this.isShowSelectbox"
+      @keydown="selecItemUpDown"
     >
       <i class="fa-solid fa-caret-down"></i>
-    </div>
-    <div class="sb-addicon" v-if="isAddBtnExists">
-      <i class="fa-solid fa-plus"></i>
     </div>
     <div
       class="sb-box"
       v-show="isShowSelectbox"
       :style="{ top: selectboxHeight + 1 + 'px' }"
+      v-clickoutside="hideSelectbox"
     >
       <div
         class="sb-item"
+        :class="{'sb-item-hover': index == indexItemFocus }"
         v-for="(item, index) in datas"
         :key="index"
         @click="selectItem(index)"
+        :ref="'toFocus_' + index"
+        @keydown="selecItemUpDown"
       >
         {{ item.data }}
       </div>
@@ -29,30 +30,94 @@
 </template>
 
 <script>
+const keyCode = {
+  Enter: 13,
+  ArrowUp: 38,
+  ArrowDown: 40,
+  ESC: 27,
+};
 export default {
-  props: ["isAddBtnExists", "selectData", "inputValue"],
+  props: ["selectData", "inputValue"],
   data() {
     return {
       datas: this.selectData,
       selectboxHeight: 0,
       isShowSelectbox: false,
       selectedValue: null,
+      indexItemFocus: null,
     };
   },
   watch: {
-    selectData(){
+    selectData() {
       this.datas = this.selectData;
     },
-    inputValue(){
+    inputValue() {
       this.setValue();
-    }
+    },
   },
   methods: {
+    /**
+     * Hàm ẩn danh sách item
+     * Author: LHNAM (10/10/2022)
+     */
+    hideSelectbox(){
+      this.isShowSelectbox = false;
+    },
+
+    /**
+     * Hàm lựa chọn item bằng các phím lên xuống và phím enter
+     * Author: LHNAM (10/10/2022)
+     */
+    selecItemUpDown() {
+      var me = this;
+      var keyCodePress = event.keyCode;
+      var elToFocus = null;
+      switch (keyCodePress) {
+        case keyCode.Esc:
+          this.isShowSelectbox = false;
+          break;
+        case keyCode.ArrowDown:
+          this.isShowSelectbox = true;
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus + 1}`];
+          if (
+            this.indexItemFocus == null ||
+            !elToFocus ||
+            elToFocus.length == 0
+          ) {
+            this.indexItemFocus = 0;
+          } else {
+            this.indexItemFocus += 1;
+          }
+          break;
+        case keyCode.ArrowUp:
+          this.isShowSelectbox = true;
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus - 1}`];
+          if (
+            this.indexItemFocus == null ||
+            !elToFocus ||
+            elToFocus.length == 0
+          ) {
+            this.indexItemFocus = this.dataFilter.length - 1;
+          } else {
+            this.indexItemFocus -= 1;
+          }
+          break;
+        case keyCode.Enter:
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus}`];
+          if (elToFocus && elToFocus.length > 0) {
+            elToFocus[0].click();
+            this.isShowSelectbox = false;
+          }
+          break;
+        default:
+          break;
+      }
+    },
     /**
      * Hàm reset lại giá trị filter
      * Author: LHNAM (07/10/2022)
      */
-    refreshValue(){
+    refreshValue() {
       this.setValue();
     },
 
@@ -60,17 +125,17 @@ export default {
      * Hàm set giá trị cho datas
      * Author: LHNAM (02/10/2022)
      */
-    setValue(){
-      if(this.inputValue){
-        this.datas.forEach(item=>{
-          if(item.value == this.inputValue){
+    setValue() {
+      if (this.inputValue) {
+        this.datas.forEach((item) => {
+          if (item.value == this.inputValue) {
             item.isChecked = true;
-          }else{
+          } else {
             item.isChecked = false;
           }
         });
 
-        if(this.checkData && typeof this.checkData == 'function'){
+        if (this.checkData && typeof this.checkData == "function") {
           this.checkData();
         }
       }
@@ -104,7 +169,7 @@ export default {
           this.datas[index].isChecked = true;
 
           // Gán giá trị data của phần tử được chọn cho biến selectedValue
-          if(this.datas[index].data){
+          if (this.datas[index].data) {
             this.selectedValue = this.datas[index].data;
           }
 
@@ -128,7 +193,7 @@ export default {
           return item.isChecked == true;
         });
 
-        if(selectedItem){
+        if (selectedItem) {
           this.selectedValue = selectedItem.data;
           this.$emit("getFilter", selectedItem.value);
         }
@@ -178,10 +243,6 @@ export default {
   color: rgb(156, 156, 156);
 }
 
-.sb_dropicon_v2 {
-  right: 28px;
-}
-
 .sb-box {
   width: 100%;
   position: absolute;
@@ -200,9 +261,12 @@ export default {
   cursor: pointer;
 }
 
-.sb-item:hover{
+.sb-item:hover,
+.sb-item-hover {
   background-color: #ccc;
 }
+
+
 
 .sb-selected-item {
   background-color: #0072bc;

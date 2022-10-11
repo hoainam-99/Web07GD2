@@ -193,6 +193,10 @@
     <value>Proc_material_UpdateOne</value>
     <comment>tên proc sửa 1 bản ghi</comment>
   </data>
+  <data name="Proc_unit_CheckDuplicateName" xml:space="preserve">
+    <value>Proc_unit_CheckDuplicateName</value>
+    <comment>tên proc kiểm tra trùng tên đơn vị tính</comment>
+  </data>
   <data name="StartWith" xml:space="preserve">
     <value>+</value>
     <comment>Bắt đầu bằng</comment>

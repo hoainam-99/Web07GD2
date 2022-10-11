@@ -462,7 +462,7 @@ select {
   width: 100%;
   top: 100%;
   left: 0;
-  max-height: 256px;
+  max-height: 160px;
   overflow: auto;
   border-radius: 4px;
   background-color: #fff;
@@ -527,7 +527,7 @@ select {
 
 .combobox__item--selected {
   pointer-events: none;
-  background-color: #019160;
+  background-color: #0072bc;
   color: #fff;
 }
 </style>

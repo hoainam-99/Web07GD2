@@ -13,6 +13,7 @@
         </div>
         <div class="form-content">
           <div class="form-col w100per">
+            <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
             <div class="form-group" v-if="formatForm[this.param].codeLabel">
               <label for=""
                 >{{ formatForm[this.param].codeLabel }} <span>(*)</span></label
@@ -49,10 +50,15 @@
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất</span>
             </button>
-            <button class="btn cancel-btn" @click="closeFormOnClick">
+            <button
+              class="btn cancel-btn"
+              @click="closeFormOnClick"
+              ref="cancel"
+            >
               <i class="fa-solid fa-ban"></i>
               <span>Hủy bỏ</span>
             </button>
+            <div tabindex="0" @focus="tabKeyOnPress"></div>
           </div>
         </div>
       </div>
@@ -71,12 +77,16 @@ import Resource from "@/js/Resource";
 import Axios from "@/js/Axios";
 import NotificationPopup from "./NotificationPopup.vue";
 import CommonFn from "@/js/Common";
+import { useToast } from "vue-toastification";
 export default {
   props: {
     param: String,
   },
   data() {
     return {
+      // Biến chứa toast message
+      toast: useToast(),
+
       // Mảng chứa lỗi
       errorMsg: [],
 
@@ -105,6 +115,36 @@ export default {
   },
   methods: {
     /**
+     * Hàm để focus quay lại khi nhấn phím tab
+     * Author: LHNAM (14/09/2022)
+     */
+    tabKeyOnPress() {
+      try {
+        if (this.$refs.code) {
+          this.$refs.code.focus();
+        } else if (this.$refs.name) {
+          this.$refs.name.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm để focus quay lại khi nhấn phím shiftTab
+     * Author: LHNAM (14/09/2022)
+     */
+    shiftTabKeyOnPress() {
+      try {
+        if (this.$refs.cancel) {
+          this.$refs.cancel.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
      * Hàm trả về đóng bảng thông báo
      * Author: LHNAM (05/10/2022)
      */
@@ -126,8 +166,11 @@ export default {
      */
     saveData(postData) {
       Axios.CallAxios(Axios.Methods.Post, Axios.Url[this.param], postData)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          this.toast.success(Resource.Notice[`Create${this.param}Success`], {
+            timeout: 2000,
+            hideProgressBar: false,
+          });
           this.refreshData();
           this.closeFormOnClick();
         })
@@ -168,9 +211,9 @@ export default {
             "title",
             Resource.ErrorMes.requireError
           );
-          if(this.param == "Stock"){
+          if (this.param == "Stock") {
             this.errorMsg.push(Resource.ErrorMes.e007);
-          }else{
+          } else {
             this.errorMsg.push(Resource.ErrorMes.e009);
           }
           isValid = false;
@@ -203,7 +246,7 @@ export default {
         }
         if (isValid) {
           this.saveData(postData);
-        }else{
+        } else {
           this.notificationPopupParam = "error";
           this.isShowNotificationPopup = true;
         }
@@ -229,7 +272,6 @@ export default {
     } else if (this.$refs["name"]) {
       this.$refs["name"].focus();
     }
-    // console.log(Object.keys(this.$refs));
   },
   components: { NotificationPopup },
 };

@@ -57,7 +57,7 @@
         <table border="1">
           <thead class="hn-thead">
             <tr>
-              <th class="mw-200px">
+              <th style="min-width: 150px">
                 <div class="hn-th">
                   <div class="hn-th__title">Mã nguyên vật liệu</div>
                   <BaseFilter
@@ -67,7 +67,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-300px">
+              <th style="min-width: 250px">
                 <div class="hn-th">
                   <div class="hn-th__title">Tên nguyên vật liệu</div>
                   <BaseFilter
@@ -77,7 +77,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-180px">
+              <th style="min-width: 150px">
                 <div class="hn-th">
                   <div class="hn-th__title">Tính chất</div>
                   <BaseFilter
@@ -87,7 +87,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-180px">
+              <th style="min-width: 125px">
                 <div class="hn-th">
                   <div class="hn-th__title">ĐVT tính</div>
                   <BaseFilter
@@ -97,7 +97,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-180px">
+              <th style="min-width: 150px">
                 <div class="hn-th">
                   <div class="hn-th__title">Nhóm nguyên vật liệu</div>
                   <BaseFilter
@@ -107,7 +107,7 @@
                   />
                 </div>
               </th>
-              <th class="w-300px">
+              <th style="min-width: 250px">
                 <div class="hn-th">
                   <div class="hn-th__title">Ghi chú</div>
                   <BaseFilter
@@ -117,7 +117,7 @@
                   />
                 </div>
               </th>
-              <th class="mw-180px">
+              <th  style="min-width: 125px">
                 <div class="hn-th">
                   <div class="hn-th__title">Theo dõi</div>
                   <div class="hn-th__filter">
@@ -146,7 +146,7 @@
               <td>{{ material.feature }}</td>
               <td>{{ material.unitName }}</td>
               <td>{{ material.categoryName }}</td>
-              <td>{{ material.description }}</td>
+              <td class="hide-td" :title="material.description">{{ material.description }}</td>
               <td>
                 <div class="useCheck">
                   <input
@@ -287,6 +287,7 @@ export default {
     refreshFilter(){
       try {
         if(this.$refs){
+          console.log(this.$refs);
           Object.keys(this.$refs).forEach(item=>{
             if(this.$refs[item].refreshValue){
               this.$refs[item].refreshValue();

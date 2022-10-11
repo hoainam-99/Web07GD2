@@ -35,6 +35,12 @@ namespace Misa.CukCukMaterial.CTM.BL
                 Errors.Add(Common.Resource.ResourceVN.UnitName_NotEmpty);
             }
 
+            // trường unitName không được trùng
+            if (_unitDL.CheckDuplicateUnitName(method, record.UnitID, record.UnitName))
+            {
+                Errors.Add(Common.Resource.ResourceVN.UnitName_Duplicate);
+            }
+
             if (Errors.Count > 0)
             {
                 throw new ValidateException(Errors);

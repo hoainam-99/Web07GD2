@@ -22,6 +22,7 @@
             </div>
           </div>
         </div>
+        <!-- footer khi là pop-up xác nhận xóa -->
         <div class="form-footer" v-if="param == 'deleteConfirm'">
           <button class="btn cancel-btn" @click="closeNoticePopup">
             <span>Hủy bỏ</span>
@@ -29,10 +30,13 @@
           <button
             class="btn submit-btn"
             @click="returnConfirmPopupOnClick(true)"
+            :disabled="isDisabled"
           >
             Đồng ý
           </button>
         </div>
+
+        <!-- footer khi là pop-up xác nhận lưu -->
         <div class="form-footer" v-if="param == 'error'">
           <button class="btn help-btn">
             <span>Giúp</span>
@@ -41,6 +45,8 @@
             Đồng ý
           </button>
         </div>
+
+        <!-- footer khi là pop-up thông báo lỗi -->
         <div class="form-footer" v-if="param == 'saveConfirm'">
           <div class="form-footer__left">
             <button class="btn help-btn" @click="closeNoticePopup">
@@ -51,12 +57,14 @@
             <button
               class="btn save-btn"
               @click="returnConfirmPopupOnClick(false)"
+              :disabled="isDisabled"
             >
               <span>Không</span>
             </button>
             <button
               class="btn cancel-btn"
               @click="returnConfirmPopupOnClick(true)"
+              :disabled="isDisabled"
             >
               <span>Có</span>
             </button>
@@ -76,15 +84,22 @@ export default {
   },
   data() {
     return {
-      formMode: {
+      // biến dùng để vô hiệu hóa button
+      isDisabled: false,
+
+      // Object chứa các biến thể của pop-up
+      formMode: { 
+        // biến thể xác nhận xóa
         deleteConfirm: {
           header: "Thông báo",
           content: "",
         },
+        // biến thể xác nhận lưu
         saveConfirm: {
           header: "Thông báo",
           content: "Dữ liệu đã bị thay đổi, bạn có muốn cất không?",
         },
+        // biến thể thông báo lỗi
         error: {
           header: "Lỗi!",
           content: [],
@@ -126,6 +141,7 @@ export default {
      */
     returnConfirmPopupOnClick(e) {
       try {
+        this.isDisabled = true;
         this.$emit("returnConfirmPopup", e);
       } catch (error) {
         console.error(error);

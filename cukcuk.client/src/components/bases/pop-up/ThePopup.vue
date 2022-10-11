@@ -13,6 +13,7 @@
           <div class="form-row">
             <div class="form-col w50per">
               <div class="form-group">
+                <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
                 <label for="">Tên <span>(*)</span></label>
                 <input
                   type="text"
@@ -109,11 +110,12 @@
               <tbody>
                 <TheMaterialUnit
                   v-for="(item, index) in material.materialUnit"
-                  :key="index"
+                  :key="item.unitID"
                   :materialUnit="item"
                   :itemIndex="index"
                   :materialUnitName="material.unitName"
                   @returnValue="setMaterialUnitValue"
+                  :ref="`materialUnit${index}`"
                 />
               </tbody>
             </table>
@@ -123,7 +125,7 @@
               <i class="fa-solid fa-file-circle-plus"></i>
               <span>Thêm dòng</span>
             </button>
-            <button class="btn btn-delete" @click="removeMaterialUnitOnClick">
+            <button class="btn btn-delete" @click="removeMaterialUnitOnClick" :disabled="material.materialUnit.length == 0">
               <i class="fa-solid fa-x"></i>
               <span>Xóa dòng</span>
             </button>
@@ -137,18 +139,27 @@
             </button>
           </div>
           <div class="form-footer__right">
-            <button class="btn save-btn" @click="saveDataOnClick(1)">
+            <button
+              class="btn save-btn"
+              @click="saveDataOnClick(1)"
+              :disabled="isDisabled"
+            >
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất</span>
             </button>
-            <button class="btn save-add-btn" @click="saveDataOnClick(2)">
+            <button
+              class="btn save-add-btn"
+              @click="saveDataOnClick(2)"
+              :disabled="isDisabled"
+            >
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất & Thêm</span>
             </button>
-            <button class="btn cancel-btn" @click="closeFormOnClick">
+            <button class="btn cancel-btn" @click="closeFormOnClick" ref="cancel">
               <i class="fa-solid fa-ban"></i>
               <span>Hủy bỏ</span>
             </button>
+            <div tabindex="0" @focus="tabKeyOnPress"></div>
           </div>
         </div>
         <BaseLoading v-show="isShowLoading" />
@@ -205,6 +216,9 @@ export default {
   },
   data() {
     return {
+      // biến để vô hiệu hóa nút cất, cất và thêm
+      isDisabled: false,
+
       // Mảng chứa lỗi
       errorMsg: [],
 
@@ -263,20 +277,44 @@ export default {
         { data: "Tháng", value: Resource.DateType.Month, isChecked: false },
         { data: "Năm", value: Resource.DateType.Year, isChecked: false },
       ],
-
-      // Object đơn vị chuyển đổi
-      materialUnit: {
-        unitID: "",
-        conversionRate: "",
-        calculation: Enum.Calculation.Multiplication,
-        method: Enum.FormMode.Add,
-      },
     };
   },
   methods: {
-    getMaterialCode(){
+    /**
+     * Hàm để focus quay lại khi nhấn phím tab
+     * Author: LHNAM (14/09/2022)
+     */
+     tabKeyOnPress() {
       try {
-        if(this.param.method != Enum.FormMode.Edit){
+        if (this.$refs.materialName) {
+          this.$refs.materialName.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm để focus quay lại khi nhấn phím shiftTab
+     * Author: LHNAM (14/09/2022)
+     */
+    shiftTabKeyOnPress() {
+      try {
+        if (this.$refs.cancel) {
+          this.$refs.cancel.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm lấy mã nguyên vật liệu
+     * Author: LHNAM (08/10/2022)
+     */
+    getMaterialCode() {
+      try {
+        if (this.param.method != Enum.FormMode.Edit) {
           this.debouncedGetCode();
         }
       } catch (error) {
@@ -307,6 +345,7 @@ export default {
     closeNoticePopup(e) {
       if (this.isShowNotificationPopup) {
         this.isShowNotificationPopup = e;
+        this.isDisabled = false;
       }
     },
 
@@ -456,7 +495,7 @@ export default {
           case Enum.FormMode.Replication:
             Axios.CallAxios(Axios.Methods.Post, Axios.Url.Material, data)
               .then(() => {
-                this.toast.success(Resource.Notice.CreateSuccess, {
+                this.toast.success(Resource.Notice.CreateMaterialSuccess, {
                   timeout: 2000,
                   hideProgressBar: false,
                 });
@@ -465,6 +504,7 @@ export default {
                 this.saveModeActive(saveMode);
               })
               .catch((e) => {
+                this.isDisabled = false;
                 this.errorMsg = CommonFn.getError(e.response);
                 this.notificationPopupParam = "error";
                 this.isShowNotificationPopup = true;
@@ -489,6 +529,7 @@ export default {
                 this.saveModeActive(saveMode);
               })
               .catch((e) => {
+                this.isDisabled = false;
                 this.errorMsg = CommonFn.getError(e.response);
                 this.notificationPopupParam = "error";
                 this.isShowNotificationPopup = true;
@@ -567,6 +608,15 @@ export default {
       } else {
         this.isUnitRequired = false;
       }
+
+      if (this.material.materialUnit) {
+        this.material.materialUnit.forEach((item) => {
+          if (item.unitID == this.material.unitID) {
+            this.errorMsg.push(Resource.ErrorMes.conversionUnit_Unit_Diffrence);
+            isValid = false;
+          }
+        });
+      }
       return isValid;
     },
 
@@ -589,7 +639,10 @@ export default {
             },
             materialUnit: [],
           };
-          this.getNewMaterialCode();
+          // hủy vô hiệu hóa nút cất, cất và thêm
+          this.isDisabled = false;
+
+          // focus lại vào input nhập tên nguyên vật liệu
           if (this.$refs["materialName"]) {
             this.$refs["materialName"].focus();
           }
@@ -605,6 +658,9 @@ export default {
       try {
         let isValid = true,
           data = {};
+        // vô hiệu hóa nút cất, cất và thêm
+        this.isDisabled = true;
+
         if (this.validate && typeof this.validate == "function") {
           isValid = this.validate();
         }
@@ -656,7 +712,19 @@ export default {
     addMaterialUnitOnClick() {
       try {
         if (this.material.materialUnit) {
-          this.material.materialUnit.push(this.materialUnit);
+          this.material.materialUnit.push({
+            unitID: "",
+            conversionRate: "",
+            calculation: Enum.Calculation.Multiplication,
+            method: Enum.FormMode.Add,
+          });
+          
+          this.$nextTick(()=>{
+            let index = this.material.materialUnit.length - 1;
+            if(this.$refs[`materialUnit${index}`]){
+              this.$refs[`materialUnit${index}`][0].conversionUnitFocus();
+            }
+          })
         }
       } catch (error) {
         console.error(error);
@@ -699,9 +767,12 @@ export default {
             res.data.expiryDate
           );
           this.material = res.data;
-          this.isShowLoading = false;
         })
         .then(() => {
+          if (this.param.method == Enum.FormMode.Replication) {
+            this.getMaterialCode();
+          }
+          this.isShowLoading = false;
           this.isChange = false;
         })
         .catch((e) => {
@@ -730,23 +801,18 @@ export default {
      * Hàm triển khai pop-up sau khi được mở
      * Author: LHNAM (01/10/2022)
      */
-    async setupPopup() {
+    setupPopup() {
       try {
         if (this.param) {
           switch (this.param.method) {
-            // case Enum.FormMode.Add:
-            //   // Lấy mã nguyên vật liệu mới
-
-            //   break;
+            case Enum.FormMode.Add:
+              this.isChange = false;
+              break;
             case Enum.FormMode.Edit:
+              case Enum.FormMode.Replication:
               // Lấy dữ liệu của bản ghi được chọn
               this.isShowLoading = true;
               this.getMaterialDetail();
-              break;
-            case Enum.FormMode.Replication:
-              // Lấy dữ liệu bản ghi được chọn và mã mới
-              await this.getMaterialDetail();
-              this.getMaterialCode();
               break;
           }
         }
@@ -762,7 +828,7 @@ export default {
     this.debouncedGetCode = debounce(() => {
       let code = CommonFn.formatCode(this.material.materialName);
       this.getNewMaterialCode(code);
-    }, 1500);
+    }, 200);
   },
   mounted() {
     if (this.$refs["materialName"]) {

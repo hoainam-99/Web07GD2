@@ -37,7 +37,7 @@ export default {
         border-radius: 50%;
         border-width: 5px;
         border-style: solid;
-        border-right-color: #019160;
+        border-right-color: #0072bc;
         border-left-color: rgba(0, 0, 0, 0.3);
         border-top-color: rgba(0, 0, 0, 0.3);
         border-bottom-color: rgba(0, 0, 0, 0.3);

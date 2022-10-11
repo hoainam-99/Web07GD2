@@ -41,11 +41,6 @@
 .form-header__right .fa-solid{
     margin: 0 4px;
     cursor: pointer;
-    transition: 0.25s;
-}
-
-.form-header__right .fa-solid:hover{
-    transform: scale(1.5);
 }
 
 .form-content{

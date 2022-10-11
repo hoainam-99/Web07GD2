@@ -1,7 +1,7 @@
 .content {
   width: calc(100% - 200px);
   height: calc(100vh - 60px);
-  padding: 10px 10px 0 10px;
+  padding: 10px;
 }
 
 .content-header {
@@ -34,13 +34,20 @@
 }
 
 .content-toolbar button {
-  border: none;
+  border-top: none;
+  border-bottom: none;
+  border-color: rgb(232, 232, 232);
   margin: 0 8px;
+}
+
+.content-toolbar button:hover{
+  border-bottom: none;
+  border-top: none;
 }
 
 .content-table {
   width: 100%;
-  height: calc(100% - 56px);
+  height: calc(100% - 53px);
   overflow: auto;
 }
 
@@ -76,9 +83,6 @@ table {
   align-items: center;
   padding: 6px 4px;
   font-weight: normal;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .hn-th__title {
@@ -90,7 +94,7 @@ table {
 }
 
 .hn-tr {
-  height: 37px;
+  height: 24px;
 }
 
 .hn-selected-tr {
@@ -99,6 +103,10 @@ table {
 
 td {
   padding: 0 8px;
+}
+
+.hide-td{
+  max-width: 350px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

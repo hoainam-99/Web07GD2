@@ -178,6 +178,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proc_unit_CheckDuplicateName.
+        /// </summary>
+        public static string Proc_unit_CheckDuplicateName {
+            get {
+                return ResourceManager.GetString("Proc_unit_CheckDuplicateName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proc_{0}_CheckDuplicateCode.
         /// </summary>
         public static string Procedure_CheckDuplicateCode {
