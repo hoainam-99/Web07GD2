@@ -5,7 +5,6 @@
         <div class="form-header">
           <div class="form-header__left">{{ formMode[this.param].header }}</div>
           <div class="form-header__right">
-            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
             <i class="fa-solid fa-circle-xmark" @click="closeNoticePopup"></i>
           </div>
         </div>
@@ -18,7 +17,7 @@
               v-for="(item, index) in formMode['error'].content"
               :key="index"
             >
-              {{ item }}
+              {{ item.error }}
             </div>
           </div>
         </div>
@@ -76,6 +75,7 @@
 </template>
 
 <script>
+import Resource from '@/js/Resource';
 export default {
   props: {
     param: String,
@@ -114,7 +114,7 @@ export default {
      */
     closeNoticePopup() {
       try {
-        this.$emit("closeNoticePopup", false);
+        this.$emit(Resource.Emit.CloseForm, false);
       } catch (error) {
         console.error(error);
       }
@@ -142,7 +142,7 @@ export default {
     returnConfirmPopupOnClick(e) {
       try {
         this.isDisabled = true;
-        this.$emit("returnConfirmPopup", e);
+        this.$emit(Resource.Emit.ReturnConfirmPopup, e);
       } catch (error) {
         console.error(error);
       }

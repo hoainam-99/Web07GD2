@@ -76,18 +76,12 @@ CommonFn.getError = (e) => {
             case 404:
                 errors.push(Resource.ErrorMes.notFound_Error);
                 break;
-            case 500:
+            default:
                 errors.push(Resource.ErrorMes.generate_Error)
                 break;
         }
 
         return errors;
-    }
-}
-
-CommonFn.formatNumber = num => {
-    if (num) {
-        return parseFloat(num);
     }
 }
 
@@ -136,6 +130,15 @@ CommonFn.removeVietnameseTones = (str) => {
         " "
     );
     return str;
+}
+
+CommonFn.formatNumber = (number) => {
+    if (number && isNaN(number)) {
+        if (number.includes('.')) {
+            number = number.split('.').join('');
+        }
+        return parseFloat(number.replace(',', '.'));
+    }
 }
 
 export default CommonFn;

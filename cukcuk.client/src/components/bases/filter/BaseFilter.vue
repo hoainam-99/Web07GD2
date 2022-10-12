@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import Resource from '@/js/Resource';
 // import debounce from "lodash.debounce";
 export default {
   props: ["filterType"],
@@ -100,7 +101,7 @@ export default {
             break;
         }
       }
-      this.$emit("getFilter", filter);
+      this.$emit(Resource.Emit.GetFilter, filter);
     },
   },
   created() {

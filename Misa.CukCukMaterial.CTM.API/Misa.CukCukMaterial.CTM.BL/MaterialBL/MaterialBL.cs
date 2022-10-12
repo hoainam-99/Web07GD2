@@ -112,7 +112,7 @@ namespace Misa.CukCukMaterial.CTM.BL
                         condition.Add($"Status = \'2\'");
                         break;
                 }
-                
+
             }
 
             filterCondition = string.Join(" AND ", condition);
@@ -129,16 +129,22 @@ namespace Misa.CukCukMaterial.CTM.BL
         protected override void Validate(Method method, Material record)
         {
             // Mã đơn vị chuyển đổi không được trùng với đơn vị tính
-            if(record.MaterialUnit != null && record.MaterialUnit.Count() > 0)
+            if (record.MaterialUnit != null && record.MaterialUnit.Count() > 0)
             {
-                foreach(var item in record.MaterialUnit)
+                foreach (var item in record.MaterialUnit)
                 {
-                    if(item.UnitID == record.UnitID)
+                    if (item.UnitID == Guid.Empty)
+                    {
+                        Errors.Add(Common.Resource.ResourceVN.ConversionUnit_NotEmpty);
+                    }
+                    else if(item.UnitID == record.UnitID)
                     {
                         Errors.Add(Common.Resource.ResourceVN.ConversionUnit_And_Unit_NotSame);
                     }
                 }
-            } 
+            }
+
+            // Mã đơn vị chuyển đổi không được bỏ trống
 
             // mã nguyên vật liệu không được phép trùng
             if (_materialDL.CheckDuplicateCode(method, record.MaterialID, record.MaterialCode))

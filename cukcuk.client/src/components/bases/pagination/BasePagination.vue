@@ -40,13 +40,21 @@
   </div>
   <div class="navigation-right">
     <p>
-      Hiển thị {{ (pagination.pageNum - 1) * pagination.pageSize + 1 }} -
-      {{ pagination.pageNum * pagination.pageSize }} trên {{ totalCount }} kết quả
+      Hiển thị 
+      <span v-show="pagination.pageNum != ''">
+        {{ (pagination.pageNum - 1) * pagination.pageSize + 1 }} -
+        {{ pagination.pageNum * pagination.pageSize }}
+      </span>
+      <span v-show="pagination.pageNum == ''">
+        0
+      </span>
+       trên {{ totalCount }} kết quả
     </p>
   </div>
 </template>
 
 <script>
+import Resource from '@/js/Resource';
 export default {
   props: ["totalCount"],
   emits: ["refresh", "changePagination"],
@@ -70,14 +78,17 @@ export default {
   watch: {
     pagination: {
       handler(newValue) {
-        if(newValue.pageNum < 1){
-            this.pagination.pageNum = 1;
+        console.log(newValue);
+        if(newValue.pageNum != ''){
+          if(newValue.pageNum <= 0){
+              this.pagination.pageNum = 1;
+          }
+  
+          if(newValue.pageNum > this.totalPage){
+              this.pagination.pageNum = this.totalPage;
+          }
+          this.changePage();         
         }
-
-        if(newValue.pageNum > this.totalPage){
-            this.pagination.pageNum = this.totalPage;
-        }
-        this.changePage();        
       },
       deep: true,
     },
@@ -104,7 +115,7 @@ export default {
      */
     refresh(){
       try {
-        this.$emit('refresh', true);
+        this.$emit(Resource.Emit.Refresh, true);
       } catch (error) {
         console.error(error);
       }
@@ -132,7 +143,7 @@ export default {
      */
     changePage(){
         if(this.pagination){
-            this.$emit('changePagination', this.pagination);
+            this.$emit(Resource.Emit.ChangePagination, this.pagination);
             this.setNavigation();
         }
     },

@@ -10,7 +10,8 @@ Resource.Notice = {
     CreateMaterialSuccess: "Thêm mới nguyên vật liệu thành công.",  
     UpdateMaterialSuccess: "Sửa thông tin nguyên vật liệu thành công.",
     CreateUnitSuccess: "Thêm mới đơn vị tính thành công.",
-    CreateStockSuccess: "Thêm mới kho thành công."
+    CreateStockSuccess: "Thêm mới kho thành công.",
+    DeleteSuccess: "Xóa bản ghi thành công."
 }
 
 Resource.ErrorMes = {
@@ -28,14 +29,56 @@ Resource.ErrorMes = {
     e008: "Đơn vị tính đã tồn tại trong hệ thống.",
     e009: "Tên đơn vị tính không được để trống.",
     e010: "Mã đơn vị tính không được để trống.",
+    e011: "Đơn vị chuyển đổi không được giống với đơn vị tính.",
     e012: "Số lượng tồn tối thiểu không đúng định dạng.",
-    e011: "Đơn vị chuyển đổi không được giống với đơn vị tính."
+    e013: "Đơn vị chuyển dổi không được để trống."
 }
 
 Resource.Table = {
     Material : "Material",
     Unit : "Unit",
     Stock : "Stock"
+}
+
+Resource.KeyTable = {
+    MaterialID : "materialID",
+    MaterialCode: "materialCode",
+    MaterialName: "materialName",
+    ExpiryDate: "expiryDate",
+    UnitID: "unitID",
+    UnitName: "unitName",
+    CategoryID: "categoryID",
+    CategoryCode: "categoryCode",
+    CategoryName: "categoryName",
+    StockID: "stockID",
+    StockCode: "stockCode",
+    StockName: "stockName", 
+    Feature: "feature",
+    InventoryNumber: "inventoryNumber",
+    Description: "description",
+    Status: "status",
+    Calculation: "calculation",
+    ConversionRate: "conversionRate",
+    EmptyGuid: "00000000-0000-0000-0000-000000000000",
+}
+
+Resource.NotificationPopupParam = {
+    DeleteConfirm: "deleteConfirm",
+    SaveConfirm: "saveConfirm",
+    Error: "error"
+}
+
+Resource.Emit = {
+    ReturnResult: "returnResult",
+    CloseForm: "closeForm",
+    AddBtnOnClick: "addBtnOnClick",
+    GetValue: "getValue",
+    RefreshData: "refreshData",
+    Refresh: "refresh",
+    ReturnConfirmPopup: "returnConfirmPopup",
+    ChangePagination: "changePagination",
+    ReturnValue: "returnValue",
+    GetFilter: "getFilter"
 }
 
 export default Resource;

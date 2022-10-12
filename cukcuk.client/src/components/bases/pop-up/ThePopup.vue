@@ -5,7 +5,6 @@
         <div class="form-header">
           <div class="form-header__left">Thêm nguyên vật liệu</div>
           <div class="form-header__right">
-            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
             <i class="fa-solid fa-circle-xmark" @click="xBtnOnClick"></i>
           </div>
         </div>
@@ -34,6 +33,7 @@
                   :isRefresh="isRefreshUnit"
                   @getValue="getUnitID"
                   @addBtnOnClick="showAddUnitPopup"
+                  ref="unitID"
                 />
               </div>
               <div class="form-group">
@@ -76,11 +76,14 @@
               </div>
               <div class="form-group">
                 <label for="">SL tối thiểu</label>
-                <input
-                  type="text"
-                  class="w100per number-input"
-                  v-model="material.inventoryNumber"
-                  ref="inventoryNumber"
+                <BaseInput
+                  style="width: 100%"
+                  :fieldName="'inventoryNumber'"
+                  type="float"
+                  textRight
+                  lengthAfterComma="2"
+                  v-model:value="material.inventoryNumber"
+                  @onInput="getData"
                 />
               </div>
             </div>
@@ -125,7 +128,11 @@
               <i class="fa-solid fa-file-circle-plus"></i>
               <span>Thêm dòng</span>
             </button>
-            <button class="btn btn-delete" @click="removeMaterialUnitOnClick" :disabled="material.materialUnit.length == 0">
+            <button
+              class="btn btn-delete"
+              @click="removeMaterialUnitOnClick"
+              :disabled="material.materialUnit.length == 0"
+            >
               <i class="fa-solid fa-x"></i>
               <span>Xóa dòng</span>
             </button>
@@ -155,7 +162,11 @@
               <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất & Thêm</span>
             </button>
-            <button class="btn cancel-btn" @click="closeFormOnClick" ref="cancel">
+            <button
+              class="btn cancel-btn"
+              @click="closeFormOnClick"
+              ref="cancel"
+            >
               <i class="fa-solid fa-ban"></i>
               <span>Hủy bỏ</span>
             </button>
@@ -169,7 +180,7 @@
   <TheAddPopup
     v-if="isShowAddPopup"
     :param="addPopupParam"
-    @closeAddForm="closeAddForm"
+    @closeForm="closeAddForm"
     @refreshData="refreshCombobox"
   />
   <NotificationPopup
@@ -177,7 +188,7 @@
     :param="notificationPopupParam"
     :errorMsg="errorMsg"
     @returnConfirmPopup="returnConfirmPopup"
-    @closeNoticePopup="closeNoticePopup"
+    @closeForm="closeNoticePopup"
   />
 </template>
 
@@ -194,6 +205,7 @@ import TheMaterialUnit from "../materialUnit/TheMaterialUnit.vue";
 import TheAddPopup from "./TheAddPopup.vue";
 import NotificationPopup from "./NotificationPopup.vue";
 import BaseLoading from "../BaseLoading.vue";
+import BaseInput from "../BaseNumberInput/BaseInput.vue";
 
 export default {
   components: {
@@ -203,6 +215,7 @@ export default {
     TheAddPopup,
     NotificationPopup,
     BaseLoading,
+    BaseInput,
   },
   props: ["param"],
   emits: ["closeForm", "returnResult"],
@@ -260,6 +273,7 @@ export default {
           dateValue: 0,
         },
         materialUnit: [],
+        status: 2,
       },
 
       // ID của nguyên vật liệu được chọn
@@ -281,10 +295,22 @@ export default {
   },
   methods: {
     /**
+     * Hàm set value số cho số lượng tối thiểu
+     * @param {Object} data Object chứa nội dung trả về
+     * Author: LHNAM (12/10/2022)
+     */
+    getData(data) {
+      // check null
+      if (this.material && data) {
+        // Khi gọi hàm component sẽ trả về
+        this.material[data.fieldName] = data.val;
+      }
+    },
+    /**
      * Hàm để focus quay lại khi nhấn phím tab
      * Author: LHNAM (14/09/2022)
      */
-     tabKeyOnPress() {
+    tabKeyOnPress() {
       try {
         if (this.$refs.materialName) {
           this.$refs.materialName.focus();
@@ -328,7 +354,8 @@ export default {
     xBtnOnClick() {
       try {
         if (this.isChange && !this.isShowNotificationPopup) {
-          this.notificationPopupParam = "saveConfirm";
+          this.notificationPopupParam =
+            Resource.NotificationPopupParam.SaveConfirm;
           this.isShowNotificationPopup = true;
         } else {
           this.closeFormOnClick();
@@ -346,6 +373,20 @@ export default {
       if (this.isShowNotificationPopup) {
         this.isShowNotificationPopup = e;
         this.isDisabled = false;
+
+        if (this.errorMsg) {
+          if (this.$refs[this.errorMsg[0].key]) {
+            if (this.$refs[this.errorMsg[0].key].componentFocus) {
+              this.$refs[this.errorMsg[0].key].componentFocus();
+            } else if (this.$refs[this.errorMsg[0].key][0]) {
+              if (this.$refs[this.errorMsg[0].key][0].componentFocus) {
+                this.$refs[this.errorMsg[0].key][0].componentFocus();
+              }
+            } else {
+              this.$refs[this.errorMsg[0].key].focus();
+            }
+          }
+        }
       }
     },
 
@@ -412,7 +453,7 @@ export default {
      */
     showAddUnitPopup(e) {
       if (!this.isShowAddPopup && e) {
-        this.addPopupParam = "Unit";
+        this.addPopupParam = Resource.Table.Unit;
         this.isShowAddPopup = e;
       }
 
@@ -427,7 +468,7 @@ export default {
      */
     showAddStockPopup(e) {
       if (!this.isShowAddPopup && e) {
-        this.addPopupParam = "Stock";
+        this.addPopupParam = Resource.Table.Stock;
         this.isShowAddPopup = e;
       }
 
@@ -506,7 +547,8 @@ export default {
               .catch((e) => {
                 this.isDisabled = false;
                 this.errorMsg = CommonFn.getError(e.response);
-                this.notificationPopupParam = "error";
+                this.notificationPopupParam =
+                  Resource.NotificationPopupParam.Error;
                 this.isShowNotificationPopup = true;
               })
               .finally(() => {
@@ -520,7 +562,7 @@ export default {
               data
             )
               .then(() => {
-                this.toast.success(Resource.Notice.UpdateSuccess, {
+                this.toast.success(Resource.Notice.UpdateMaterialSuccess, {
                   timeout: 2000,
                   hideProgressBar: false,
                 });
@@ -531,7 +573,8 @@ export default {
               .catch((e) => {
                 this.isDisabled = false;
                 this.errorMsg = CommonFn.getError(e.response);
-                this.notificationPopupParam = "error";
+                this.notificationPopupParam =
+                  Resource.NotificationPopupParam.Error;
                 this.isShowNotificationPopup = true;
               })
               .finally(() => {
@@ -546,74 +589,120 @@ export default {
      * Hàm validate dữ liệu
      * Author: LHNAM (03/10/2022)
      */
-    validate() {
+    validate(data) {
       let isValid = true;
       this.errorMsg = [];
-      if (!this.material.materialCode) {
-        if (this.$refs["materialCode"]) {
-          this.$refs["materialCode"].classList.add("red-border");
-          this.$refs["materialCode"].setAttribute(
+
+      // validate tên nguyên vật liệu bỏ trống
+      if (!data.materialName) {
+        if (this.$refs[Resource.KeyTable.MaterialName]) {
+          this.$refs[Resource.KeyTable.MaterialName].classList.add(
+            "red-border"
+          );
+          this.$refs[Resource.KeyTable.MaterialName].setAttribute(
             "title",
             Resource.ErrorMes.requireError
           );
-          this.errorMsg.push(Resource.ErrorMes.e003);
+          this.errorMsg.push({
+            key: Resource.KeyTable.MaterialName,
+            error: Resource.ErrorMes.e004,
+          });
           isValid = false;
-        } else {
-          this.$refs["materialCode"].classList.remove("red_border");
-          this.$refs["materialCode"].removeAttribute("title");
         }
+      } else {
+        this.$refs[Resource.KeyTable.MaterialName].classList.remove(
+          "red-border"
+        );
+        this.$refs[Resource.KeyTable.MaterialName].removeAttribute("title");
       }
 
-      if (!this.material.materialName) {
-        if (this.$refs["materialName"]) {
-          this.$refs["materialName"].classList.add("red-border");
-          this.$refs["materialName"].setAttribute(
+      if (!data.materialCode) {
+        if (this.$refs[Resource.KeyTable.MaterialCode]) {
+          this.$refs[Resource.KeyTable.MaterialCode].classList.add(
+            "red-border"
+          );
+          this.$refs[Resource.KeyTable.MaterialCode].setAttribute(
             "title",
             Resource.ErrorMes.requireError
           );
-          this.errorMsg.push(Resource.ErrorMes.e004);
+          this.errorMsg.push({
+            key: Resource.KeyTable.MaterialCode,
+            error: Resource.ErrorMes.e003,
+          });
           isValid = false;
-        } else {
-          this.$refs["materialName"].classList.remove("red_border");
-          this.$refs["materialName"].removeAttribute("title");
         }
+      } else {
+        this.$refs[Resource.KeyTable.MaterialCode].classList.remove(
+          "red-border"
+        );
+        this.$refs[Resource.KeyTable.MaterialCode].removeAttribute("title");
       }
 
-      if (this.material.inventoryNumber) {
-        let number;
-        if (CommonFn.formatNumber(this.material.inventoryNumber)) {
-          number = CommonFn.formatNumber(this.material.inventoryNumber);
-        }
+      if (data.inventoryNumber) {
+        let number = parseFloat(data.inventoryNumber);
 
         if (!number || number < 0) {
-          if (this.$refs["inventoryNumber"]) {
-            this.$refs["inventoryNumber"].classList.add("red-border");
-            this.$refs["inventoryNumber"].setAttribute(
+          if (this.$refs[Resource.KeyTable.InventoryNumber]) {
+            this.$refs[Resource.KeyTable.InventoryNumber].classList.add(
+              "red-border"
+            );
+            this.$refs[Resource.KeyTable.InventoryNumber].setAttribute(
               "title",
               Resource.ErrorMes.numberFormat_Error
             );
           }
-          this.errorMsg.push(Resource.ErrorMes.e012);
+          this.errorMsg.push({
+            key: Resource.KeyTable.InventoryNumber,
+            error: Resource.ErrorMes.e012,
+          });
           isValid = false;
-        } else {
-          this.$refs["inventoryNumber"].classList.remove("red_border");
-          this.$refs["inventoryNumber"].removeAttribute("title");
         }
+      } else {
+        this.$refs[Resource.KeyTable.InventoryNumber].classList.remove(
+          "red-border"
+        );
+        this.$refs[Resource.KeyTable.InventoryNumber].removeAttribute("title");
       }
 
-      if (!this.material.unitID) {
+      if (!data.unitID) {
         this.isUnitRequired = true;
-        this.errorMsg.push(Resource.ErrorMes.e010);
+        this.errorMsg.push({
+          key: Resource.KeyTable.UnitID,
+          error: Resource.ErrorMes.e010,
+        });
         isValid = false;
       } else {
         this.isUnitRequired = false;
       }
 
-      if (this.material.materialUnit) {
-        this.material.materialUnit.forEach((item) => {
-          if (item.unitID == this.material.unitID) {
-            this.errorMsg.push(Resource.ErrorMes.conversionUnit_Unit_Diffrence);
+      if (data.materialUnit) {
+        this.material.materialUnit.forEach((item, index) => {
+          if (item.unitID == data.unitID) {
+            this.errorMsg.push({
+              key: `materialUnit${index}`,
+              error: Resource.ErrorMes.conversionUnit_Unit_Diffrence,
+            });
+
+            if (this.$refs[`materialUnit${index}`]) {
+              this.$refs[`materialUnit${index}`][0].isError = true;
+            }
+
             isValid = false;
+          } else if (item.unitID == Resource.KeyTable.EmptyGuid) {
+            this.errorMsg.push({
+              key: `materialUnit${index}`,
+              error: Resource.ErrorMes.e013,
+            });
+
+            if (this.$refs[`materialUnit${index}`]) {
+              this.$refs[`materialUnit${index}`][0].isError = true;
+            }
+
+            isValid = false;
+          } else {
+            if (this.$refs[`materialUnit${index}`]) {
+              this.$refs[`materialUnit${index}`][0].isError = false;
+            }
           }
         });
       }
@@ -621,8 +710,10 @@ export default {
     },
 
     saveModeActive(saveMode) {
-      this.$emit("returnResult", true);
+      this.$emit(Resource.Emit.ReturnResult, true);
+      // kiểm tra kiểu lưu được chuyển vào
       switch (saveMode) {
+        // trường hợp bấm nút cất
         case Enum.SaveMode.Save:
           if (
             this.closeFormOnClick &&
@@ -631,6 +722,7 @@ export default {
             this.closeFormOnClick();
           }
           break;
+        // trường hợp bấm nút cất và thêm
         case Enum.SaveMode.SaveAdd:
           this.material = {
             expiryDate: {
@@ -643,8 +735,8 @@ export default {
           this.isDisabled = false;
 
           // focus lại vào input nhập tên nguyên vật liệu
-          if (this.$refs["materialName"]) {
-            this.$refs["materialName"].focus();
+          if (this.$refs[Resource.KeyTable.MaterialName]) {
+            this.$refs[Resource.KeyTable.MaterialName].focus();
           }
           break;
       }
@@ -660,21 +752,37 @@ export default {
           data = {};
         // vô hiệu hóa nút cất, cất và thêm
         this.isDisabled = true;
+        
+        // gán dữ liệu của nguyên vật liệu
+        data = Object.assign({}, this.material);
+
+        // format lại giá trị ngày tháng năm
+        data.expiryDate = CommonFn.formatOutputExpiryDate(
+          this.material.expiryDate
+        );
+
+        // format lại dữ liệu kiểu số
+        data.inventoryNumber = CommonFn.formatNumber(data.inventoryNumber);
+        data.materialUnit = data.materialUnit.map((item) => {
+          return {
+            unitID: item.unitID,
+            conversionRate: CommonFn.formatNumber(item.conversionRate),
+            calculation: item.calculation,
+            method: item.method
+          };
+        });
+
+        // xóa trường ID nguyên vật liệu
+        delete data.materialID;
 
         if (this.validate && typeof this.validate == "function") {
-          isValid = this.validate();
+          isValid = this.validate(data);
         }
 
         if (isValid) {
-          data = Object.assign({}, this.material);
-          data.expiryDate = CommonFn.formatOutputExpiryDate(
-            this.material.expiryDate
-          );
-          delete data.materialID;
-
           this.saveMaterial(data, saveMode);
         } else {
-          this.notificationPopupParam = "error";
+          this.notificationPopupParam = Resource.NotificationPopupParam.Error;
           this.isShowNotificationPopup = true;
         }
       } catch (error) {
@@ -713,18 +821,18 @@ export default {
       try {
         if (this.material.materialUnit) {
           this.material.materialUnit.push({
-            unitID: "",
+            unitID: Resource.KeyTable.EmptyGuid,
             conversionRate: "",
             calculation: Enum.Calculation.Multiplication,
             method: Enum.FormMode.Add,
           });
-          
-          this.$nextTick(()=>{
+
+          this.$nextTick(() => {
             let index = this.material.materialUnit.length - 1;
-            if(this.$refs[`materialUnit${index}`]){
-              this.$refs[`materialUnit${index}`][0].conversionUnitFocus();
+            if (this.$refs[`materialUnit${index}`]) {
+              this.$refs[`materialUnit${index}`][0].componentFocus();
             }
-          })
+          });
         }
       } catch (error) {
         console.error(error);
@@ -746,7 +854,7 @@ export default {
         })
         .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);
-          this.notificationPopupParam = "error";
+          this.notificationPopupParam = Resource.NotificationPopupParam.Error;
           this.isShowNotificationPopup = true;
         })
         .finally(() => {
@@ -777,7 +885,7 @@ export default {
         })
         .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);
-          this.notificationPopupParam = "error";
+          this.notificationPopupParam = Resource.NotificationPopupParam.Error;
           this.isShowNotificationPopup = true;
         })
         .finally(() => {
@@ -791,7 +899,7 @@ export default {
      */
     closeFormOnClick() {
       try {
-        this.$emit("closeForm", false);
+        this.$emit(Resource.Emit.CloseForm, false);
       } catch (error) {
         console.error(error);
       }
@@ -809,7 +917,7 @@ export default {
               this.isChange = false;
               break;
             case Enum.FormMode.Edit:
-              case Enum.FormMode.Replication:
+            case Enum.FormMode.Replication:
               // Lấy dữ liệu của bản ghi được chọn
               this.isShowLoading = true;
               this.getMaterialDetail();
@@ -831,8 +939,8 @@ export default {
     }, 200);
   },
   mounted() {
-    if (this.$refs["materialName"]) {
-      this.$refs["materialName"].focus();
+    if (this.$refs[Resource.KeyTable.MaterialName]) {
+      this.$refs[Resource.KeyTable.MaterialName].focus();
     }
   },
 };

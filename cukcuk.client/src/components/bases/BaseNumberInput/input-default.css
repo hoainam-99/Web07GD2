@@ -1,0 +1,113 @@
+.field-input{
+    position: relative;
+}
+
+.input{
+    border: 1px solid #bbbbbb;
+    border-radius: 2px;
+    min-height: 26px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+}
+
+.input:hover{
+    outline: 1px solid #e2e2e2;
+}
+
+.input:focus{
+    outline: none;
+}
+
+input[type="datetime-local"]{
+    padding-right: 10px;
+}
+
+.input::placeholder{
+    font-size: 13px;
+    color: #bbbbbb;
+}
+
+.input:focus{
+    border: 1px solid #0072bc;
+    font-size: 13px;
+    color: #000000;
+}
+
+/* Icon clear input */
+.clear-input{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 500px;
+    height: 15px;
+    width: 15px;
+    background-color: #d1d1d1;
+    color: #7d7d7d;
+    font-size: 10px;
+    cursor: pointer;
+    visibility: visible;
+}
+
+.show-clear-input{
+    visibility: visible;
+}
+
+/* Thông báo lỗi */
+.error-input,
+.error-input:focus{
+    border-color: #FF4747;
+}
+
+.error-input-alert{
+    z-index: 101;
+    position: absolute;
+    background-color: #ff7777;
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    top: calc(100% + 2px);
+    min-width: 200px;
+    max-width: 300px;
+    left: calc(50%);
+    transform: translateX(-50%);
+}
+
+.error-input-arrow{
+    position: absolute;
+    background-color: #ff7777;
+    bottom: calc(100% - 6px);
+    left: calc(50% - 4px);
+    height: 12px;
+    width: 12px;
+    transform: rotate(45deg);
+    /* transform: translateX(-50%); */
+    z-index: 0;
+}
+
+.error-input-content{
+    position: relative;
+    z-index: 1;
+}
+
+.input-text-left{
+    text-align: left;
+}
+
+.input-text-right{
+    text-align: right;
+}
+
+.input-text-center{
+    text-align: center;
+}
+
+

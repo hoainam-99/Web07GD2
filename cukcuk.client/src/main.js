@@ -1,15 +1,16 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import Enum from "./js/Enum.js";
 import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import VueNumberFormat from 'vue-number-format'
 
 const app = createApp(App);
 
 app.config.globalProperties.$filters = {
-    formatCalculation(cal){
+    formatCalculation(cal) {
         let newCal;
-        if(cal){
+        if (cal) {
             switch (cal) {
                 case Enum.Calculation.Multiplication:
                     newCal = "*";
@@ -49,6 +50,8 @@ app.directive("clickoutside", {
         document.body.removeEventListener("click", el.clickOutsideEvent);
     },
 });
+
+app.use(VueNumberFormat, {prefix: '', decimal: ',', thousand: '.'})
 
 app.use(Toast, {
     transition: "Vue-Toastification__bounce",

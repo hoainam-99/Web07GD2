@@ -125,6 +125,10 @@
     <value>e011</value>
     <comment>Đơn vị chuyển đổi không được giống với đơn vị tính.</comment>
   </data>
+  <data name="ConversionUnit_NotEmpty" xml:space="preserve">
+    <value>e013</value>
+    <comment>Mã đơn vị chuyển đổi không được bỏ trống</comment>
+  </data>
   <data name="EndWith" xml:space="preserve">
     <value>-</value>
     <comment>Kết thúc bằng</comment>

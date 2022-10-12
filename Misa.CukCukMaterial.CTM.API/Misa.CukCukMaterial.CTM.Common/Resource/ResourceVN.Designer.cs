@@ -79,6 +79,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e013.
+        /// </summary>
+        public static string ConversionUnit_NotEmpty {
+            get {
+                return ResourceManager.GetString("ConversionUnit_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to -.
         /// </summary>
         public static string EndWith {

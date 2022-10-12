@@ -73,6 +73,7 @@
   </div>
 </template>
 <script>
+import Resource from '@/js/Resource';
 /* eslint-disable */
 /**
  * Gán sự kiện nhấn click chuột ra ngoài combobox data (ẩn data list đi)
@@ -143,6 +144,11 @@ const keyCode = {
   ESC: 27,
 };
 
+const emitFunc = {
+  AddBtnOnClick: "addBtnOnClick",
+  GetValue: "getValue",
+}
+
 export default {
   name: "MSCombobox",
   directives: {
@@ -201,7 +207,7 @@ export default {
      */
     btnAddOnClick() {
       try {
-        this.$emit("addBtnOnClick", true);
+        this.$emit(emitFunc.AddBtnOnClick, true);
       } catch (error) {
         console.error(error);
       }
@@ -211,7 +217,7 @@ export default {
      * Hàm focus input
      * Author: LHNAM (20/09/2022)
      */
-    comboboxFocus() {
+    componentFocus() {
       if (this.$refs["combobox__input"]) {
         setTimeout(this.$refs["combobox__input"].focus(), 500);
       }
@@ -268,7 +274,7 @@ export default {
       this.textInput = text; // Hiển thị text lên input.
       this.indexItemSelected = index;
       this.isShowListData = false;
-      this.$emit("getValue", value, text, item);
+      this.$emit(emitFunc.GetValue, value, text, item);
     },
 
     /**

@@ -63,11 +63,13 @@
     flex-direction: row;
     margin-bottom: 4px;
     align-items: center;
+    height: 28px;
 }
 
 .form-group input,
 .form-row textarea{
     /* margin: 0 4px; */
+    height: 100%;
     border: 1px solid #ccc;
     padding: 2px 4px;
     outline: none;

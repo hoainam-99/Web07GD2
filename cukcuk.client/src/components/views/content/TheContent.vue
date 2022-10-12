@@ -177,7 +177,7 @@
     :param="notificationPopupParam"
     :deleteItem="selectedMaterial"
     @returnConfirmPopup="returnConfirmPopup"
-    @closeNoticePopup="closeNoticePopup"
+    @closeForm="closeNoticePopup"
   />
 </template>
 
@@ -193,6 +193,7 @@ import BaseFilter from "../../bases/filter/BaseFilter.vue";
 import BasePagination from "@/components/bases/pagination/BasePagination.vue";
 import NotificationPopup from "@/components/bases/pop-up/NotificationPopup.vue";
 import BaseLoading from "@/components/bases/BaseLoading.vue";
+import Resource from '@/js/Resource';
 export default {
   components: {
     ThePopup,
@@ -287,7 +288,6 @@ export default {
     refreshFilter(){
       try {
         if(this.$refs){
-          console.log(this.$refs);
           Object.keys(this.$refs).forEach(item=>{
             if(this.$refs[item].refreshValue){
               this.$refs[item].refreshValue();
@@ -343,7 +343,7 @@ export default {
         `${Axios.Url.Material}/${this.param.id}`
       )
         .then(() => {
-          this.toast.success("Xóa bản ghi thành công.", {
+          this.toast.success(Resource.Notice.DeleteSuccess, {
             timeout: 2000,
             hideProgressBar: false,
           });
@@ -352,7 +352,7 @@ export default {
         })
         .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);
-          this.notificationPopupParam = "error";
+          this.notificationPopupParam = Resource.NotificationPopupParam.Error;
           this.isShowNotificationPopup = true;
         })
         .finally(() => {
@@ -434,7 +434,7 @@ export default {
         })
         .catch((e) => {
           this.errorMsg = CommonFn.getError(e.response);
-          this.notificationPopupParam = "error";
+          this.notificationPopupParam = Resource.NotificationPopupParam.Error;
           this.isShowNotificationPopup = true;
         })
         .finally(() => {
@@ -574,7 +574,7 @@ export default {
             break;
           case Enum.FormMode.Delete:
             if (this.param.id) {
-              this.notificationPopupParam = "deleteConfirm";
+              this.notificationPopupParam = Resource.NotificationPopupParam.DeleteConfirm;
               this.isShowNotificationPopup = true;
             }
             break;

@@ -7,7 +7,6 @@
             {{ formatForm[this.param].header }}
           </div>
           <div class="form-header__right">
-            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
             <i class="fa-solid fa-circle-xmark" @click="closeFormOnClick"></i>
           </div>
         </div>
@@ -158,7 +157,7 @@ export default {
      * Author: LHNAM (05/10/2022)
      */
     refreshData() {
-      this.$emit("refreshData", this.param);
+      this.$emit(Resource.Emit.RefreshData, this.param);
     },
     /**
      * Hàm đẩy data lên api
@@ -260,7 +259,7 @@ export default {
      */
     closeFormOnClick() {
       try {
-        this.$emit("closeAddForm", false);
+        this.$emit(Resource.Emit.CloseForm, false);
       } catch (error) {
         console.error(error);
       }
