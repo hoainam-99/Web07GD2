@@ -1,14 +1,18 @@
 <template>
   <div class="navigation-left">
     <div class="prev-page">
-      <i
-        class="fa-solid fa-angles-left cursor-pointer"
+      <button
         @click="firstPageOnClick"
-      ></i>
-      <i
-        class="fa-solid fa-chevron-left cursor-pointer"
+        :disabled="pagination.pageNum == 1 || pagination.pageNum == ''"
+      >
+        <i class="fa-solid fa-angles-left cursor-pointer"></i>
+      </button>
+      <button
         @click="prevPageOnClick"
-      ></i>
+        :disabled="pagination.pageNum == 1 || pagination.pageNum == ''"
+      >
+        <i class="fa-solid fa-chevron-left cursor-pointer"></i>
+      </button>
     </div>
     <div class="select-page">
       <span>Trang</span>
@@ -16,51 +20,73 @@
       <span>trên {{ totalPage }}</span>
     </div>
     <div class="next-page">
-      <i
-        class="fa-solid fa-chevron-right cursor-pointer"
+      <button
         @click="nextPageOnClick"
-      ></i>
-      <i
-        class="fa-solid fa-angles-right cursor-pointer"
+        :disabled="pagination.pageNum == totalPage || pagination.pageNum == ''"
+      >
+        <i class="fa-solid fa-chevron-right cursor-pointer"></i>
+      </button>
+      <button
         @click="finalPageOnClick"
-      ></i>
+        :disabled="pagination.pageNum == totalPage || pagination.pageNum == ''"
+      >
+        <i class="fa-solid fa-angles-right cursor-pointer"></i>
+      </button>
     </div>
     <div class="refresh-page cursor-pointer" @click="refresh">
       <i class="fa-solid fa-rotate-right"></i>
     </div>
     <div class="page-sizing">
-      <input type="text" pattern="[0-9]" disabled :value="pagination.pageSize" />
-      <div class="page-size-dropdown cursor-pointer" @click="isShowPageSizeList = !isShowPageSizeList">
+      <input
+        type="text"
+        pattern="[0-9]"
+        disabled
+        :value="pagination.pageSize"
+      />
+      <div
+        class="page-size-dropdown cursor-pointer"
+        @click="isShowPageSizeList = !isShowPageSizeList"
+      >
         <i class="fa-solid fa-caret-down"></i>
       </div>
-      <div class="pageSizeList" v-show="isShowPageSizeList" v-clickoutside="hidePageSizeList">
-        <div class="pageSizeItem" v-for="item in pageSizeList" :key="item" @click="changePageSize(item)">{{item}}</div>
+      <div
+        class="pageSizeList"
+        v-show="isShowPageSizeList"
+        v-clickoutside="hidePageSizeList"
+      >
+        <div
+          class="pageSizeItem"
+          v-for="item in pageSizeList"
+          :key="item"
+          @click="changePageSize(item)"
+          :class="{ selectedPageSizeItem: item == pagination.pageSize }"
+        >
+          {{ item }}
+        </div>
       </div>
     </div>
   </div>
   <div class="navigation-right">
     <p>
-      Hiển thị 
+      Hiển thị
       <span v-show="pagination.pageNum != ''">
         {{ (pagination.pageNum - 1) * pagination.pageSize + 1 }} -
         {{ pagination.pageNum * pagination.pageSize }}
       </span>
-      <span v-show="pagination.pageNum == ''">
-        0
-      </span>
-       trên {{ totalCount }} kết quả
+      <span v-show="pagination.pageNum == ''"> 0 </span>
+      trên {{ totalCount }} kết quả
     </p>
   </div>
 </template>
 
 <script>
-import Resource from '@/js/Resource';
+import Resource from "@/js/Resource";
 export default {
   props: ["totalCount"],
   emits: ["refresh", "changePagination"],
   data() {
     return {
-        // Biến phân trang
+      // Biến phân trang
       pagination: {
         pageNum: 1,
         pageSize: 50,
@@ -78,22 +104,24 @@ export default {
   watch: {
     pagination: {
       handler(newValue) {
-        console.log(newValue);
-        if(newValue.pageNum != ''){
-          if(newValue.pageNum <= 0){
+        if (newValue.pageNum != "") {
+          if (parseInt(newValue.pageNum)) {
+            this.pagination.pageNum = parseInt(newValue.pageNum);
+
+            if (parseInt(newValue.pageNum) <= 0) {
               this.pagination.pageNum = 1;
-          }
-  
-          if(newValue.pageNum > this.totalPage){
+            }
+            if (parseInt(newValue.pageNum) > this.totalPage) {
               this.pagination.pageNum = this.totalPage;
+            }
+            this.changePage();
           }
-          this.changePage();         
         }
       },
       deep: true,
     },
     totalCount() {
-        // xét số trang về 1
+      // xét số trang về 1
       this.pagination.pageNum = 1;
 
       // tính lại tổng số trang
@@ -102,10 +130,18 @@ export default {
   },
   methods: {
     /**
+     * Hàm xét lại phân trang
+     */
+    resetPagination() {
+      if(this.pagination){
+        this.pagination = { pageNum: 1, pageSize: 50 };
+      }
+    },
+    /**
      * Hàm ẩn bảng chọn item
      * Author: LHNAM (10/10/2022)
      */
-    hidePageSizeList(){
+    hidePageSizeList() {
       this.isShowPageSizeList = false;
     },
 
@@ -113,7 +149,7 @@ export default {
      * Hàm refresh lại phân trang
      * Author: LHNAM (30/09/2022)
      */
-    refresh(){
+    refresh() {
       try {
         this.$emit(Resource.Emit.Refresh, true);
       } catch (error) {
@@ -126,10 +162,11 @@ export default {
      * @param {int} pageSize Số bản ghi trên 1 trang
      * Author: LHNAM (30/09/2022)
      */
-    changePageSize(pageSize){
+    changePageSize(pageSize) {
       try {
-        if(pageSize){
+        if (pageSize) {
           this.pagination.pageSize = pageSize;
+          this.pagination.pageNum = 1;
           this.isShowPageSizeList = false;
         }
       } catch (error) {
@@ -138,14 +175,14 @@ export default {
     },
 
     /**
-     * Hàm trả về giá trị cho component cha khi thay đổi số trang và kích thước trang 
+     * Hàm trả về giá trị cho component cha khi thay đổi số trang và kích thước trang
      * Author: LHNAM (30/09/2022)
      */
-    changePage(){
-        if(this.pagination){
-            this.$emit(Resource.Emit.ChangePagination, this.pagination);
-            this.setNavigation();
-        }
+    changePage() {
+      if (this.pagination) {
+        this.$emit(Resource.Emit.ChangePagination, this.pagination);
+        this.setNavigation();
+      }
     },
 
     /**
@@ -159,7 +196,7 @@ export default {
     },
 
     /**
-     * Hàm sự kiện click sang trang cuối 
+     * Hàm sự kiện click sang trang cuối
      * Author: LHNAM (30/09/2022)
      */
     finalPageOnClick() {
@@ -169,7 +206,7 @@ export default {
     },
 
     /**
-     * Hàm sự kiện click về trang trước 
+     * Hàm sự kiện click về trang trước
      * Author: LHNAM (30/09/2022)
      */
     prevPageOnClick() {
@@ -202,7 +239,7 @@ export default {
       }
     },
   },
-  created(){
+  created() {
     // trả về giá trị phân trang cho component cha
     this.changePage();
   },
@@ -210,6 +247,10 @@ export default {
 </script>
 
 <style scoped>
+button {
+  border: none;
+  background-color: #fff;
+}
 .navigation-left {
   height: 100%;
   padding: 3px 0;
@@ -272,7 +313,7 @@ export default {
   border: 1px solid #ccc;
 }
 
-.pageSizeList{
+.pageSizeList {
   position: absolute;
   bottom: 24px;
   left: 0;
@@ -281,7 +322,7 @@ export default {
   width: 100%;
 }
 
-.pageSizeItem{
+.pageSizeItem {
   width: 100%;
   height: 24px;
   padding: 4px 8px;
@@ -289,8 +330,17 @@ export default {
   cursor: pointer;
 }
 
-.pageSizeItem:hover{
+.pageSizeItem:hover {
   background-color: #ccc;
+}
+
+.selectedPageSizeItem {
+  background: #0042bc;
+  color: #fff;
+}
+
+.selectedPageSizeItem:hover {
+  background: #528cf8;
 }
 
 .navigation-right {

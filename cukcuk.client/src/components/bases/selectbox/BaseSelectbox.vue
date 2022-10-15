@@ -16,11 +16,11 @@
     >
       <div
         class="sb-item"
-        :class="{'sb-item-hover': index == indexItemFocus }"
         v-for="(item, index) in datas"
         :key="index"
         @click="selectItem(index)"
         :ref="'toFocus_' + index"
+        :class="{'sb-selected-item': index == indexItemFocus }"
         @keydown="selecItemUpDown"
       >
         {{ item.data }}
@@ -40,10 +40,19 @@ export default {
   props: ["selectData", "inputValue"],
   data() {
     return {
+      // dữ liệu mảng các select item
       datas: this.selectData,
+
+      // chiều cao của selectbox
       selectboxHeight: 0,
+
+      // biến hiển thị bảng select
       isShowSelectbox: false,
+
+      // biến chứa item được select
       selectedValue: null,
+
+      // biến chứa index của item được select
       indexItemFocus: null,
     };
   },
@@ -127,9 +136,10 @@ export default {
      */
     setValue() {
       if (this.inputValue) {
-        this.datas.forEach((item) => {
+        this.datas.forEach((item, index) => {
           if (item.value == this.inputValue) {
             item.isChecked = true;
+            this.indexItemFocus = index;
           } else {
             item.isChecked = false;
           }
@@ -150,6 +160,7 @@ export default {
         this.selectboxHeight = this.$refs["selectbox"].clientHeight;
       }
     },
+
     /**
      * Hàm được gọi dến sau khi chọn giá trị
      * @param {int} index index của phần tử trong mảng được chọn
@@ -167,6 +178,7 @@ export default {
 
           // gán giá trị true cho isChecked của phần tử được chọn
           this.datas[index].isChecked = true;
+          this.indexItemFocus = index;
 
           // Gán giá trị data của phần tử được chọn cho biến selectedValue
           if (this.datas[index].data) {
@@ -183,6 +195,7 @@ export default {
         console.error(error);
       }
     },
+    
     /**
      * Hàm check data đầu vào
      * Author: LHNAM (28/09/2022)
@@ -243,6 +256,14 @@ export default {
   color: rgb(156, 156, 156);
 }
 
+.sb-dropicon .fa-caret-down{
+  font-size: 16px;
+}
+
+/* .sb-dropicon .fa-caret-down:hover{
+  color: #ccc;
+} */
+
 .sb-box {
   width: 100%;
   position: absolute;
@@ -266,9 +287,12 @@ export default {
   background-color: #ccc;
 }
 
-
-
 .sb-selected-item {
+  background-color: #0072bc;
+  color: #fff;
+}
+
+.sb-selected-item:hover{
   background-color: #0072bc;
 }
 </style>

@@ -2,6 +2,7 @@
   <div class="field-input">
     <input
       class="input"
+      maxlength="11"
       :type="type || 'text'"
       :class="{
         'error-input': valRequired,

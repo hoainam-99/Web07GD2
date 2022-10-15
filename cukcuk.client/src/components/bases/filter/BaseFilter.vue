@@ -1,19 +1,27 @@
 <template>
   <div class="hn-filter" @keydown.prevent.enter="emitFilter">
-    <div
-      class="hn-filter__btn"
-      @click="isShowFilterSelect = !isShowFilterSelect"
-    >
-      {{ filterSelectedItem }}
+    <div class="hn-filter-main">
+      <input class="hn-filter__input" v-model="filterValue" />
+      <div
+        class="hn-filter__btn"
+        @click="isShowFilterSelect = !isShowFilterSelect"
+      >
+        {{ filterSelectedItem }}
+      </div>
     </div>
-    <input class="hn-filter__input" v-model="filterValue" />
-    <div class="hn-filter__select" v-show="isShowFilterSelect">
+    <div
+      class="hn-filter__select"
+      v-show="isShowFilterSelect"
+      v-clickoutside="selectOnClickoutside"
+    >
       <div
         class="hn-filter__item"
         v-for="(item, index) in filterItems"
         :key="index"
         @click="changeFilter(index)"
-        :class="{ 'hn-filter__selected-item': item.value == filterSelectedItem }"
+        :class="{
+          'hn-filter__selected-item': item.value == filterSelectedItem,
+        }"
       >
         {{ item.value }} : {{ item.note }}
       </div>
@@ -22,12 +30,13 @@
 </template>
 
 <script>
-import Resource from '@/js/Resource';
+import Resource from "@/js/Resource";
 // import debounce from "lodash.debounce";
 export default {
   props: ["filterType"],
   data() {
     return {
+      // biến chứa các loại filter
       filterList: {
         string: [
           { value: "*", note: "Chứa" },
@@ -44,9 +53,17 @@ export default {
           { value: ">=", note: "Lớn hơn hoặc bằng" },
         ],
       },
+
+      // phương thức filer
       filterItems: [],
+
+      // phương thức filter được chọn
       filterSelectedItem: "",
+
+      // value của filter
       filterValue: "",
+
+      // hiển thị danh sách của phương thức filter
       isShowFilterSelect: false,
     };
   },
@@ -56,10 +73,30 @@ export default {
     },
   },
   methods: {
-    refreshValue(){
+    /**
+     * Hàm click out side để tắt danh sách chọn phương thức filter
+     * Author: LHNAM (14/10/2022)
+     */
+    selectOnClickoutside() {
+      try {
+        if (this.isShowFilterSelect) {
+          this.isShowFilterSelect = false;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm set lại giá trị lọc
+     * Author: LHNAM (13/10/2022)
+     */
+    refreshValue() {
       this.filterValue = "";
+      this.filterSelectedItem = this.filterItems[0].value;
       this.emitFilter();
     },
+    
     /**
      * Hàm thay đổi phép filter khi click chọn
      * @param {int} index index của phần tử được chọn
@@ -127,6 +164,13 @@ export default {
   height: 28px;
   cursor: pointer;
   position: relative;
+}
+
+.hn-filter-main{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row-reverse;
 }
 
 .hn-filter__btn {

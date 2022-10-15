@@ -2,6 +2,12 @@ import Resource from "./Resource.js";
 
 var CommonFn = CommonFn || {};
 
+/**
+ * Hàm định dạng lại ngày hết hạn sử dụng khi lấy từ db về
+ * @param {datetime} date Ngày
+ * @returns định dạng ngày
+ * Author: LHNAM (04/10/2022)
+ */
 CommonFn.formatInputExpiryDate = (date) => {
     let returnValue = {
         dateType: Resource.DateType.Day,
@@ -36,6 +42,12 @@ CommonFn.formatInputExpiryDate = (date) => {
     return returnValue;
 }
 
+/**
+ * Hàm định dạng lại ngày hết hạn sử dụng khi đẩy dữ liệu lên db
+ * @param {datetime} date Ngày
+ * @returns định dạng ngày
+ * Author: LHNAM (04/10/2022)
+ */
 CommonFn.formatOutputExpiryDate = (expDate) => {
     if (expDate) {
         let newExpDate = new Date(),
@@ -62,6 +74,12 @@ CommonFn.formatOutputExpiryDate = (expDate) => {
     }
 }
 
+/**
+ * Hàm xử lý lỗi trả về 
+ * @param {Object} e Lỗi cần được xử lý
+ * @returns Cảnh báo
+ * Author: LHNAM (07/10/2022)
+ */
 CommonFn.getError = (e) => {
     let errors = [],
         resError;
@@ -70,14 +88,18 @@ CommonFn.getError = (e) => {
             case 400:
                 resError = e.data.userMsg.error;
                 resError.forEach(item => {
-                    errors.push(Resource.ErrorMes[item]);
+                    if(Resource.ErrorMes[item]){
+                        errors.push(Resource.ErrorMes[item]);
+                    }else{
+                        errors.push(Resource.ErrorMes.generate_Error);
+                    }
                 });
                 break;
             case 404:
                 errors.push(Resource.ErrorMes.notFound_Error);
                 break;
             default:
-                errors.push(Resource.ErrorMes.generate_Error)
+                errors.push(Resource.ErrorMes.generate_Error);
                 break;
         }
 
@@ -85,6 +107,12 @@ CommonFn.getError = (e) => {
     }
 }
 
+/**
+ * Hàm xử lý tên để trả về mã
+ * @param {String} name tên nguyên vật liệu
+ * @returns đầu mã nguyên vật liệu
+ * Author: LHNAM (09/10/2022)
+ */
 CommonFn.formatCode = (name) => {
     let code;
 
@@ -100,6 +128,11 @@ CommonFn.formatCode = (name) => {
 
 }
 
+/**
+ * Hàm xử lý những từ tiếng việt chuyển thành tiếng anh
+ * @param {String} str 
+ * Author: LHNAM (09/10/2022)
+ */
 CommonFn.removeVietnameseTones = (str) => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -132,6 +165,12 @@ CommonFn.removeVietnameseTones = (str) => {
     return str;
 }
 
+/**
+ * Hàm format lại chuỗi số thành dạng float để req lên server
+ * @param {String} number chuỗi số được truyền vào
+ * @returns Số được convert lại sang float
+ * Author: LHNAM (14/10/2022)
+ */
 CommonFn.formatNumber = (number) => {
     if (number && isNaN(number)) {
         if (number.includes('.')) {

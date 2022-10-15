@@ -17,56 +17,73 @@
               v-for="(item, index) in formMode['error'].content"
               :key="index"
             >
-              {{ item.error }}
+              <span v-if="item.error">{{ item.error }}</span>
+              <span v-else>{{ item }}</span>
             </div>
           </div>
         </div>
         <!-- footer khi là pop-up xác nhận xóa -->
         <div class="form-footer" v-if="param == 'deleteConfirm'">
-          <button class="btn cancel-btn" @click="closeNoticePopup">
-            <span>Hủy bỏ</span>
-          </button>
-          <button
-            class="btn submit-btn"
-            @click="returnConfirmPopupOnClick(true)"
-            :disabled="isDisabled"
-          >
-            Đồng ý
-          </button>
-        </div>
-
-        <!-- footer khi là pop-up xác nhận lưu -->
-        <div class="form-footer" v-if="param == 'error'">
-          <button class="btn help-btn">
-            <span>Giúp</span>
-          </button>
-          <button class="btn submit-btn" @click="closeNoticePopup">
-            Đồng ý
-          </button>
+          <div class="form-footer__left">
+            <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
+            <button class="btn cancel-btn" @click="closeNoticePopup" ref="bt1">
+              <span>Hủy bỏ</span>
+            </button>
+          </div>
+          <div class="form-footer__right">
+            <button
+              class="btn submit-btn"
+              @click="returnConfirmPopupOnClick(true)"
+              :disabled="isDisabled"
+              ref="bt2"
+            >
+              Đồng ý
+            </button>
+            <div tabindex="0" @focus="tabKeyOnPress"></div>
+          </div>
         </div>
 
         <!-- footer khi là pop-up thông báo lỗi -->
+        <div class="form-footer" v-if="param == 'error'">
+          <div class="form-footer__left">
+            <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
+            <button class="btn help-btn" ref="bt1">
+              <span>Giúp</span>
+            </button>
+          </div>
+          <div class="form-footer__right">
+            <button class="btn submit-btn" @click="closeNoticePopup" ref="bt2">
+              Đồng ý
+            </button>
+            <div tabindex="0" @focus="tabKeyOnPress"></div>
+          </div>
+        </div>
+
+        <!-- footer khi là pop-up xác nhận lưu -->
         <div class="form-footer" v-if="param == 'saveConfirm'">
           <div class="form-footer__left">
-            <button class="btn help-btn" @click="closeNoticePopup">
+            <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
+            <button class="btn cancel-btn" @click="closeNoticePopup" ref="bt1">
               <span>Hủy</span>
             </button>
           </div>
           <div class="form-footer__right">
             <button
-              class="btn save-btn"
+              class="btn cancel-btn"
               @click="returnConfirmPopupOnClick(false)"
               :disabled="isDisabled"
             >
               <span>Không</span>
             </button>
             <button
-              class="btn cancel-btn"
+              class="btn save-btn"
               @click="returnConfirmPopupOnClick(true)"
               :disabled="isDisabled"
+              ref="bt2"
             >
               <span>Có</span>
             </button>
+            <div tabindex="0" @focus="tabKeyOnPress"></div>
           </div>
         </div>
       </div>
@@ -75,12 +92,19 @@
 </template>
 
 <script>
-import Resource from '@/js/Resource';
+import Resource from "@/js/Resource";
 export default {
   props: {
     param: String,
     deleteItem: Object,
     errorMsg: Array,
+  },
+  watch: {
+    errorMsg() {
+      if (this.setData) {
+        this.setData();
+      }
+    },
   },
   data() {
     return {
@@ -88,7 +112,7 @@ export default {
       isDisabled: false,
 
       // Object chứa các biến thể của pop-up
-      formMode: { 
+      formMode: {
         // biến thể xác nhận xóa
         deleteConfirm: {
           header: "Thông báo",
@@ -108,6 +132,34 @@ export default {
     };
   },
   methods: {
+    /**
+     * Hàm để focus quay lại khi nhấn phím shiftTab
+     * Author: LHNAM (14/09/2022)
+     */
+    shiftTabKeyOnPress() {
+      try {
+        if (this.$refs.bt2) {
+          this.$refs.bt2.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
+     * Hàm để focus quay lại khi nhấn phím tab
+     * Author: LHNAM (14/09/2022)
+     */
+    tabKeyOnPress() {
+      try {
+        if (this.$refs.bt1) {
+          this.$refs.bt1.focus();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     /**
      * Hàm sự kiện đóng bảng thông báo
      * Author: LHNAM (05/10/2022)
@@ -149,7 +201,14 @@ export default {
     },
   },
   created() {
+    // chạy hàm khi khởi động pop-up
     this.setData();
+  },
+  mounted() {
+    // focus vào button
+    if (this.$refs["bt1"]) {
+      this.$refs["bt1"].focus();
+    }
   },
 };
 </script>

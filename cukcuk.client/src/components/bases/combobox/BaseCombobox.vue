@@ -17,7 +17,6 @@
       @keydown="selecItemUpDown"
       tabindex="-1"
     >
-      <i class="fa-solid fa-plus"></i>
     </button>
     <button
       class="button combobox__button"
@@ -73,7 +72,7 @@
   </div>
 </template>
 <script>
-import Resource from '@/js/Resource';
+import Resource from "@/js/Resource";
 /* eslint-disable */
 /**
  * Gán sự kiện nhấn click chuột ra ngoài combobox data (ẩn data list đi)
@@ -147,7 +146,7 @@ const keyCode = {
 const emitFunc = {
   AddBtnOnClick: "addBtnOnClick",
   GetValue: "getValue",
-}
+};
 
 export default {
   name: "MSCombobox",
@@ -178,7 +177,7 @@ export default {
     isRefresh(newValue) {
       if (newValue) {
         this.getApi();
-      } 
+      }
     },
     inputValue: function (newValue) {
       try {
@@ -274,7 +273,7 @@ export default {
       this.textInput = text; // Hiển thị text lên input.
       this.indexItemSelected = index;
       this.isShowListData = false;
-      this.$emit(emitFunc.GetValue, value, text, item);
+      this.$emit("getValue", value, text, item);
     },
 
     /**
@@ -363,7 +362,7 @@ export default {
     },
 
     /**
-     * Hàm lấy dữ liệu từ api 
+     * Hàm lấy dữ liệu từ api
      * Author: LHNAM (05/10/2022)
      */
     getApi() {
@@ -411,7 +410,7 @@ export default {
   height: 100%;
   position: relative;
   /* flex-direction: row; */
-  border-radius: 4px;
+  /* border-radius: 4px; */
   box-sizing: border-box;
 }
 
@@ -439,9 +438,9 @@ select {
   justify-content: center;
   color: rgb(90, 90, 90);
   right: 28px;
-  top: 0px;
+  top: 1px;
   border: none;
-  height: 100%;
+  height: 24px;
   width: auto;
   background-color: #fff;
   cursor: pointer;
@@ -451,13 +450,23 @@ select {
   opacity: 0.5;
 }
 
+.combobox__button .fa-caret-down{
+  font-size: 16px;
+}
+
 .dropdown-btn {
   width: 14px;
   height: 14px;
 }
 
 .add-icon {
-  right: 8px;
+  top: 2px; 
+  right: 1px;
+  background-image: url(https://cukcukcomnew.misacdn.net/QLNH/resources/Image/add-blue-icon.png);
+  background-repeat: no-repeat;
+  background-position: 6px 4px;
+  width: 24px;
+  height: 24px;
 }
 
 .combobox__data {
@@ -470,9 +479,9 @@ select {
   left: 0;
   max-height: 160px;
   overflow: auto;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   background-color: #fff;
-  box-shadow: 0px 3px 6px #00000016;
+  /* box-shadow: 0px 3px 6px #00000016; */
   z-index: 999;
 }
 

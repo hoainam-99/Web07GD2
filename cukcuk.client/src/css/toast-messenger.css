@@ -1,0 +1,29 @@
+.Vue-Toastification__toast
+{
+  height:56px !important;
+  min-width: 450px !important;
+  max-width: 650px !important;
+  min-height: 56px !important;
+  border-radius: 4px !important;
+}
+.Vue-Toastification__toast-body{
+  line-height: 13px !important;
+  font-weight: 500 !important;
+}
+.Vue-Toastification__close-button{
+  line-height: 13px !important;
+  color:black !important
+}
+.Vue-Toastification__icon{
+  width: 18px !important;
+  height: 18px !important;
+  margin: -3px 15px auto 0 !important;
+}
+.Vue-Toastification__toast--error{
+  background-color: #fff !important;
+  color: #ff5252 !important;
+}
+.Vue-Toastification__toast--success{
+    background-color: #fff !important;
+    color: #4caf50 !important;
+  }

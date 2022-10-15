@@ -46,7 +46,6 @@
           </div>
           <div class="form-footer__right">
             <button class="btn save-btn" @click="saveDataOnClick">
-              <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất</span>
             </button>
             <button
@@ -54,7 +53,6 @@
               @click="closeFormOnClick"
               ref="cancel"
             >
-              <i class="fa-solid fa-ban"></i>
               <span>Hủy bỏ</span>
             </button>
             <div tabindex="0" @focus="tabKeyOnPress"></div>
@@ -66,7 +64,7 @@
       v-if="isShowNotificationPopup"
       :param="notificationPopupParam"
       :errorMsg="errorMsg"
-      @closeNoticePopup="closeNoticePopup"
+      @closeForm="closeNoticePopup"
     />
   </div>
 </template>
@@ -156,8 +154,8 @@ export default {
      * Hàm trả về emit để reset lại form
      * Author: LHNAM (05/10/2022)
      */
-    refreshData() {
-      this.$emit(Resource.Emit.RefreshData, this.param);
+    refreshData(id) {
+      this.$emit(Resource.Emit.RefreshData, this.param, id);
     },
     /**
      * Hàm đẩy data lên api
@@ -165,12 +163,12 @@ export default {
      */
     saveData(postData) {
       Axios.CallAxios(Axios.Methods.Post, Axios.Url[this.param], postData)
-        .then(() => {
+        .then((res) => {
           this.toast.success(Resource.Notice[`Create${this.param}Success`], {
             timeout: 2000,
             hideProgressBar: false,
           });
-          this.refreshData();
+          this.refreshData(res.data);
           this.closeFormOnClick();
         })
         .catch((e) => {

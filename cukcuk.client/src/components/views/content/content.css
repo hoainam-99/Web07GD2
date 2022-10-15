@@ -31,28 +31,24 @@
   width: 100%;
   border: 1px solid #b4b4b4;
   background-color: rgb(232, 232, 232);
+  padding: 2px 0;
 }
 
 .content-toolbar button {
-  border-top: none;
-  border-bottom: none;
   border-color: rgb(232, 232, 232);
   margin: 0 8px;
-}
-
-.content-toolbar button:hover{
-  border-bottom: none;
-  border-top: none;
 }
 
 .content-table {
   width: 100%;
   height: calc(100% - 53px);
   overflow: auto;
+  border-right: 1px solid #b4b4b4;
+  border-bottom: 6px;
 }
 
 .content-table::-webkit-scrollbar {
-  height: 10px;
+  height: 15px;
   width: 10px;
   background-color: #fff;
 }
@@ -98,7 +94,7 @@ table {
 }
 
 .hn-selected-tr {
-  background-color: #94c7ea;
+  background-color: #e0f4ff;
 }
 
 td {

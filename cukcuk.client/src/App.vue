@@ -23,6 +23,7 @@ export default {
 
 <style>
   @import url(./css/main.css);
+  @import url(./css/toast-messenger.css);
 @font-face {
   font-family: TahomaRegular;
   src: url(./assets/TahomaFont/Tahoma\ Regular\ font.ttf);

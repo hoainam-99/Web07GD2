@@ -54,7 +54,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
                 [FromQuery] string? category,
                 [FromQuery] string? description,
                 [FromQuery] Status? status,
-                [FromQuery] int pageSize = 10, 
+                [FromQuery] int pageSize = 10,
                 [FromQuery] int pageNum = 1)
         {
             try
@@ -62,7 +62,7 @@ namespace Misa.CukCukMaterial.CTM.API.NTier.Controllers
                 var filterData = new FilterData { MaterialCode = materialCode, MaterialName = materialName, Feature = feature, Unit = unit, Category = category, Description = description, Status = status, PageSize = pageSize, PageNum = pageNum };
                 var multipleResult = _materialBL.FilterRecords(filterData);
 
-                if(multipleResult != null)
+                if (multipleResult != null)
                 {
                     return StatusCode(200, multipleResult);
                 }

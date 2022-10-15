@@ -53,12 +53,15 @@
 }
 
 .header-right__icon{
-    font-size: 21px;
     height: inherit;
     width: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.header-right__icon i{
+    font-size: 21px;
 }
 
 .header-right__icon:hover{

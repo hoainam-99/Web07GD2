@@ -79,6 +79,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e014.
+        /// </summary>
+        public static string ConversionUnit_Duplicate {
+            get {
+                return ResourceManager.GetString("ConversionUnit_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to e013.
         /// </summary>
         public static string ConversionUnit_NotEmpty {
@@ -183,6 +192,15 @@ namespace Misa.CukCukMaterial.CTM.Common.Resource {
         public static string Proc_material_UpdateOne {
             get {
                 return ResourceManager.GetString("Proc_material_UpdateOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_materialunit_CheckDuplicate.
+        /// </summary>
+        public static string Proc_materialUnit_CheckDuplicate {
+            get {
+                return ResourceManager.GetString("Proc_materialUnit_CheckDuplicate", resourceCulture);
             }
         }
         

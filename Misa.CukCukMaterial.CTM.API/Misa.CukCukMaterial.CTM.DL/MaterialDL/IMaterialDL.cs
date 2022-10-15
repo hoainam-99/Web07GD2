@@ -37,6 +37,6 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// <param name="materialID">ID nguyên vật liệu cần kiểm tra</param>
         /// <param name="unitID">ID đơn vị chuyển đổi cần kiểm tra</param>
         /// <returns>Giá trị true/false dùng để validate</returns>
-        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID);
+        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID, Guid oldUnitID);
     }
 }

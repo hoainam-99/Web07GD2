@@ -10,9 +10,16 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// Class enum trạng thái theo dõi nguyên vật liệu
     /// </summary>
     public enum Status
-    {   
-        Follow = 1,      // Sử dụng
-        StopFollow = 2   // Ngưng sử dụng
+    {
+        /// <summary>
+        /// Sử dụng
+        /// </summary>
+        Follow = 1,
+
+        /// <summary>
+        /// Ngưng sử dụng
+        /// </summary>
+        StopFollow = 2    
     }
 
     /// <summary>
@@ -20,9 +27,20 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// </summary>
     public enum Method
     {
-        Add = 1,        // Phương thức thêm mới
-        Edit = 2,       // Phương thức sửa
-        Delete = 3,     // Phương thức xóa
+        /// <summary>
+        /// Phương thức thêm mới
+        /// </summary>
+        Add = 1,
+
+        /// <summary>
+        /// Phương thức sửa
+        /// </summary>
+        Edit = 2,     
+
+        /// <summary>
+        /// Phương thức xóa
+        /// </summary>
+        Delete = 3,     
     }
 
     /// <summary>
@@ -30,7 +48,14 @@ namespace Misa.CukCukMaterial.CTM.Common
     /// </summary>
     public enum Calculation
     {
-        Multiplication = 1, // Phép nhân
-        Division = 2,       // Phép chia
+        /// <summary>
+        /// Phép nhân
+        /// </summary>
+        Multiplication = 1,  
+
+        /// <summary>
+        /// Phép chia
+        /// </summary>
+        Division = 2,       
     }
 }

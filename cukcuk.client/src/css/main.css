@@ -1,53 +1,64 @@
-.number-input{
-    text-align: right;
+button:disabled i {
+  color: #dddddd !important;
 }
 
-.red-border{
-    border-color: red!important;
-}
-
-.cursor-pointer{
-    cursor: pointer;
-}
-
-.hide{
-    display: none;
-}
-
-.w50per{
-    width: 50%;
-}
-
-.w100per{
-    width: 100%;
-}
-
-.mw-200px{
-    min-width: 200px;
-}
-
-.mw-180px{
-    min-width: 180px;
-}
-
-.mw-300px{
-   min-width: 300px;
-}
-
-.btn{
-    background-color: inherit;
-    padding: 4px 12px;
-    border: 1px solid #b4b4b4;
-    cursor: pointer;
-}
-
-.btn:hover{
+button:disabled:hover{
+    border-color: #b4b4b4;
     background-color: #fff;
-    border: 1px solid #0072bc;
 }
 
-.btn span{
-    margin: 6px;
+.number-input {
+  text-align: right;
+}
+
+.red-border {
+  border-color: red !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.w50per {
+  width: 50%;
+}
+
+.w100per {
+  width: 100%;
+}
+
+.mw-200px {
+  min-width: 200px;
+}
+
+.mw-180px {
+  min-width: 180px;
+}
+
+.mw-300px {
+  min-width: 300px;
+}
+
+.btn {
+  background-color: inherit;
+  background-repeat: no-repeat;
+  padding: 4px 12px;
+  border: 1px solid #b4b4b4;
+  cursor: pointer;
+  background-position: 10px 4px;
+}
+
+.btn:hover {
+  background-color: #e4f2ea;
+  border: 1px solid #0072bc;
+}
+
+.btn span {
+  margin: 6px;
 }
 
 .btn-feedback .fa-solid,
@@ -57,28 +68,43 @@
 .btn-refresh .fa-solid,
 .help-btn .fa-regular,
 .save-btn .fa-solid,
-.save-add-btn .fa-solid{
-    color: #5151fd;
+.save-add-btn .fa-solid {
+  color: #5151fd;
 }
 
 .btn-delete .fa-solid,
-.cancel-btn .fa-solid{
-    color: red;
+.cancel-btn .fa-solid {
+  color: red;
 }
 
-.mi{
-    background-image: url(../assets/Resource/Sprites.64af8f61.svg);
-    background-repeat: no-repeat;
+.save-btn {
+  background-image: url(https://cukcukcomnew.misacdn.net/QLNH/resources/Image/Save16.png);
+  padding: 4px 12px 4px 28px;
 }
 
-.mi-toolbar{
-    background-position: -312px -32px;
+.save-add-btn {
+  background-image: url(https://cukcukcomnew.misacdn.net/QLNH/resources/Image/SaveAdd16.png);
+  padding: 4px 12px 4px 28px;
 }
 
-.mi-dropdown{
-    background-position: -840px -350px;
+.cancel-btn {
+  background-image: url(https://cukcukcomnew.misacdn.net/QLNH/resources/Image/Disable16.png);
+  padding: 4px 12px 4px 28px;
 }
 
-.mi-black-dropdown{
-    background-position: -362px -354px;
+.mi {
+  background-image: url(../assets/Resource/Sprites.64af8f61.svg);
+  background-repeat: no-repeat;
+}
+
+.mi-toolbar {
+  background-position: -312px -32px;
+}
+
+.mi-dropdown {
+  background-position: -840px -350px;
+}
+
+.mi-black-dropdown {
+  background-position: -362px -354px;
 }

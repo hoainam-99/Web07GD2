@@ -128,23 +128,27 @@ namespace Misa.CukCukMaterial.CTM.BL
         /// Author: LHNAM (29/09/2022)
         protected override void Validate(Method method, Material record)
         {
-            // Mã đơn vị chuyển đổi không được trùng với đơn vị tính
             if (record.MaterialUnit != null && record.MaterialUnit.Count() > 0)
             {
                 foreach (var item in record.MaterialUnit)
                 {
+                    // Mã đơn vị chuyển đổi không được bỏ trống
                     if (item.UnitID == Guid.Empty)
                     {
                         Errors.Add(Common.Resource.ResourceVN.ConversionUnit_NotEmpty);
                     }
-                    else if(item.UnitID == record.UnitID)
+                    // Mã đơn vị chuyển đổi không được trùng với đơn vị tính
+                    else if (item.UnitID == record.UnitID)
                     {
                         Errors.Add(Common.Resource.ResourceVN.ConversionUnit_And_Unit_NotSame);
+                    }
+                    else if (_materialDL.CheckDuplicateMaterialUnit(item.Method, record.MaterialID, item.UnitID, item.OldUnitID))
+                    {
+                        Errors.Add(Common.Resource.ResourceVN.ConversionUnit_Duplicate);
                     }
                 }
             }
 
-            // Mã đơn vị chuyển đổi không được bỏ trống
 
             // mã nguyên vật liệu không được phép trùng
             if (_materialDL.CheckDuplicateCode(method, record.MaterialID, record.MaterialCode))

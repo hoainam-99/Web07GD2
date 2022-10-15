@@ -46,7 +46,6 @@ import Enum from "@/js/Enum";
 import BaseSelectbox from "../selectbox/BaseSelectbox.vue";
 import BaseCombobox from "../combobox/BaseCombobox.vue";
 import Resource from "@/js/Resource";
-import CommonFn from "@/js/Common";
 import BaseInput from "../BaseNumberInput/BaseInput.vue";
 import debounce from "lodash.debounce";
 
@@ -133,11 +132,16 @@ export default {
     getUnitID(value, text) {
       this.item.unitID = value;
       this.unitName = text;
+
+      if (this.debouncedReturnValue) {
+        this.debouncedReturnValue();
+      }
     },
   },
   created() {
+    // debiunce g
     this.debouncedReturnValue = debounce(() => {
-      if(this.returnValue){
+      if (this.returnValue) {
         this.returnValue();
       }
     }, 1000);

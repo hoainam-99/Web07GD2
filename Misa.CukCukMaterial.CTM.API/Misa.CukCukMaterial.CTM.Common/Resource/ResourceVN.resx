@@ -125,6 +125,10 @@
     <value>e011</value>
     <comment>Đơn vị chuyển đổi không được giống với đơn vị tính.</comment>
   </data>
+  <data name="ConversionUnit_Duplicate" xml:space="preserve">
+    <value>e014</value>
+    <comment>Đơn vị chuyển đổi đã có trong hệ thống. </comment>
+  </data>
   <data name="ConversionUnit_NotEmpty" xml:space="preserve">
     <value>e013</value>
     <comment>Mã đơn vị chuyển đổi không được bỏ trống</comment>
@@ -180,6 +184,10 @@
   <data name="Proc_GetAuto_MaterialCode" xml:space="preserve">
     <value>Proc_material_GetNewCode</value>
     <comment>Proc để lấy mã nguyên vật liệu</comment>
+  </data>
+  <data name="Proc_materialUnit_CheckDuplicate" xml:space="preserve">
+    <value>Proc_materialunit_CheckDuplicate</value>
+    <comment>Proc kiểm tra trùng của bảng materialunit</comment>
   </data>
   <data name="Proc_material_GetByID" xml:space="preserve">
     <value>Proc_material_GetByID</value>

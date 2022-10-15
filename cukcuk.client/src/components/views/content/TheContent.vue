@@ -57,7 +57,7 @@
         <table border="1">
           <thead class="hn-thead">
             <tr>
-              <th style="min-width: 150px">
+              <th style="min-width: 125px">
                 <div class="hn-th">
                   <div class="hn-th__title">Mã nguyên vật liệu</div>
                   <BaseFilter
@@ -67,7 +67,7 @@
                   />
                 </div>
               </th>
-              <th style="min-width: 250px">
+              <th style="min-width: 225px">
                 <div class="hn-th">
                   <div class="hn-th__title">Tên nguyên vật liệu</div>
                   <BaseFilter
@@ -87,9 +87,9 @@
                   />
                 </div>
               </th>
-              <th style="min-width: 125px">
+              <th style="min-width: 150px">
                 <div class="hn-th">
-                  <div class="hn-th__title">ĐVT tính</div>
+                  <div class="hn-th__title" title="Đơn vị tính">ĐVT tính</div>
                   <BaseFilter
                     @getFilter="getUnitFilter"
                     :filterType="'string'"
@@ -142,7 +142,7 @@
               :class="{ 'hn-selected-tr': selectedItemIndex == index }"
             >
               <td>{{ material.materialCode }}</td>
-              <td>{{ material.materialName }}</td>
+              <td class="hide-td">{{ material.materialName }}</td>
               <td>{{ material.feature }}</td>
               <td>{{ material.unitName }}</td>
               <td>{{ material.categoryName }}</td>
@@ -167,6 +167,7 @@
           :totalCount="totalCount"
           @changePagination="changePagination"
           @refresh="refresh"
+          ref="pagination"
         />
       </div>
     </div>
@@ -205,17 +206,25 @@ export default {
   },
   data() {
     return {
+      // Index của bản ghi được chọn
       selectedItemIndex: 0,
+
+      // hiển thị loading
       isShowLoading: true,
+
+      // biến sử dụng toast
       toast: useToast(),
-      notificationPopupParam: "",
+
+      // biến chứa đối tượng được chọn
       selectedMaterial: {},
-      param: {
-        method: "",
-        id: "",
-      },
+
+      // biến tổng số bản ghi thỏa mãn điều kiện lọc
       totalCount: 0,
+
+      // mảng chứa bản ghi phù hợp điều kiện lọc và phân trang
       materials: [],
+
+      // các biến chứa điều kiện lọc
       materialCodeFilter: "",
       materialNameFilter: "",
       unitFilter: "",
@@ -223,9 +232,25 @@ export default {
       categoryFilter: "",
       descriptionFilter: "",
       statusFilter: "",
+
+      // biến chứa điều kiện phân trang
       pagination: {},
+
+      // biến hiển thị pop-up form
       isShowFormPopup: false,
+      
+      // param truyền vào pop-up form
+      param: {
+        method: "",
+        id: "",
+      },
+
+      // biến hiển thị pop-up thông báo
       isShowNotificationPopup: false,
+      
+      // param truyền vào pop-up thông báo
+      notificationPopupParam: "",
+
       followSelectData: [
         {
           data: "Không",
@@ -287,13 +312,22 @@ export default {
      */
     refreshFilter(){
       try {
+        // refresh lại bộ lọc
         if(this.$refs){
           Object.keys(this.$refs).forEach(item=>{
             if(this.$refs[item].refreshValue){
               this.$refs[item].refreshValue();
             }
+            if(item == Resource.KeyTable.Pagination){
+              if(this.$refs[Resource.KeyTable.Pagination].resetPagination){
+                this.$refs[Resource.KeyTable.Pagination].resetPagination();
+              }
+            }
           });
         }
+        
+        // xét bản ghi được chọn là bản ghi đầu tiên
+        this.selectedItemIndex = 0;
       } catch (error) {
         console.error(error);
       }
@@ -347,7 +381,10 @@ export default {
             timeout: 2000,
             hideProgressBar: false,
           });
+
+          // tắt thông báo pop-up
           this.isShowNotificationPopup = false;
+
           this.refresh(true);
         })
         .catch((e) => {
@@ -401,6 +438,10 @@ export default {
      */
     refresh(isRefresh) {
       if (isRefresh) {
+        // xét lại giá trị cho item được chọn về đầu
+        this.selectedItemIndex = 0;
+
+        // lấy dữ liệu mới về
         this.getMaterial();
       }
     },
@@ -420,6 +461,7 @@ export default {
      * Author: LHNAM (30/09/2022)
      */
     getMaterial() {
+      this.isShowLoading = true;
       Axios.CallAxios(
         Axios.Methods.Get,
         `${Axios.Url.FilterMaterial}?materialCode=${this.materialCodeFilter}&materialName=${this.materialNameFilter}&feature=${this.featureFilter}&unit=${this.unitFilter}&category=${this.categoryFilter}&description=${this.descriptionFilter}&status=${this.statusFilter}&pageSize=${this.pagination.pageSize}&pageNum=${this.pagination.pageNum}`
@@ -427,7 +469,9 @@ export default {
         .then((res) => {
           this.materials = res.data.data;
           this.totalCount = res.data.totalCount;
-          this.isShowLoading = false;
+          setTimeout(()=>{
+            this.isShowLoading = false;
+          }, 500)
         })
         .then(() => {
           this.setMaterialIDForParam();
@@ -441,6 +485,7 @@ export default {
           this.loading = false;
         });
     },
+
     /**
      * Hàm lấy giá trị filter cho cột Status
      * @param {string} filterValue chuỗi filter
@@ -555,16 +600,18 @@ export default {
     /**
      * Hàm click các phương thức liên quan đến form pop-up
      * @param {enum} formMode Phương thức cần gọi
-     * @param {Guid} id Id của đối tượng cần gọi (có thể có hoặc không)
      * Author: LHNAM (28/09/2022)
      */
     formDetailOnClick(formMode) {
       try {
+        // xét giá trị cho biến param để truyền vào component pop-up
         switch (formMode) {
+          // pop-up để thêm mới
           case Enum.FormMode.Add:
             this.param.method = formMode;
             this.isShowFormPopup = true;
             break;
+          // pop-up để sửa và nhân bản
           case Enum.FormMode.Replication:
           case Enum.FormMode.Edit:
             if (this.param.id) {
@@ -572,6 +619,7 @@ export default {
               this.isShowFormPopup = true;
             }
             break;
+          // nếu là thao tác xóa thì sẽ mở pop-up confirm
           case Enum.FormMode.Delete:
             if (this.param.id) {
               this.notificationPopupParam = Resource.NotificationPopupParam.DeleteConfirm;
@@ -586,7 +634,11 @@ export default {
   },
   created() {
     this.debouncedGetData = debounce(() => {
-      this.getMaterial();
+      if(this.pagination){
+        if(this.pagination.pageNum != ''){
+          this.getMaterial();
+        }
+      }
     }, 500);
   },
 };

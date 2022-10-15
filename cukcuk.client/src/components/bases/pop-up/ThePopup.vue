@@ -1,9 +1,17 @@
 <template>
-  <div class="popup-container">
+  <div
+    class="popup-container"
+    @keydown.exact.ctrl.s.prevent="saveDataOnClick(1)"
+    @keydown.exact.ctrl.shift.s.prevent="saveDataOnClick(2)"
+    @keydown.prevent.esc="xBtnOnClick"
+    @keydown.prevent.f1="helpBtnOnClick"
+    >
+    <!-- @keydown.prevent.ctrl.b="closeFormOnClick" -->
     <div class="popup-main">
       <div class="form">
         <div class="form-header">
-          <div class="form-header__left">Thêm nguyên vật liệu</div>
+          <div class="form-header__left" v-if="param.method == 1 || param.method == 4">Thêm nguyên vật liệu</div>
+          <div class="form-header__left" v-if="param.method == 2">Sửa nguyên vật liệu</div>
           <div class="form-header__right">
             <i class="fa-solid fa-circle-xmark" @click="xBtnOnClick"></i>
           </div>
@@ -41,9 +49,11 @@
                 <input
                   type="text"
                   pattern="[0-9]"
+                  maxlength="10"
                   class="w50per"
-                  style="margin-right: 4px"
+                  style="margin-right: 4px; text-align: right"
                   v-model="material.expiryDate.dateValue"
+                  @keypress="isNumber($event)"
                 />
                 <BaseSelectbox
                   :selectData="timeSelectData"
@@ -75,7 +85,7 @@
                 />
               </div>
               <div class="form-group">
-                <label for="">SL tối thiểu</label>
+                <label for="" title="Số lượng tối thiểu">SL tối thiểu</label>
                 <BaseInput
                   style="width: 100%"
                   :fieldName="'inventoryNumber'"
@@ -84,6 +94,7 @@
                   lengthAfterComma="2"
                   v-model:value="material.inventoryNumber"
                   @onInput="getData"
+                  ref="inventoryNumber"
                 />
               </div>
             </div>
@@ -140,7 +151,11 @@
         </div>
         <div class="form-footer">
           <div class="form-footer__left">
-            <button class="btn help-btn">
+            <button
+              class="btn help-btn"
+              @click="helpBtnOnClick"
+              title="Giúp (F1)"
+            >
               <i class="fa-regular fa-circle-question"></i>
               <span>Giúp</span>
             </button>
@@ -150,24 +165,24 @@
               class="btn save-btn"
               @click="saveDataOnClick(1)"
               :disabled="isDisabled"
+              title="Cất (Ctrl + S)"
             >
-              <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất</span>
             </button>
             <button
               class="btn save-add-btn"
               @click="saveDataOnClick(2)"
               :disabled="isDisabled"
+              title="Cất và Thêm (Ctrl + Shift + S)"
             >
-              <i class="fa-solid fa-floppy-disk"></i>
               <span>Cất & Thêm</span>
             </button>
             <button
               class="btn cancel-btn"
               @click="closeFormOnClick"
               ref="cancel"
+              title="Hủy bỏ (Ctrl + B)"
             >
-              <i class="fa-solid fa-ban"></i>
               <span>Hủy bỏ</span>
             </button>
             <div tabindex="0" @focus="tabKeyOnPress"></div>
@@ -295,6 +310,36 @@ export default {
   },
   methods: {
     /**
+     * Hàm lọc phím bấm số cho input
+     * @param {*} evt event nhận vào khi nhận sự kiện
+     * Author: LHNAM (13/10/2022)
+     */
+    isNumber(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+
+    /**
+     * Hàm bấm nút giúp đỡ
+     * Author: LHNAM (13/10/2022)
+     */
+    helpBtnOnClick() {
+      try {
+        window.open(
+          "https://help.cukcuk.com/vi/1060300_them_NVL.htm",
+          "_blank"
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    /**
      * Hàm set value số cho số lượng tối thiểu
      * @param {Object} data Object chứa nội dung trả về
      * Author: LHNAM (12/10/2022)
@@ -397,6 +442,7 @@ export default {
      */
     returnConfirmPopup(e) {
       if (e) {
+        this.isShowNotificationPopup = false;
         this.saveDataOnClick(Enum.SaveMode.Save);
       } else {
         this.closeFormOnClick();
@@ -427,12 +473,16 @@ export default {
      * @param {String} param biến chứa tên combobox cần refresh
      * Author: LHNAM (05/10/2022)
      */
-    refreshCombobox(param) {
+    refreshCombobox(param, id) {
       if (
         this[`refresh${param}`] &&
         typeof this[`refresh${param}`] == "function"
       ) {
         this[`refresh${param}`]();
+      }
+
+      if(id){
+        this.material[`${param.toLowerCase()}ID`] = id;
       }
     },
 
@@ -493,13 +543,9 @@ export default {
      * @param {String} text Tên kho
      */
     getStockID(value, text) {
-      if (this.material.stockID) {
-        this.material.stockID = value;
-      }
+      this.material.stockID = value;
 
-      if (this.material.stockName) {
-        this.material.stockName = text;
-      }
+      this.material.stockName = text;
     },
 
     /**
@@ -638,32 +684,6 @@ export default {
         this.$refs[Resource.KeyTable.MaterialCode].removeAttribute("title");
       }
 
-      if (data.inventoryNumber) {
-        let number = parseFloat(data.inventoryNumber);
-
-        if (!number || number < 0) {
-          if (this.$refs[Resource.KeyTable.InventoryNumber]) {
-            this.$refs[Resource.KeyTable.InventoryNumber].classList.add(
-              "red-border"
-            );
-            this.$refs[Resource.KeyTable.InventoryNumber].setAttribute(
-              "title",
-              Resource.ErrorMes.numberFormat_Error
-            );
-          }
-          this.errorMsg.push({
-            key: Resource.KeyTable.InventoryNumber,
-            error: Resource.ErrorMes.e012,
-          });
-          isValid = false;
-        }
-      } else {
-        this.$refs[Resource.KeyTable.InventoryNumber].classList.remove(
-          "red-border"
-        );
-        this.$refs[Resource.KeyTable.InventoryNumber].removeAttribute("title");
-      }
-
       if (!data.unitID) {
         this.isUnitRequired = true;
         this.errorMsg.push({
@@ -752,7 +772,7 @@ export default {
           data = {};
         // vô hiệu hóa nút cất, cất và thêm
         this.isDisabled = true;
-        
+
         // gán dữ liệu của nguyên vật liệu
         data = Object.assign({}, this.material);
 
@@ -761,15 +781,16 @@ export default {
           this.material.expiryDate
         );
 
-        // format lại dữ liệu kiểu số
+        // format lại dữ liệu kiểu số cho trường số lượng tối thiểu
         data.inventoryNumber = CommonFn.formatNumber(data.inventoryNumber);
-        data.materialUnit = data.materialUnit.map((item) => {
-          return {
-            unitID: item.unitID,
-            conversionRate: CommonFn.formatNumber(item.conversionRate),
-            calculation: item.calculation,
-            method: item.method
-          };
+
+        // format lại kiểu dữ liệu cho các trường trong mảng đơn vị chuyển đổi
+        data.materialUnit.map(item=>{
+          if(this.param.method == Enum.FormMode.Replication){
+            item.method = Enum.FormMode.Add
+          }
+
+          item.conversionRate = CommonFn.formatNumber(item.conversionRate);
         });
 
         // xóa trường ID nguyên vật liệu
@@ -822,7 +843,7 @@ export default {
         if (this.material.materialUnit) {
           this.material.materialUnit.push({
             unitID: Resource.KeyTable.EmptyGuid,
-            conversionRate: "",
+            conversionRate: 1,
             calculation: Enum.Calculation.Multiplication,
             method: Enum.FormMode.Add,
           });

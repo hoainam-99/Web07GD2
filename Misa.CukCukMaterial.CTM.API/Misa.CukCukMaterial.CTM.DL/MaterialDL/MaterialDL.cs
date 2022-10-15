@@ -24,9 +24,47 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// <param name="materialID">ID nguyên vật liệu cần kiểm tra</param>
         /// <param name="unitID">ID đơn vị chuyển đổi cần kiểm tra</param>
         /// <returns>Giá trị true/false dùng để validate</returns>
-        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID)
+        public bool CheckDuplicateMaterialUnit(Method method, Guid materialID, Guid unitID, Guid oldUnitID)
         {
-            throw new NotImplementedException();
+            string procName = Common.Resource.ResourceVN.Proc_materialUnit_CheckDuplicate;
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@$MaterialID", materialID);
+            parameters.Add("@$UnitID", unitID);
+
+            using(var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
+            {
+                Guid result = mySqlConnection.QueryFirstOrDefault<Guid>(procName, parameters, commandType: System.Data.CommandType.StoredProcedure);
+
+                bool isDuplicate = false;
+                switch (method)
+                {
+                    case Method.Add:
+                        if(result != Guid.Empty)
+                        {
+                            isDuplicate = true;
+                        }
+                        break;
+                    case Method.Edit:
+                        if(unitID == oldUnitID)
+                        {
+                            if(result != unitID)
+                            {
+                                isDuplicate = true;
+                            }
+                        }
+                        else
+                        {
+                            if(result != Guid.Empty)
+                            {
+                                isDuplicate = true;
+                            }
+                        }
+                        break;
+                }
+
+                return isDuplicate;
+            }
         }
 
         /// <summary>
@@ -134,23 +172,9 @@ namespace Misa.CukCukMaterial.CTM.DL
             string materialInsertProc = Common.Resource.ResourceVN.Proc_material_InsertOne;
             string materialUnitInsertProc = "Proc_materialunit_InsertOne";
 
-            var materialParameters = new DynamicParameters();
-
-            var materialProps = typeof(Material).GetProperties();
-            var materialUnits = new List<MaterialUnit>();
-
-            foreach (var prop in materialProps)
-            {
-                if (prop.Name == "MaterialUnit")
-                {
-                    materialUnits = (List<MaterialUnit>?)prop.GetValue(record);
-                    continue;
-                }
-                string propName = $"@${prop.Name}";
-                var propValue = prop.GetValue(record);
-
-                materialParameters.Add(propName, propValue);
-            }
+            DynamicParameters materialParameters;
+            List<MaterialUnit>? materialUnits;
+            GetMaterialParamaters(record, out materialParameters, out materialUnits);
 
             using (var transaction = new TransactionScope())
             {
@@ -196,6 +220,31 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        private void GetMaterialParamaters(Material record, out DynamicParameters materialParameters, out List<MaterialUnit>? materialUnits)
+        {
+            materialParameters = new DynamicParameters();
+            var materialProps = typeof(Material).GetProperties();
+            materialUnits = new List<MaterialUnit>();
+            foreach (var prop in materialProps)
+            {
+                if (prop.Name == "MaterialUnit")
+                {
+                    materialUnits = (List<MaterialUnit>?)prop.GetValue(record);
+                    continue;
+                }
+                string propName = $"@${prop.Name}";
+                var propValue = prop.GetValue(record);
+
+                materialParameters.Add(propName, propValue);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="record"></param>
+        /// <returns></returns>
         public override Guid UpdateOneRecord(Guid id, Material record)
         {
             string materialProc = Common.Resource.ResourceVN.Proc_material_UpdateOne;
