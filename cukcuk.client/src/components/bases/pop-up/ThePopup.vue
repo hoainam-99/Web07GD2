@@ -10,8 +10,8 @@
     <div class="popup-main">
       <div class="form">
         <div class="form-header">
-          <div class="form-header__left" v-if="param.method == 1 || param.method == 4">Thêm nguyên vật liệu</div>
-          <div class="form-header__left" v-if="param.method == 2">Sửa nguyên vật liệu</div>
+          <div class="form-header__left" v-if="formMode == 1 || formMode == 4">Thêm nguyên vật liệu</div>
+          <div class="form-header__left" v-if="formMode == 2">Sửa nguyên vật liệu</div>
           <div class="form-header__right">
             <i class="fa-solid fa-circle-xmark" @click="xBtnOnClick"></i>
           </div>
@@ -244,6 +244,9 @@ export default {
   },
   data() {
     return {
+      // biến định dạng kiểu form
+      formMode: this.param.method,
+
       // biến để vô hiệu hóa nút cất, cất và thêm
       isDisabled: false,
 
@@ -385,7 +388,7 @@ export default {
      */
     getMaterialCode() {
       try {
-        if (this.param.method != Enum.FormMode.Edit) {
+        if (this.formMode != Enum.FormMode.Edit) {
           this.debouncedGetCode();
         }
       } catch (error) {
@@ -576,8 +579,8 @@ export default {
      * Author: LHNAM (03/10/2022)
      */
     saveMaterial(data, saveMode) {
-      if (this.param) {
-        switch (this.param.method) {
+      if (this.formMode) {
+        switch (this.formMode) {
           case Enum.FormMode.Add:
           case Enum.FormMode.Replication:
             Axios.CallAxios(Axios.Methods.Post, Axios.Url.Material, data)
@@ -750,6 +753,7 @@ export default {
               dateValue: 0,
             },
             materialUnit: [],
+            status: 2
           };
           // hủy vô hiệu hóa nút cất, cất và thêm
           this.isDisabled = false;
@@ -758,6 +762,8 @@ export default {
           if (this.$refs[Resource.KeyTable.MaterialName]) {
             this.$refs[Resource.KeyTable.MaterialName].focus();
           }
+
+          this.formMode = Enum.FormMode.Add;
           break;
       }
     },
@@ -786,7 +792,7 @@ export default {
 
         // format lại kiểu dữ liệu cho các trường trong mảng đơn vị chuyển đổi
         data.materialUnit.map(item=>{
-          if(this.param.method == Enum.FormMode.Replication){
+          if(this.formMode == Enum.FormMode.Replication){
             item.method = Enum.FormMode.Add
           }
 
@@ -932,8 +938,8 @@ export default {
      */
     setupPopup() {
       try {
-        if (this.param) {
-          switch (this.param.method) {
+        if (this.formMode) {
+          switch (this.formMode) {
             case Enum.FormMode.Add:
               this.isChange = false;
               break;

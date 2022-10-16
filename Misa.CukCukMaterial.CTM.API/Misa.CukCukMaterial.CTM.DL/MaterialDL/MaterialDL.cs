@@ -161,11 +161,10 @@ namespace Misa.CukCukMaterial.CTM.DL
         }
 
         /// <summary>
-        /// Sửa 1 bản ghi
+        /// Thêm 1 bản ghi 
         /// </summary>
-        /// <param name="id">ID của bản ghi cần sửa</param>
-        /// <param name="record">Thông tin của bản ghi cần sửa</param>
-        /// <returns>ID của bản ghi được sửa thành công</returns>
+        /// <param name="record">Thông tin của bản ghi cần thêm</param>
+        /// <returns>ID của bản ghi được thêm thành công</returns>
         /// Author: LHNAM (03/10/2022)
         public override Guid InsertOneRecord(Material record)
         {
@@ -184,20 +183,7 @@ namespace Misa.CukCukMaterial.CTM.DL
                     affectedRow = mySqlConnection.Execute(materialInsertProc, materialParameters, commandType: System.Data.CommandType.StoredProcedure);
                     foreach (var materialUnit in materialUnits)
                     {
-                        var materialUnitParameter = new DynamicParameters();
-                        var materialUnitProps = typeof(MaterialUnit).GetProperties();
-
-                        foreach (var prop in materialUnitProps)
-                        {
-                            string propName = $"@${prop.Name}";
-                            var propValue = prop.GetValue(materialUnit);
-                            if (prop.Name == "MaterialID")
-                            {
-                                propValue = record.MaterialID;
-                            }
-
-                            materialUnitParameter.Add(propName, propValue);
-                        }
+                        DynamicParameters materialUnitParameter = GetMaterialUnitParameters(record.MaterialID, materialUnit);
 
                         int materialUnitAffectedRow = mySqlConnection.Execute(materialUnitInsertProc, materialUnitParameter, commandType: System.Data.CommandType.StoredProcedure);
                     }
@@ -220,6 +206,40 @@ namespace Misa.CukCukMaterial.CTM.DL
             }
         }
 
+        /// <summary>
+        /// Hàm lấy giá trị parameter cho proc thao tác với bảng materialunit
+        /// </summary>
+        /// <param name="materialID">ID của nguyên vật liệu</param>
+        /// <param name="materialUnit">thông tin của bản ghi đơn vị chuyển đổi</param>
+        /// <returns>parameters của proc</returns>
+        /// Author: LHNAM (16/10/2022)
+        private DynamicParameters GetMaterialUnitParameters(Guid materialID, MaterialUnit materialUnit)
+        {
+            var materialUnitParameter = new DynamicParameters();
+            var materialUnitProps = typeof(MaterialUnit).GetProperties();
+
+            foreach (var prop in materialUnitProps)
+            {
+                string propName = $"@${prop.Name}";
+                var propValue = prop.GetValue(materialUnit);
+                if (prop.Name == "MaterialID")
+                {
+                    propValue = materialID;
+                }
+
+                materialUnitParameter.Add(propName, propValue);
+            }
+
+            return materialUnitParameter;
+        }
+
+        /// <summary>
+        /// Hàm xét parameters của proc thêm, sửa thông tin bảng material
+        /// </summary>
+        /// <param name="record">Nội dung của bản ghi</param>
+        /// <param name="materialParameters">Prameters</param>
+        /// <param name="materialUnits">đối tượng material unit</param>
+        /// Author: LHNAM (15/10/2022)
         private void GetMaterialParamaters(Material record, out DynamicParameters materialParameters, out List<MaterialUnit>? materialUnits)
         {
             materialParameters = new DynamicParameters();
@@ -240,11 +260,12 @@ namespace Misa.CukCukMaterial.CTM.DL
         }
 
         /// <summary>
-        /// 
+        /// Sửa 1 bản ghi
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="record"></param>
-        /// <returns></returns>
+        /// <param name="id">ID của bản ghi cần sửa</param>
+        /// <param name="record">Thông tin của bản ghi cần sửa</param>
+        /// <returns>ID của bản ghi được sửa thành công</returns>
+        /// Author: LHNAM (03/10/2022)
         public override Guid UpdateOneRecord(Guid id, Material record)
         {
             string materialProc = Common.Resource.ResourceVN.Proc_material_UpdateOne;
@@ -252,23 +273,9 @@ namespace Misa.CukCukMaterial.CTM.DL
             string materialUnitUpdateProc = "Proc_materialunit_UpdateOne";
             string materialUnitDeleteProc = "Proc_materialunit_DeleteOne";
 
-            var materialParameters = new DynamicParameters();
-
-            var materialProps = typeof(Material).GetProperties();
-            var materialUnits = new List<MaterialUnit>();
-
-            foreach (var prop in materialProps)
-            {
-                if (prop.Name == "MaterialUnit")
-                {
-                    materialUnits = (List<MaterialUnit>?)prop.GetValue(record);
-                    continue;
-                }
-                string propName = $"@${prop.Name}";
-                var propValue = prop.GetValue(record);
-
-                materialParameters.Add(propName, propValue);
-            }
+            DynamicParameters materialParameters;
+            List<MaterialUnit>? materialUnits;
+            GetMaterialParamaters(record, out materialParameters, out materialUnits);
 
             using (var transaction = new TransactionScope())
             {
@@ -278,20 +285,8 @@ namespace Misa.CukCukMaterial.CTM.DL
                     affectedRow = mySqlConnection.Execute(materialProc, materialParameters, commandType: System.Data.CommandType.StoredProcedure);
                     foreach (var materialUnit in materialUnits)
                     {
-                        var materialUnitParameter = new DynamicParameters();
-                        var materialUnitProps = typeof(MaterialUnit).GetProperties();
+                        DynamicParameters materialUnitParameter = GetMaterialUnitParameters(record.MaterialID, materialUnit);
 
-                        foreach (var prop in materialUnitProps)
-                        {
-                            string propName = $"@${prop.Name}";
-                            var propValue = prop.GetValue(materialUnit);
-                            if (prop.Name == "MaterialID")
-                            {
-                                propValue = record.MaterialID;
-                            }
-
-                            materialUnitParameter.Add(propName, propValue);
-                        }
                         int materialUnitAffectedRow = 0;
                         switch (materialUnit.Method)
                         {
