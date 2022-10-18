@@ -45,6 +45,7 @@
   overflow: auto;
   border-right: 1px solid #b4b4b4;
   border-bottom: 6px;
+  padding-bottom: 5px;
 }
 
 .content-table::-webkit-scrollbar {

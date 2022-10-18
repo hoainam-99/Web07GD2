@@ -764,6 +764,7 @@ export default {
           }
 
           this.formMode = Enum.FormMode.Add;
+          this.isChange = false;
           break;
       }
     },

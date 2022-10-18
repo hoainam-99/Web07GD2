@@ -3,7 +3,7 @@
     class="content"
     @keydown.prevent.down="selectedIndexPlus"
     @keydown.prevent.up="selectedIndexMinus"
-    >
+  >
     <!-- @keydown.prevent.enter="formDetailOnClick(2)" -->
     <div class="content-header">
       <div class="content-header__left">Nguyên vật liệu</div>
@@ -57,7 +57,7 @@
         <table border="1">
           <thead class="hn-thead">
             <tr>
-              <th style="min-width: 125px">
+              <th style="min-width: 150px">
                 <div class="hn-th">
                   <div class="hn-th__title">Mã nguyên vật liệu</div>
                   <BaseFilter
@@ -87,7 +87,7 @@
                   />
                 </div>
               </th>
-              <th style="min-width: 150px">
+              <th style="min-width: 140px">
                 <div class="hn-th">
                   <div class="hn-th__title" title="Đơn vị tính">ĐVT tính</div>
                   <BaseFilter
@@ -117,7 +117,7 @@
                   />
                 </div>
               </th>
-              <th  style="min-width: 125px">
+              <th style="min-width: 125px">
                 <div class="hn-th">
                   <div class="hn-th__title">Theo dõi</div>
                   <div class="hn-th__filter">
@@ -146,7 +146,9 @@
               <td>{{ material.feature }}</td>
               <td>{{ material.unitName }}</td>
               <td>{{ material.categoryName }}</td>
-              <td class="hide-td" :title="material.description">{{ material.description }}</td>
+              <td class="hide-td" :title="material.description">
+                {{ material.description }}
+              </td>
               <td>
                 <div class="useCheck">
                   <input
@@ -172,11 +174,17 @@
       </div>
     </div>
   </div>
-  <ThePopup v-if="isShowFormPopup" :param="param" @closeForm="closeForm" @returnResult="refresh" />
+  <ThePopup
+    v-if="isShowFormPopup"
+    :param="param"
+    @closeForm="closeForm"
+    @returnResult="refresh"
+  />
   <NotificationPopup
     v-if="isShowNotificationPopup"
     :param="notificationPopupParam"
     :deleteItem="selectedMaterial"
+    :errorMsg="errorMsg"
     @returnConfirmPopup="returnConfirmPopup"
     @closeForm="closeNoticePopup"
   />
@@ -194,7 +202,7 @@ import BaseFilter from "../../bases/filter/BaseFilter.vue";
 import BasePagination from "@/components/bases/pagination/BasePagination.vue";
 import NotificationPopup from "@/components/bases/pop-up/NotificationPopup.vue";
 import BaseLoading from "@/components/bases/BaseLoading.vue";
-import Resource from '@/js/Resource';
+import Resource from "@/js/Resource";
 export default {
   components: {
     ThePopup,
@@ -206,6 +214,9 @@ export default {
   },
   data() {
     return {
+      // Mảng chứa lỗi
+      errorMsg: [],
+
       // Index của bản ghi được chọn
       selectedItemIndex: 0,
 
@@ -238,7 +249,7 @@ export default {
 
       // biến hiển thị pop-up form
       isShowFormPopup: false,
-      
+
       // param truyền vào pop-up form
       param: {
         method: "",
@@ -247,7 +258,7 @@ export default {
 
       // biến hiển thị pop-up thông báo
       isShowNotificationPopup: false,
-      
+
       // param truyền vào pop-up thông báo
       notificationPopupParam: "",
 
@@ -267,11 +278,11 @@ export default {
   },
   watch: {
     selectedItemIndex(newValue) {
-      if(newValue < 0){
+      if (newValue < 0) {
         this.selectedItemIndex = 0;
       }
 
-      if(newValue > this.materials.length - 1){
+      if (newValue > this.materials.length - 1) {
         this.selectedItemIndex = this.materials.length - 1;
       }
 
@@ -310,24 +321,28 @@ export default {
      * Hàm gọi đến khi bấm nút nạp
      * Author: LHNAM (07/10/2022)
      */
-    refreshFilter(){
+    refreshFilter() {
       try {
+        debugger
         // refresh lại bộ lọc
-        if(this.$refs){
-          Object.keys(this.$refs).forEach(item=>{
-            if(this.$refs[item].refreshValue){
+        if (this.$refs) {
+          Object.keys(this.$refs).forEach((item) => {
+            if (this.$refs[item].refreshValue) {
               this.$refs[item].refreshValue();
             }
-            if(item == Resource.KeyTable.Pagination){
-              if(this.$refs[Resource.KeyTable.Pagination].resetPagination){
+            if (item == Resource.KeyTable.Pagination) {
+              if (this.$refs[Resource.KeyTable.Pagination].resetPagination) {
                 this.$refs[Resource.KeyTable.Pagination].resetPagination();
               }
             }
           });
         }
-        
+
         // xét bản ghi được chọn là bản ghi đầu tiên
         this.selectedItemIndex = 0;
+
+        // Lấy dữ liệu
+        this.getMaterial();
       } catch (error) {
         console.error(error);
       }
@@ -337,7 +352,7 @@ export default {
      * Hàm thay đổi bản ghi được chọn khi bấm nút lên
      * Author: LHNAM (07/10/2022)
      */
-    selectedIndexMinus(){
+    selectedIndexMinus() {
       try {
         this.selectedItemIndex--;
       } catch (error) {
@@ -349,7 +364,7 @@ export default {
      * Hàm thay đổi bản ghi được chọn khi bấm nút xuống
      * Author: LHNAM (07/10/2022)
      */
-    selectedIndexPlus(){
+    selectedIndexPlus() {
       try {
         this.selectedItemIndex++;
       } catch (error) {
@@ -469,9 +484,9 @@ export default {
         .then((res) => {
           this.materials = res.data.data;
           this.totalCount = res.data.totalCount;
-          setTimeout(()=>{
+          setTimeout(() => {
             this.isShowLoading = false;
-          }, 500)
+          }, 500);
         })
         .then(() => {
           this.setMaterialIDForParam();
@@ -622,7 +637,8 @@ export default {
           // nếu là thao tác xóa thì sẽ mở pop-up confirm
           case Enum.FormMode.Delete:
             if (this.param.id) {
-              this.notificationPopupParam = Resource.NotificationPopupParam.DeleteConfirm;
+              this.notificationPopupParam =
+                Resource.NotificationPopupParam.DeleteConfirm;
               this.isShowNotificationPopup = true;
             }
             break;
@@ -634,8 +650,8 @@ export default {
   },
   created() {
     this.debouncedGetData = debounce(() => {
-      if(this.pagination){
-        if(this.pagination.pageNum != ''){
+      if (this.pagination) {
+        if (this.pagination.pageNum != "") {
           this.getMaterial();
         }
       }

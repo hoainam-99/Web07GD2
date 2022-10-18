@@ -138,7 +138,7 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// Author: LHNAM (03/10/2022)
         public override Material GetOneRecordByID(Guid id)
         {
-            string storedProc = Common.Resource.ResourceVN.Proc_material_GetByID;
+            string storedProc = String.Format(Common.Resource.ResourceVN.Procedure_GetByID, Common.Resource.ResourceVN.Material);
 
             var parameters = new DynamicParameters();
 
@@ -168,8 +168,8 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// Author: LHNAM (03/10/2022)
         public override Guid InsertOneRecord(Material record)
         {
-            string materialInsertProc = Common.Resource.ResourceVN.Proc_material_InsertOne;
-            string materialUnitInsertProc = "Proc_materialunit_InsertOne";
+            string materialInsertProc = String.Format(Common.Resource.ResourceVN.Procedure_InsertOne, Common.Resource.ResourceVN.Material);
+            string materialUnitInsertProc = String.Format(Common.Resource.ResourceVN.Procedure_InsertOne, Common.Resource.ResourceVN.MaterialUnit);
 
             DynamicParameters materialParameters;
             List<MaterialUnit>? materialUnits;
@@ -268,10 +268,10 @@ namespace Misa.CukCukMaterial.CTM.DL
         /// Author: LHNAM (03/10/2022)
         public override Guid UpdateOneRecord(Guid id, Material record)
         {
-            string materialProc = Common.Resource.ResourceVN.Proc_material_UpdateOne;
-            string materialUnitInsertProc = "Proc_materialunit_InsertOne";
-            string materialUnitUpdateProc = "Proc_materialunit_UpdateOne";
-            string materialUnitDeleteProc = "Proc_materialunit_DeleteOne";
+            string materialProc = String.Format(Common.Resource.ResourceVN.Procedure_UpdateOne, Common.Resource.ResourceVN.Material);
+            string materialUnitInsertProc = String.Format(Common.Resource.ResourceVN.Procedure_InsertOne, Common.Resource.ResourceVN.MaterialUnit);
+            string materialUnitUpdateProc = String.Format(Common.Resource.ResourceVN.Procedure_UpdateOne, Common.Resource.ResourceVN.MaterialUnit);
+            string materialUnitDeleteProc = String.Format(Common.Resource.ResourceVN.Procedure_DeleteOne, Common.Resource.ResourceVN.MaterialUnit);
 
             DynamicParameters materialParameters;
             List<MaterialUnit>? materialUnits;

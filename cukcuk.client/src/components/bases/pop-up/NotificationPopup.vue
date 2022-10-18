@@ -47,7 +47,7 @@
         <div class="form-footer" v-if="param == 'error'">
           <div class="form-footer__left">
             <div tabindex="0" @focus="shiftTabKeyOnPress"></div>
-            <button class="btn help-btn" ref="bt1">
+            <button class="btn help-btn" ref="bt1" @click="helpBtnOnClick">
               <span>Giúp</span>
             </button>
           </div>
@@ -132,6 +132,21 @@ export default {
     };
   },
   methods: {
+    /**
+     * Hàm bấm nút giúp đỡ
+     * Author: LHNAM (13/10/2022)
+     */
+     helpBtnOnClick() {
+      try {
+        window.open(
+          "https://help.cukcuk.com/vi/1060300_them_NVL.htm",
+          "_blank"
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     /**
      * Hàm để focus quay lại khi nhấn phím shiftTab
      * Author: LHNAM (14/09/2022)
