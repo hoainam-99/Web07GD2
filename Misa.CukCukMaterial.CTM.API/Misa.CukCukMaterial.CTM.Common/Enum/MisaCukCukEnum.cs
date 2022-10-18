@@ -41,6 +41,11 @@ namespace Misa.CukCukMaterial.CTM.Common
         /// Phương thức xóa
         /// </summary>
         Delete = 3,     
+
+        /// <summary>
+        /// Phương thức mặc định
+        /// </summary>
+        Default = 4
     }
 
     /// <summary>

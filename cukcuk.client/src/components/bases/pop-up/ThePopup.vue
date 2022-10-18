@@ -128,6 +128,8 @@
                   :materialUnit="item"
                   :itemIndex="index"
                   :materialUnitName="material.unitName"
+                  v-model:selectedMaterialUnit="selectedMaterialUnit"
+                  :class="{'hn-selected-tr': selectedMaterialUnit == index}"
                   @returnValue="setMaterialUnitValue"
                   :ref="`materialUnit${index}`"
                 />
@@ -244,6 +246,12 @@ export default {
   },
   data() {
     return {
+      // biến chứa index materialUnit được chọn
+      selectedMaterialUnit: null,
+
+      // Mảng chứa đơn vị chuyển đổi bị xóa
+      deleteMaterialUnitArr: [],
+
       // biến định dạng kiểu form
       formMode: this.param.method,
 
@@ -593,6 +601,9 @@ export default {
               .then(() => {
                 this.saveModeActive(saveMode);
               })
+              .then(()=>{
+                this.isChange = false;
+              })
               .catch((e) => {
                 this.isDisabled = false;
                 this.errorMsg = CommonFn.getError(e.response);
@@ -618,6 +629,9 @@ export default {
               })
               .then(() => {
                 this.saveModeActive(saveMode);
+              })
+              .then(()=>{
+                this.isChange = false;
               })
               .catch((e) => {
                 this.isDisabled = false;
@@ -732,6 +746,10 @@ export default {
       return isValid;
     },
 
+    /**
+     * Hàm xác nhận trạng thái lưu dữ liệu
+     * Author: LHNAM (03/10/2022)
+     */
     saveModeActive(saveMode) {
       this.$emit(Resource.Emit.ReturnResult, true);
       // kiểm tra kiểu lưu được chuyển vào
@@ -764,9 +782,8 @@ export default {
           }
 
           this.formMode = Enum.FormMode.Add;
-          this.isChange = false;
           break;
-      }
+        }
     },
 
     /**
@@ -791,12 +808,13 @@ export default {
         // format lại dữ liệu kiểu số cho trường số lượng tối thiểu
         data.inventoryNumber = CommonFn.formatNumber(data.inventoryNumber);
 
+        if(this.deleteMaterialUnitArr.length > 0){
+          this.deleteMaterialUnitArr.forEach(item=>{
+            data.materialUnit.push(item);
+          });
+        }
         // format lại kiểu dữ liệu cho các trường trong mảng đơn vị chuyển đổi
         data.materialUnit.map(item=>{
-          if(this.formMode == Enum.FormMode.Replication){
-            item.method = Enum.FormMode.Add
-          }
-
           item.conversionRate = CommonFn.formatNumber(item.conversionRate);
         });
 
@@ -825,15 +843,22 @@ export default {
     removeMaterialUnitOnClick() {
       try {
         if (this.material.materialUnit) {
-          let length = this.material.materialUnit.length;
+          if(this.selectedMaterialUnit != null || this.selectedMaterialUnit != undefined){
+            if (
+              this.material.materialUnit[this.selectedMaterialUnit].method != Enum.FormMode.Add
+            ) {
+              this.material.materialUnit[this.selectedMaterialUnit].method =
+                Enum.FormMode.Delete;
+            } else {
+              this.material.materialUnit.splice(this.selectedMaterialUnit, 1);
+            }
 
-          if (
-            this.material.materialUnit[length - 1].method == Enum.FormMode.Edit
-          ) {
-            this.material.materialUnit[length - 1].method =
-              Enum.FormMode.Delete;
-          } else {
-            this.material.materialUnit.pop();
+            this.material.materialUnit.filter((item, index)=>{
+              if(this.deleteMaterialUnitArr && item.method == Enum.FormMode.Delete){
+                this.deleteMaterialUnitArr.push(item);
+                this.material.materialUnit.splice(index, 1);
+              }
+            });
           }
         }
       } catch (error) {
@@ -907,6 +932,11 @@ export default {
         .then(() => {
           if (this.param.method == Enum.FormMode.Replication) {
             this.getMaterialCode();
+            this.material.materialUnit.map(item=>{
+              if(item.method){
+                item.method = Enum.FormMode.Add;
+              }
+            })
           }
           this.isShowLoading = false;
           this.isChange = false;

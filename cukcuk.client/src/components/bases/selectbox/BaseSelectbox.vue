@@ -241,10 +241,10 @@ export default {
 
 .sb-dropicon,
 .sb-addicon {
-  height: 100%;
+  height: 22px;
   width: auto;
   position: absolute;
-  top: 0;
+  top: 1px;
   right: 8px;
   display: flex;
   justify-content: center;

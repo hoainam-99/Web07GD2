@@ -480,7 +480,7 @@ select {
   max-height: 160px;
   overflow: auto;
   /* border-radius: 4px; */
-  background-color: #fff;
+  background-color: #fff!important;
   /* box-shadow: 0px 3px 6px #00000016; */
   z-index: 999;
 }

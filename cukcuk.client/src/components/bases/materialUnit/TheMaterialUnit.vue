@@ -1,5 +1,5 @@
 <template>
-  <tr v-show="item.method != 3" class="sub-tr">
+  <tr v-show="item.method != 3" class="sub-tr" @click="setSelectedMaterialUnit">
     <th class="sub-td">{{ itemIndex + 1 }}</th>
     <td class="sub-td">
       <BaseCombobox
@@ -52,7 +52,7 @@ import debounce from "lodash.debounce";
 export default {
   name: "MaterialUnit",
   components: { BaseSelectbox, BaseCombobox, BaseInput },
-  props: ["materialUnit", "materialUnitName", "itemIndex"],
+  props: ["materialUnit", "materialUnitName", "itemIndex", "selectedMaterialUnit"],
   watch: {
     item: {
       handler() {
@@ -83,6 +83,14 @@ export default {
     };
   },
   methods: {
+    /**
+     * Hàm xét giá trị cho prop selectedMaterialUnit
+     * Author: LHNAM (18/10/2022)
+     */
+    setSelectedMaterialUnit(){
+      this.$emit('update:selectedMaterialUnit', this.itemIndex);
+    },
+
     /**
      * Hàm set value số cho số lượng tối thiểu
      * @param {Object} data Object chứa nội dung trả về
