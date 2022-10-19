@@ -781,6 +781,8 @@ export default {
             this.$refs[Resource.KeyTable.MaterialName].focus();
           }
 
+          this.deleteMaterialUnitArr = [];
+
           this.formMode = Enum.FormMode.Add;
           break;
         }
